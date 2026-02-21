@@ -119,7 +119,7 @@ const Skills = () => {
           style={{ background: "radial-gradient(circle, hsl(250 84% 60%), transparent 70%)" }} />
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full opacity-[0.03]"
           style={{ background: "radial-gradient(circle, hsl(196 100% 47%), transparent 70%)" }} />
-        <div className="absolute inset-0 opacity-[0.3] bg-grid" />
+        <div className="absolute inset-0 opacity-[0.3] bg-grid pointer-events-none" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">

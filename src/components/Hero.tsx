@@ -18,7 +18,7 @@ const Hero = () => {
           style={{ background: "radial-gradient(circle, hsl(196 100% 47%), transparent 70%)" }} />
         <div className="absolute top-1/2 left-1/3 w-[250px] h-[250px] rounded-full opacity-[0.07]"
           style={{ background: "radial-gradient(circle, hsl(344 85% 60%), transparent 70%)" }} />
-        <div className="absolute inset-0 opacity-[0.4] bg-grid" />
+        <div className="absolute inset-0 opacity-[0.4] bg-grid pointer-events-none" />
       </div>
 
       <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center relative z-10">

@@ -30,7 +30,7 @@ const Projects = () => {
 
   return (
     <section id="projects" className="py-28 bg-white relative overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.3] bg-grid" />
+      <div className="absolute inset-0 opacity-[0.3] bg-grid pointer-events-none" />
       <div className="container mx-auto px-6 relative z-10">
         <AnimatedSection>
           <div className="text-center mb-16">

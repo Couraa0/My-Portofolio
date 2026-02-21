@@ -28,33 +28,34 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-28 bg-white relative overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.3] bg-grid" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-px"
+    <section id="contact" className="py-16 sm:py-24 bg-white relative overflow-hidden">
+      <div className="absolute inset-0 opacity-[0.3] bg-grid pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xl h-px"
         style={{ background: "linear-gradient(90deg, transparent, hsl(250 84% 60% / 0.2), transparent)" }} />
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <AnimatedSection>
-          <div className="text-center mb-16">
+          <div className="text-center mb-10 sm:mb-16">
             <span className="inline-block rounded-full px-4 py-1.5 text-xs font-semibold mb-4"
               style={{ background: "hsl(250 84% 60% / 0.08)", border: "1px solid hsl(250 84% 60% / 0.2)", color: "hsl(250 84% 50%)" }}>
               Get In Touch
             </span>
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-foreground">
+            <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
               Let's Work <span className="text-gradient">Together</span>
             </h2>
-            <p className="text-muted-foreground mt-4 max-w-md mx-auto">
+            <p className="text-muted-foreground mt-3 sm:mt-4 max-w-md mx-auto text-sm sm:text-base px-4">
               Tertarik berkolaborasi? Jangan ragu untuk menghubungi saya.
             </p>
           </div>
         </AnimatedSection>
 
-        <div className="grid lg:grid-cols-2 gap-14 max-w-5xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-14 max-w-5xl mx-auto">
           {/* Info */}
           <AnimatedSection delay={0.1}>
             <div className="space-y-3">
               {contactInfo.map((item, i) => (
-                <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-white border transition-all duration-300 cursor-default"
+                <div key={i}
+                  className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl bg-white border transition-all duration-300"
                   style={{ borderColor: "hsl(220 20% 90%)" }}
                   onMouseEnter={e => {
                     (e.currentTarget as HTMLElement).style.borderColor = item.border;
@@ -66,25 +67,27 @@ const Contact = () => {
                     (e.currentTarget as HTMLElement).style.boxShadow = "";
                     (e.currentTarget as HTMLElement).style.transform = "";
                   }}>
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center flex-shrink-0"
                     style={{ background: item.bg, color: item.color }}>
                     {item.icon}
                   </div>
-                  {item.href ? (
-                    <a href={item.href} target="_blank" rel="noopener noreferrer"
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors truncate">
-                      {item.label}
-                    </a>
-                  ) : (
-                    <span className="text-sm text-muted-foreground">{item.label}</span>
-                  )}
+                  <div className="min-w-0 flex-1">
+                    {item.href ? (
+                      <a href={item.href} target="_blank" rel="noopener noreferrer"
+                        className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors block truncate">
+                        {item.label}
+                      </a>
+                    ) : (
+                      <span className="text-xs sm:text-sm text-muted-foreground block truncate">{item.label}</span>
+                    )}
+                  </div>
                 </div>
               ))}
 
-              <div className="rounded-2xl p-5 mt-4"
+              <div className="rounded-2xl p-4 sm:p-5 mt-2 sm:mt-4"
                 style={{ background: "linear-gradient(135deg, hsl(250 84% 60% / 0.07), hsl(196 100% 47% / 0.05))", border: "1px solid hsl(250 84% 60% / 0.18)" }}>
                 <p className="text-sm font-semibold text-foreground mb-1">Open to:</p>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                   IT Project Manager, Product Manager, Fullstack Developer roles
                 </p>
               </div>
@@ -93,15 +96,15 @@ const Contact = () => {
 
           {/* Form */}
           <AnimatedSection delay={0.2}>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
               {(["name", "email", "subject"] as const).map((field, i) => (
                 <input key={field}
                   type={field === "email" ? "email" : "text"}
-                  placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                  placeholder={field === "name" ? "Nama" : field === "email" ? "Email" : "Subjek"}
                   required value={form[field]}
                   onChange={(e) => setForm({ ...form, [field]: e.target.value })}
-                  className="w-full rounded-xl border px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-200 bg-white"
-                  style={{ borderColor: "hsl(220 20% 90%)" }}
+                  className="w-full rounded-xl border px-4 py-3 sm:py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-200 bg-white"
+                  style={{ borderColor: "hsl(220 20% 90%)", fontSize: "16px" }}
                   onFocus={e => {
                     (e.currentTarget as HTMLElement).style.borderColor = `${inputFocusColors[i]}50`;
                     (e.currentTarget as HTMLElement).style.boxShadow = `0 0 0 3px ${inputFocusColors[i]}12`;
@@ -113,11 +116,13 @@ const Contact = () => {
                 />
               ))}
               <textarea
-                placeholder="Message" required rows={5}
+                placeholder="Pesan"
+                required
+                rows={4}
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
-                className="w-full rounded-xl border px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-200 resize-none bg-white"
-                style={{ borderColor: "hsl(220 20% 90%)" }}
+                className="w-full rounded-xl border px-4 py-3 sm:py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-200 resize-none bg-white"
+                style={{ borderColor: "hsl(220 20% 90%)", fontSize: "16px" }}
                 onFocus={e => {
                   (e.currentTarget as HTMLElement).style.borderColor = "hsl(158 80% 42% / 0.5)";
                   (e.currentTarget as HTMLElement).style.boxShadow = "0 0 0 3px hsl(158 80% 42% / 0.1)";
@@ -128,11 +133,11 @@ const Contact = () => {
                 }}
               />
               <button type="submit" disabled={sending}
-                className="w-full rounded-xl px-6 py-3.5 text-sm font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 hover:scale-[1.02] active:scale-100"
+                className="w-full rounded-xl px-6 py-3.5 sm:py-4 text-sm font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 active:scale-95"
                 style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))", boxShadow: "0 4px 20px hsl(250 84% 60% / 0.3)" }}>
-                {sent ? <><CheckCircle2 size={16} /> Sent!</>
-                  : sending ? "Sending..."
-                    : <><Send size={16} /> Send Message</>}
+                {sent ? <><CheckCircle2 size={16} /> Terkirim!</>
+                  : sending ? "Mengirim..."
+                    : <><Send size={16} /> Kirim Pesan</>}
               </button>
             </form>
           </AnimatedSection>

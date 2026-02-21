@@ -44,7 +44,7 @@ const Counter = ({ target, suffix, decimals = 0, from, to }: {
 
 const Stats = () => (
   <section className="py-20 relative overflow-hidden" style={{ background: "hsl(220 20% 97%)" }}>
-    <div className="absolute inset-0 opacity-[0.3] bg-grid" />
+    <div className="absolute inset-0 opacity-[0.3] bg-grid pointer-events-none" />
     <div className="absolute top-0 left-0 right-0 h-px"
       style={{ background: "linear-gradient(90deg, transparent, hsl(220 20% 88%), transparent)" }} />
     <div className="absolute bottom-0 left-0 right-0 h-px"

@@ -61,6 +61,7 @@
 @layer base {
   * {
     border-color: hsl(var(--border) / 1);
+    overflow-anchor: none;
   }
 
   body {

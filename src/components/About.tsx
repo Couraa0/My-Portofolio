@@ -39,7 +39,7 @@ const About = () => (
   <section id="about" className="py-28 bg-white relative overflow-hidden">
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-px"
       style={{ background: "linear-gradient(90deg, transparent, hsl(250 84% 60% / 0.2), transparent)" }} />
-    <div className="absolute inset-0 opacity-[0.3] bg-grid" />
+    <div className="absolute inset-0 opacity-[0.3] bg-grid pointer-events-none" />
 
     <div className="container mx-auto px-6">
       <AnimatedSection>

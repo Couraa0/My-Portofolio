@@ -29,13 +29,13 @@ const Experience = () => {
       <div className="absolute bottom-0 left-0 right-0 h-px"
         style={{ background: "linear-gradient(90deg, transparent, hsl(220 20% 86%), transparent)" }} />
 
-      <div className="absolute inset-0 opacity-[0.3] bg-grid" />
+      <div className="absolute inset-0 opacity-[0.3] bg-grid pointer-events-none" />
 
       {/* Subtle background blob */}
       <div className="absolute top-20 right-0 w-80 h-80 rounded-full pointer-events-none opacity-[0.06]"
         style={{ background: `radial-gradient(circle, ${c.dot}, transparent 70%)`, transition: "background 0.6s" }} />
 
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6 relative z-10">
         <AnimatedSection>
           <div className="text-center mb-16">
             <span className="inline-block rounded-full px-4 py-1.5 text-xs font-semibold mb-4"
@@ -148,10 +148,12 @@ const Experience = () => {
             const cp = palette[i % palette.length];
             const isOpen = expandedId === exp.id;
             return (
-              <div key={exp.id} className="rounded-3xl bg-white border border-border shadow-sm overflow-hidden transition-all duration-300"
+              <div key={exp.id} className="rounded-3xl bg-white border shadow-sm"
                 style={{
                   borderColor: isOpen ? cp.border : "hsl(var(--border))",
-                  boxShadow: isOpen ? `0 12px 30px ${cp.glow}` : "none"
+                  boxShadow: isOpen ? `0 12px 30px ${cp.glow}` : "none",
+                  transition: "border-color 0.3s, box-shadow 0.3s",
+                  overflowAnchor: "none",
                 }}>
                 <button
                   className="w-full flex items-center justify-between p-6 text-left"
@@ -167,18 +169,20 @@ const Experience = () => {
                       <p className="text-xs font-semibold text-muted-foreground tracking-wide uppercase">{exp.role}</p>
                     </div>
                   </div>
-                  <motion.div animate={{ rotate: isOpen ? 180 : 0 }} className="text-muted-foreground">
+                  <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.3 }} className="text-muted-foreground flex-shrink-0">
                     <ChevronDown size={22} />
                   </motion.div>
                 </button>
 
-                <AnimatePresence>
+                <AnimatePresence initial={false}>
                   {isOpen && (
                     <motion.div
+                      key="content"
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      transition={{ duration: 0.35, ease: [0.04, 0.62, 0.23, 0.98] }}
+                      style={{ overflow: "hidden", overflowAnchor: "none" }}
                     >
                       <div className="px-6 pb-6 pt-2 border-t border-border/50">
                         <div className="mb-4 inline-flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest bg-secondary/50 px-2 py-1 rounded">

@@ -90,25 +90,42 @@ const Navbar = () => {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t border-border">
-            <ul className="flex flex-col items-center gap-4 py-6">
-              {navLinks.map((link) => (
-                <li key={link}>
-                  <button onClick={() => scrollTo(link)}
-                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                    {link}
-                  </button>
-                </li>
-              ))}
-              <li>
-                <button onClick={() => scrollTo("Contact")}
-                  className="rounded-full px-5 py-2 text-sm font-semibold text-white"
-                  style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))" }}>
-                  Hire Me
-                </button>
-              </li>
-            </ul>
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="md:hidden border-t border-border"
+            style={{ background: "white", position: "relative", zIndex: 50 }}>
+            <div className="px-4 py-5">
+              {/* 2-column grid for nav links */}
+              <div className="grid grid-cols-2 gap-1 mb-4">
+                {navLinks.map((link) => {
+                  const isActive = activeSection === link.toLowerCase();
+                  return (
+                    <button key={link}
+                      onClick={() => scrollTo(link)}
+                      className="rounded-xl py-3 px-4 text-sm font-medium text-center transition-all duration-200"
+                      style={{
+                        color: isActive ? "hsl(250 84% 50%)" : "hsl(215 16% 48%)",
+                        background: isActive ? "hsl(250 84% 60% / 0.07)" : "transparent",
+                        border: isActive ? "1px solid hsl(250 84% 60% / 0.18)" : "1px solid transparent",
+                      }}>
+                      {link}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Divider */}
+              <div className="h-px mb-4" style={{ background: "linear-gradient(90deg, transparent, hsl(220 20% 88%), transparent)" }} />
+
+              {/* Hire Me CTA - centered full width */}
+              <button onClick={() => scrollTo("Contact")}
+                className="w-full rounded-full py-3 text-sm font-semibold text-white transition-all duration-200 active:scale-95"
+                style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))", boxShadow: "0 4px 16px hsl(250 84% 60% / 0.25)" }}>
+                Hire Me
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
