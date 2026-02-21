@@ -1,9 +1,12 @@
-import { Github, Linkedin, Mail, ArrowUp } from "lucide-react";
+import { Github, Linkedin, Mail, ArrowUp, Instagram, MessageCircle } from "lucide-react";
 
 const socials = [
-  { href: "https://github.com/Couraa0", icon: <Github size={16} />, color: "hsl(250 84% 55%)", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.2)" },
+  
   { href: "https://www.linkedin.com/in/rakha05/", icon: <Linkedin size={16} />, color: "hsl(196 100% 36%)", bg: "hsl(196 100% 47% / 0.08)", border: "hsl(196 100% 47% / 0.2)" },
+  { href: "https://wa.me/6287871310560", icon: <MessageCircle size={16} />, color: "hsl(158 80% 40%)", bg: "hsl(158 80% 42% / 0.08)", border: "hsl(158 80% 42% / 0.2)" },
+  { href: "https://www.instagram.com/couraa0", icon: <Instagram size={16} />, color: "hsl(344 85% 50%)", bg: "hsl(344 85% 60% / 0.08)", border: "hsl(344 85% 60% / 0.2)" },
   { href: "mailto:muhammadrakhasyamputra@gmail.com", icon: <Mail size={16} />, color: "hsl(344 85% 50%)", bg: "hsl(344 85% 60% / 0.08)", border: "hsl(344 85% 60% / 0.2)" },
+  { href: "https://github.com/Couraa0", icon: <Github size={16} />, color: "hsl(250 84% 55%)", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.2)" },
 ];
 
 const Footer = () => (

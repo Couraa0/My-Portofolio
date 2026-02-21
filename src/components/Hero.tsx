@@ -1,5 +1,5 @@
 import { motion, Variants } from "framer-motion";
-import { Github, Linkedin, ArrowDown, Sparkles, Briefcase } from "lucide-react";
+import { Github, Linkedin, ArrowDown, Sparkles, Briefcase, Instagram, MessageCircle } from "lucide-react";
 
 const container: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.15 } } };
 const fadeUp: Variants = {
@@ -18,8 +18,7 @@ const Hero = () => {
           style={{ background: "radial-gradient(circle, hsl(196 100% 47%), transparent 70%)" }} />
         <div className="absolute top-1/2 left-1/3 w-[250px] h-[250px] rounded-full opacity-[0.07]"
           style={{ background: "radial-gradient(circle, hsl(344 85% 60%), transparent 70%)" }} />
-        <div className="absolute inset-0 opacity-[0.03]"
-          style={{ backgroundImage: "radial-gradient(hsl(222 47% 10%) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
+        <div className="absolute inset-0 opacity-[0.4] bg-grid" />
       </div>
 
       <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center relative z-10">
@@ -36,17 +35,17 @@ const Hero = () => {
           </motion.div>
 
           <motion.div variants={fadeUp}>
-            <h1 className="font-heading text-4xl sm:text-5xl lg:text-[3.8rem] font-extrabold leading-[1.1] tracking-tight text-foreground">
+            <h1 className="font-heading text-4xl sm:text-5xl lg:text-[3.8rem] font-extrabold leading-[1.2] tracking-tight text-foreground">
               Hi, I'm{" "}
-              <span className="block mt-1">Muhammad Rakha</span>
-              <span className="block text-gradient mt-1">Syamputra</span>
+              <span className="block mt-2">Muhammad Rakha</span>
+              <span className="block text-gradient mt-2 pb-2">Syamputra</span>
             </h1>
           </motion.div>
 
           <motion.div variants={fadeUp}>
             <div className="flex flex-wrap items-center gap-3">
               {[
-                { label: "IT Project Manager", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.25)", color: "hsl(250 84% 45%)" },
+                { label: "IT Project/Product Manager", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.25)", color: "hsl(250 84% 45%)" },
                 { label: "Software Developer", bg: "hsl(196 100% 47% / 0.08)", border: "hsl(196 100% 47% / 0.25)", color: "hsl(196 100% 36%)" },
               ].map((r, i) => (
                 <span key={i} className="rounded-full px-3 py-1.5 text-xs font-semibold"
@@ -88,7 +87,7 @@ const Hero = () => {
 
           <motion.div variants={fadeUp} className="flex items-center gap-4 pt-2">
             {[
-              { href: "https://github.com/Couraa0", icon: <Github size={18} />, color: "hsl(250 84% 55%)" },
+              { href: "https://github.com/Couraa0", icon: <Github size={16} />, color: "hsl(250 84% 55%)", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.2)" },
               { href: "https://www.linkedin.com/in/rakha05/", icon: <Linkedin size={18} />, color: "hsl(196 100% 36%)" },
             ].map((s, i) => (
               <a key={i} href={s.href} target="_blank" rel="noopener noreferrer"
@@ -117,14 +116,6 @@ const Hero = () => {
           transition={{ duration: 0.95, delay: 0.35, ease: [0.25, 0.4, 0.25, 1] }}
           className="hidden lg:flex justify-center items-center">
 
-          {/*
-           * Strategy:
-           *   - Outer div: overflow-visible, gives vertical space for top-overflow
-           *   - Inner card: the white rounded card that IS the background
-           *   - Photo: position absolute, bottom aligned inside card,
-           *     height bigger than card so it sticks out at the top only
-           *   - Card has overflow:visible so photo top emerges freely
-           */}
           <div className="relative" style={{ width: 360, paddingTop: 80 }}>
 
             {/* ── Soft glow behind the card ── */}
@@ -221,7 +212,7 @@ const Hero = () => {
                 <Github size={18} />
               </div>
               <div className="text-left">
-                <p className="font-heading text-lg font-bold leading-none text-foreground">8+</p>
+                <p className="font-heading text-lg font-bold leading-none text-foreground">10+</p>
                 <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">Projects</p>
               </div>
             </motion.div>
@@ -236,7 +227,7 @@ const Hero = () => {
                 <Briefcase size={18} />
               </div>
               <div className="text-left">
-                <p className="font-heading text-lg font-bold leading-none text-foreground">2+</p>
+                <p className="font-heading text-lg font-bold leading-none text-foreground">3+</p>
                 <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">Yrs Exp</p>
               </div>
             </motion.div>
@@ -248,7 +239,7 @@ const Hero = () => {
       <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 2, repeat: Infinity }}
         className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-muted-foreground">
         <span className="text-[10px] font-medium tracking-widest uppercase">Scroll</span>
-        <ArrowDown size={14} />
+        <ArrowDown size={14} color="hsla(250, 87%, 66%, 1.00)" />
       </motion.div>
     </section>
   );

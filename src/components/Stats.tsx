@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 const stats = [
-  { value: 8, suffix: "+", label: "Projects Completed", from: "hsl(250 84% 60%)", to: "hsl(196 100% 47%)", shadow: "hsl(250 84% 60% / 0.2)", border: "hsl(250 84% 60% / 0.18)", bg: "hsl(250 84% 60% / 0.05)" },
-  { value: 3500, suffix: "+", label: "Event Participants", from: "hsl(344 85% 60%)", to: "hsl(37 100% 50%)", shadow: "hsl(344 85% 60% / 0.2)", border: "hsl(344 85% 60% / 0.18)", bg: "hsl(344 85% 60% / 0.05)" },
+  { value: 10, suffix: "+", label: "Projects Completed", from: "hsl(250 84% 60%)", to: "hsl(196 100% 47%)", shadow: "hsl(250 84% 60% / 0.2)", border: "hsl(250 84% 60% / 0.18)", bg: "hsl(250 84% 60% / 0.05)" },
+  { value: 15, suffix: "+", label: "Tech Stack used", from: "hsl(344 85% 60%)", to: "hsl(37 100% 50%)", shadow: "hsl(344 85% 60% / 0.2)", border: "hsl(344 85% 60% / 0.18)", bg: "hsl(344 85% 60% / 0.05)" },
   { value: 3.97, suffix: "", label: "GPA", decimals: 2, from: "hsl(158 80% 42%)", to: "hsl(196 100% 47%)", shadow: "hsl(158 80% 42% / 0.2)", border: "hsl(158 80% 42% / 0.18)", bg: "hsl(158 80% 42% / 0.05)" },
   { value: 3, suffix: "+", label: "Years Leadership", from: "hsl(37 100% 50%)", to: "hsl(250 84% 60%)", shadow: "hsl(37 100% 50% / 0.2)", border: "hsl(37 100% 50% / 0.18)", bg: "hsl(37 100% 50% / 0.05)" },
 ];
@@ -44,12 +44,13 @@ const Counter = ({ target, suffix, decimals = 0, from, to }: {
 
 const Stats = () => (
   <section className="py-20 relative overflow-hidden" style={{ background: "hsl(220 20% 97%)" }}>
+    <div className="absolute inset-0 opacity-[0.3] bg-grid" />
     <div className="absolute top-0 left-0 right-0 h-px"
       style={{ background: "linear-gradient(90deg, transparent, hsl(220 20% 88%), transparent)" }} />
     <div className="absolute bottom-0 left-0 right-0 h-px"
       style={{ background: "linear-gradient(90deg, transparent, hsl(220 20% 88%), transparent)" }} />
 
-    <div className="container mx-auto px-6">
+    <div className="container mx-auto px-6 relative z-10">
       <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
         transition={{ duration: 0.6 }}
         className="grid grid-cols-2 md:grid-cols-4 gap-5">

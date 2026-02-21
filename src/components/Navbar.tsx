@@ -52,17 +52,21 @@ const Navbar = () => {
             return (
               <li key={link}>
                 <button onClick={() => scrollTo(link)}
-                  className="relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg"
+                  className="group px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg flex items-center justify-center"
                   style={{ color: isActive ? "hsl(250 84% 50%)" : "hsl(215 16% 48%)" }}
                   onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLElement).style.color = "hsl(222 47% 10%)"; }}
                   onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLElement).style.color = "hsl(215 16% 48%)"; }}>
-                  {link}
-                  {isActive && (
-                    <motion.div layoutId="navIndicator"
-                      className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full"
-                      style={{ background: "linear-gradient(90deg, hsl(250 84% 60%), hsl(196 100% 47%))" }}
-                    />
-                  )}
+                  <span className="relative">
+                    {link}
+                    {isActive ? (
+                      <motion.div layoutId="navIndicator"
+                        className="absolute -bottom-1 left-0 w-full h-0.5 rounded-full"
+                        style={{ background: "linear-gradient(90deg, hsl(250 84% 60%), hsl(196 100% 47%))" }}
+                      />
+                    ) : (
+                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary/20 rounded-full transition-all duration-300 group-hover:w-full group-hover:left-0 group-hover:translate-x-0" />
+                    )}
+                  </span>
                 </button>
               </li>
             );

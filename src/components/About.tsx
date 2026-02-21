@@ -31,7 +31,7 @@ const bars = [
 
 const stats = [
   { value: "3.97", label: "GPA", from: "hsl(250 84% 60%)", to: "hsl(196 100% 47%)" },
-  { value: "8+", label: "Projects", from: "hsl(344 85% 58%)", to: "hsl(37 100% 50%)" },
+  { value: "10+", label: "Projects", from: "hsl(344 85% 58%)", to: "hsl(37 100% 50%)" },
   { value: "3+", label: "Yrs Exp", from: "hsl(158 72% 38%)", to: "hsl(196 100% 47%)" },
 ];
 
@@ -39,6 +39,7 @@ const About = () => (
   <section id="about" className="py-28 bg-white relative overflow-hidden">
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-px"
       style={{ background: "linear-gradient(90deg, transparent, hsl(250 84% 60% / 0.2), transparent)" }} />
+    <div className="absolute inset-0 opacity-[0.3] bg-grid" />
 
     <div className="container mx-auto px-6">
       <AnimatedSection>

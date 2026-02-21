@@ -111,14 +111,15 @@ const MarqueeSection = ({ title, items, direction = "left", speed = "25s" }: { t
 const Skills = () => {
   return (
     <section id="skills" className="py-28 bg-white relative overflow-hidden">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-px z-20"
+        style={{ background: "linear-gradient(90deg, transparent, hsl(250 84% 60% / 0.2), transparent)" }} />
       {/* Background decoration */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full opacity-[0.03]"
           style={{ background: "radial-gradient(circle, hsl(250 84% 60%), transparent 70%)" }} />
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full opacity-[0.03]"
           style={{ background: "radial-gradient(circle, hsl(196 100% 47%), transparent 70%)" }} />
-        <div className="absolute inset-0 opacity-[0.02]"
-          style={{ backgroundImage: "radial-gradient(hsl(222 47% 10%) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+        <div className="absolute inset-0 opacity-[0.3] bg-grid" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
@@ -142,7 +143,7 @@ const Skills = () => {
               <h3 className="font-heading font-bold text-foreground text-sm uppercase tracking-wider">Soft Skills</h3>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {softSkills.map((s, i) => (
                 <motion.div
                   key={s.name}
@@ -151,12 +152,12 @@ const Skills = () => {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
                   whileHover={{ y: -5, scale: 1.02 }}
-                  className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-border transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/5 hover:border-violet-500/30"
+                  className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-border transition-all duration-300 hover:shadow-xl hover:shadow-violet-500/5 hover:border-violet-500/30"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center text-xl">
+                  <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center text-2xl flex-shrink-0">
                     {s.icon}
                   </div>
-                  <span className="text-sm font-semibold text-foreground leading-tight">{s.name}</span>
+                  <span className="text-sm md:text-base font-bold text-foreground leading-snug">{s.name}</span>
                 </motion.div>
               ))}
             </div>

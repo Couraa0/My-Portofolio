@@ -1,12 +1,12 @@
 import { useState } from "react";
 import AnimatedSection from "./AnimatedSection";
-import { Mail, Phone, MapPin, Github, Linkedin, Send, CheckCircle2 } from "lucide-react";
+import { Mail, Phone, MapPin, Instagram, Linkedin, Send, CheckCircle2 } from "lucide-react";
 
 const contactInfo = [
   { icon: <Mail size={18} />, label: "muhammadrakhasyamputra@gmail.com", href: "mailto:muhammadrakhasyamputra@gmail.com", color: "hsl(250 84% 50%)", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.2)" },
   { icon: <Phone size={18} />, label: "087871310560", href: "https://wa.me/6287871310560", color: "hsl(158 80% 35%)", bg: "hsl(158 80% 42% / 0.08)", border: "hsl(158 80% 42% / 0.2)" },
-  { icon: <MapPin size={18} />, label: "Jawa Barat, Indonesia", color: "hsl(344 85% 50%)", bg: "hsl(344 85% 60% / 0.08)", border: "hsl(344 85% 60% / 0.2)" },
-  { icon: <Github size={18} />, label: "github.com/Couraa0", href: "https://github.com/Couraa0", color: "hsl(37 100% 38%)", bg: "hsl(37 100% 50% / 0.08)", border: "hsl(37 100% 50% / 0.2)" },
+  { icon: <MapPin size={18} />, label: "Jawa Barat, Indonesia", color: "hsl(37 100% 45%)", bg: "hsl(37 100% 50% / 0.08)", border: "hsl(37 100% 50% / 0.2)" },
+  { icon: <Instagram size={18} />, label: "@couraa0", href: "https://www.instagram.com/couraa0", color: "hsl(344 85% 50%)", bg: "hsl(344 85% 60% / 0.08)", border: "hsl(344 85% 60% / 0.2)" },
   { icon: <Linkedin size={18} />, label: "linkedin.com/in/rakha05", href: "https://www.linkedin.com/in/rakha05/", color: "hsl(196 100% 36%)", bg: "hsl(196 100% 47% / 0.08)", border: "hsl(196 100% 47% / 0.2)" },
 ];
 
@@ -29,10 +29,11 @@ const Contact = () => {
 
   return (
     <section id="contact" className="py-28 bg-white relative overflow-hidden">
+      <div className="absolute inset-0 opacity-[0.3] bg-grid" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-px"
         style={{ background: "linear-gradient(90deg, transparent, hsl(250 84% 60% / 0.2), transparent)" }} />
 
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6 relative z-10">
         <AnimatedSection>
           <div className="text-center mb-16">
             <span className="inline-block rounded-full px-4 py-1.5 text-xs font-semibold mb-4"

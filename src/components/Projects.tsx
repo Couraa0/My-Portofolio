@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ExternalLink, Github, Star } from "lucide-react";
+import { ExternalLink, Github, Star, FileText } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
 import { projects, type Project } from "@/data/projects";
 
@@ -15,13 +15,23 @@ const cardPalette = [
   { from: "hsl(237 80% 62%)", to: "hsl(250 84% 60%)", fromLight: "hsl(237 80% 62% / 0.08)", border: "hsl(237 80% 62% / 0.2)", tag: "hsl(237 80% 52%)" },
 ];
 
+const paletteMap = {
+  violet: cardPalette[0],
+  rose: cardPalette[1],
+  emerald: cardPalette[2],
+  amber: cardPalette[3],
+  cyan: cardPalette[4],
+  indigo: cardPalette[5],
+};
+
 const Projects = () => {
-  const [filter, setFilter] = useState<Filter>("All");
+  const [filter, setFilter] = useState<Filter>("Professional");
   const filtered = filter === "All" ? projects : projects.filter((p) => p.category === filter);
 
   return (
     <section id="projects" className="py-28 bg-white relative overflow-hidden">
-      <div className="container mx-auto px-6">
+      <div className="absolute inset-0 opacity-[0.3] bg-grid" />
+      <div className="container mx-auto px-6 relative z-10">
         <AnimatedSection>
           <div className="text-center mb-16">
             <span className="inline-block rounded-full px-4 py-1.5 text-xs font-semibold mb-4"
@@ -37,7 +47,7 @@ const Projects = () => {
         {/* Filter tabs */}
         <AnimatedSection delay={0.1}>
           <div className="flex justify-center gap-2 mb-14">
-            {(["All", "Professional", "Personal"] as Filter[]).map((f) => (
+            {(["Professional", "Personal", "All"] as Filter[]).map((f) => (
               <button key={f} onClick={() => setFilter(f)}
                 className="rounded-full px-6 py-2.5 text-sm font-semibold transition-all duration-300 hover:scale-105"
                 style={filter === f ? {
@@ -60,9 +70,10 @@ const Projects = () => {
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
             className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((project, i) => (
-              <ProjectCard key={project.id} project={project} index={i} palette={cardPalette[i % cardPalette.length]} />
-            ))}
+            {filtered.map((project, i) => {
+              const palette = project.color ? paletteMap[project.color] : cardPalette[i % cardPalette.length];
+              return <ProjectCard key={project.id} project={project} index={i} palette={palette} />;
+            })}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -80,20 +91,32 @@ const ProjectCard = ({ project, index, palette }: { project: Project; index: num
     onMouseEnter={e => (e.currentTarget as HTMLElement).style.boxShadow = `0 12px 40px ${palette.from}20`}
     onMouseLeave={e => (e.currentTarget as HTMLElement).style.boxShadow = `0 2px 12px hsl(220 20% 70% / 0.12)`}>
 
-    {/* Gradient header */}
-    <div className="h-40 relative flex items-center justify-center overflow-hidden"
-      style={{ background: `linear-gradient(135deg, ${palette.fromLight}, hsl(220 20% 97%))` }}>
-      <div className="absolute -right-8 -top-8 w-28 h-28 rounded-full opacity-40"
-        style={{ background: `radial-gradient(circle, ${palette.from}, transparent 70%)` }} />
+    {/* Header (Image or Gradient) */}
+    <div className="h-48 relative overflow-hidden"
+      style={{ background: project.image ? "none" : `linear-gradient(135deg, ${palette.fromLight}, hsl(220 20% 97%))` }}>
+
+      {project.image ? (
+        <img
+          src={project.image}
+          alt={project.title}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+        />
+      ) : (
+        <div className="flex items-center justify-center h-full relative">
+          <div className="absolute -right-8 -top-8 w-28 h-28 rounded-full opacity-40"
+            style={{ background: `radial-gradient(circle, ${palette.from}, transparent 70%)` }} />
+          <span className="font-heading text-3xl font-black" style={{ color: `${palette.from}`, opacity: 0.2 }}>
+            {project.title.split(" ").map(w => w[0]).join("").slice(0, 3)}
+          </span>
+        </div>
+      )}
+
       {project.featured && (
-        <span className="absolute top-3 right-3 flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold text-white"
+        <span className="absolute top-3 right-3 flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold text-white z-10"
           style={{ background: `linear-gradient(135deg, ${palette.from}, ${palette.to})` }}>
           <Star size={9} fill="currentColor" /> Featured
         </span>
       )}
-      <span className="font-heading text-3xl font-black" style={{ color: `${palette.from}`, opacity: 0.2 }}>
-        {project.title.split(" ").map(w => w[0]).join("").slice(0, 3)}
-      </span>
     </div>
 
     <div className="p-5 space-y-3">
@@ -121,7 +144,8 @@ const ProjectCard = ({ project, index, palette }: { project: Project; index: num
           <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-[11px] font-semibold transition-opacity hover:opacity-70"
             style={{ color: palette.tag }}>
-            <ExternalLink size={13} /> Live Demo
+            {project.liveUrlLabel?.includes("Document") ? <FileText size={13} /> : <ExternalLink size={13} />}
+            {project.liveUrlLabel || "Live Demo"}
           </a>
         )}
         {project.githubUrl && (
