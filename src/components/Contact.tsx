@@ -1,6 +1,14 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import emailjs from "@emailjs/browser";
 import AnimatedSection from "./AnimatedSection";
-import { Mail, Phone, MapPin, Instagram, Linkedin, Send, CheckCircle2 } from "lucide-react";
+import { Mail, Phone, MapPin, Instagram, Linkedin, Send, CheckCircle2, AlertCircle, Clock } from "lucide-react";
+import {
+  EMAILJS_CONFIG,
+  MIN_FILL_MS,
+  getRateLimitSecondsLeft,
+  markSent,
+} from "@/lib/emailjs";
 
 const contactInfo = [
   { icon: <Mail size={18} />, label: "muhammadrakhasyamputra@gmail.com", href: "mailto:muhammadrakhasyamputra@gmail.com", color: "hsl(250 84% 50%)", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.2)" },
@@ -12,20 +20,94 @@ const contactInfo = [
 
 const inputFocusColors = ["hsl(250 84% 60%)", "hsl(196 100% 47%)", "hsl(344 85% 60%)", "hsl(158 80% 42%)"];
 
+type Status = "idle" | "sending" | "success" | "error" | "cooldown";
+
 const Contact = () => {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
-  const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
+  // 🍯 Honeypot: field hidden — jika diisi, request dari bot → diabaikan
+  const [honeypot, setHoneypot] = useState("");
+  const [status, setStatus] = useState<Status>("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+  const [cooldownSec, setCooldownSec] = useState(0);
+  const formOpenedAt = useRef(Date.now());
+  const cooldownTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSending(true);
-    setTimeout(() => {
-      setSending(false); setSent(true);
-      setForm({ name: "", email: "", subject: "", message: "" });
-      setTimeout(() => setSent(false), 3000);
-    }, 1500);
+  // Cek cooldown saat komponen pertama mount
+  useEffect(() => {
+    const sec = getRateLimitSecondsLeft();
+    if (sec > 0) startCooldownTimer(sec);
+    return () => { if (cooldownTimer.current) clearInterval(cooldownTimer.current); };
+  }, []);
+
+  const startCooldownTimer = (initialSec: number) => {
+    setStatus("cooldown");
+    setCooldownSec(initialSec);
+    cooldownTimer.current = setInterval(() => {
+      setCooldownSec((s) => {
+        if (s <= 1) {
+          clearInterval(cooldownTimer.current!);
+          setStatus("idle");
+          return 0;
+        }
+        return s - 1;
+      });
+    }, 1000);
   };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // 1️⃣ Honeypot check — bot mengisi field tersembunyi
+    if (honeypot.trim() !== "") return;
+
+    // 2️⃣ Minimum time check — form diisi terlalu cepat → bot
+    if (Date.now() - formOpenedAt.current < MIN_FILL_MS) {
+      setStatus("error");
+      setErrorMsg("Mohon isi form dengan perlahan.");
+      return;
+    }
+
+    // 3️⃣ Rate limit check
+    const secLeft = getRateLimitSecondsLeft();
+    if (secLeft > 0) {
+      startCooldownTimer(secLeft);
+      return;
+    }
+
+    setStatus("sending");
+    setErrorMsg("");
+
+    try {
+      await emailjs.send(
+        EMAILJS_CONFIG.serviceId,
+        EMAILJS_CONFIG.templateId,
+        {
+          from_name: form.name.trim(),
+          from_email: form.email.trim(),
+          subject: form.subject.trim(),
+          message: form.message.trim(),
+          to_email: "muhammadrakhasyamputra@gmail.com",
+        },
+        EMAILJS_CONFIG.publicKey
+      );
+
+      markSent();
+      setStatus("success");
+      setForm({ name: "", email: "", subject: "", message: "" });
+      formOpenedAt.current = Date.now();
+
+      // Reset ke idle setelah 4 detik
+      setTimeout(() => setStatus("idle"), 4000);
+    } catch {
+      setStatus("error");
+      setErrorMsg("Gagal mengirim pesan. Silakan coba lagi atau hubungi langsung via email.");
+    }
+  };
+
+  const formatTime = (sec: number) =>
+    `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}`;
+
+  const isBusy = status === "sending" || status === "cooldown";
 
   return (
     <section id="contact" className="py-16 sm:py-24 bg-white relative overflow-hidden">
@@ -50,7 +132,7 @@ const Contact = () => {
         </AnimatedSection>
 
         <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-14 max-w-5xl mx-auto">
-          {/* Info */}
+          {/* ── Info ── */}
           <AnimatedSection delay={0.1}>
             <div className="space-y-3">
               {contactInfo.map((item, i) => (
@@ -94,20 +176,35 @@ const Contact = () => {
             </div>
           </AnimatedSection>
 
-          {/* Form */}
+          {/* ── Form ── */}
           <AnimatedSection delay={0.2}>
-            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4" noValidate>
+
+              {/* 🍯 Honeypot — hidden dari manusia, tapi bot akan mengisinya */}
+              <input
+                type="text"
+                name="website"
+                value={honeypot}
+                onChange={e => setHoneypot(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+                style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", opacity: 0 }}
+                aria-hidden="true"
+              />
+
               {(["name", "email", "subject"] as const).map((field, i) => (
                 <input key={field}
                   type={field === "email" ? "email" : "text"}
                   placeholder={field === "name" ? "Nama" : field === "email" ? "Email" : "Subjek"}
-                  required value={form[field]}
+                  required
+                  value={form[field]}
                   onChange={(e) => setForm({ ...form, [field]: e.target.value })}
-                  className="w-full rounded-xl border px-4 py-3 sm:py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-200 bg-white"
+                  disabled={isBusy}
+                  className="w-full rounded-xl border px-4 py-3 sm:py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-200 bg-white disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{ borderColor: "hsl(220 20% 90%)", fontSize: "16px" }}
                   onFocus={e => {
-                    (e.currentTarget as HTMLElement).style.borderColor = `${inputFocusColors[i]}50`;
-                    (e.currentTarget as HTMLElement).style.boxShadow = `0 0 0 3px ${inputFocusColors[i]}12`;
+                    (e.currentTarget as HTMLElement).style.borderColor = `${inputFocusColors[i]}80`;
+                    (e.currentTarget as HTMLElement).style.boxShadow = `0 0 0 3px ${inputFocusColors[i]}15`;
                   }}
                   onBlur={e => {
                     (e.currentTarget as HTMLElement).style.borderColor = "hsl(220 20% 90%)";
@@ -115,13 +212,15 @@ const Contact = () => {
                   }}
                 />
               ))}
+
               <textarea
                 placeholder="Pesan"
                 required
                 rows={4}
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
-                className="w-full rounded-xl border px-4 py-3 sm:py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-200 resize-none bg-white"
+                disabled={isBusy}
+                className="w-full rounded-xl border px-4 py-3 sm:py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-200 resize-none bg-white disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ borderColor: "hsl(220 20% 90%)", fontSize: "16px" }}
                 onFocus={e => {
                   (e.currentTarget as HTMLElement).style.borderColor = "hsl(158 80% 42% / 0.5)";
@@ -132,12 +231,55 @@ const Contact = () => {
                   (e.currentTarget as HTMLElement).style.boxShadow = "";
                 }}
               />
-              <button type="submit" disabled={sending}
-                className="w-full rounded-xl px-6 py-3.5 sm:py-4 text-sm font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 active:scale-95"
+
+              {/* Status messages */}
+              <AnimatePresence mode="wait">
+                {status === "error" && (
+                  <motion.div key="error"
+                    initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                    className="flex items-start gap-2 rounded-xl px-4 py-3 text-sm"
+                    style={{ background: "hsl(344 85% 60% / 0.08)", border: "1px solid hsl(344 85% 60% / 0.2)", color: "hsl(344 85% 40%)" }}>
+                    <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
+                    {errorMsg || "Terjadi kesalahan."}
+                  </motion.div>
+                )}
+                {status === "cooldown" && (
+                  <motion.div key="cooldown"
+                    initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                    className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm"
+                    style={{ background: "hsl(37 100% 50% / 0.08)", border: "1px solid hsl(37 100% 50% / 0.2)", color: "hsl(37 100% 35%)" }}>
+                    <Clock size={16} className="flex-shrink-0" />
+                    Tunggu <strong>{formatTime(cooldownSec)}</strong> sebelum kirim pesan lagi.
+                  </motion.div>
+                )}
+                {status === "success" && (
+                  <motion.div key="success"
+                    initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                    className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm"
+                    style={{ background: "hsl(158 80% 42% / 0.08)", border: "1px solid hsl(158 80% 42% / 0.2)", color: "hsl(158 80% 30%)" }}>
+                    <CheckCircle2 size={16} className="flex-shrink-0" />
+                    Pesan berhasil terkirim! Saya akan membalas secepatnya.
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Submit button */}
+              <button type="submit" disabled={isBusy || status === "success"}
+                className="w-full rounded-xl px-6 py-3.5 sm:py-4 text-sm font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed active:scale-95"
                 style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))", boxShadow: "0 4px 20px hsl(250 84% 60% / 0.3)" }}>
-                {sent ? <><CheckCircle2 size={16} /> Terkirim!</>
-                  : sending ? "Mengirim..."
-                    : <><Send size={16} /> Kirim Pesan</>}
+                {status === "sending" ? (
+                  <>
+                    <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
+                      className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full" />
+                    Mengirim...
+                  </>
+                ) : status === "success" ? (
+                  <><CheckCircle2 size={16} /> Terkirim!</>
+                ) : status === "cooldown" ? (
+                  <><Clock size={16} /> Tunggu {formatTime(cooldownSec)}</>
+                ) : (
+                  <><Send size={16} /> Kirim Pesan</>
+                )}
               </button>
             </form>
           </AnimatedSection>
