@@ -1,49 +1,57 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    --foreground: 222 47% 10%;
 
     --card: 210 40% 98%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 222 47% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 222 47% 10%;
 
-    --primary: 222 47% 11%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 250 84% 60%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 220 20% 96%;
+    --secondary-foreground: 222 47% 20%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 220 20% 94%;
+    --muted-foreground: 215 16% 48%;
 
-    --accent: 32 95% 44%;
+    --accent: 250 84% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 32 95% 44%;
+    --border: 220 20% 90%;
+    --input: 220 20% 90%;
+    --ring: 250 84% 60%;
 
     --radius: 1rem;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Custom palette */
+    --violet: 250 84% 60%;
+    --cyan: 196 100% 47%;
+    --rose: 344 85% 60%;
+    --amber: 37 100% 50%;
+    --emerald: 158 80% 42%;
+    --indigo: 237 80% 62%;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 10%;
+    --sidebar-primary: 250 84% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 20% 96%;
+    --sidebar-accent-foreground: 222 47% 10%;
+    --sidebar-border: 220 20% 90%;
+    --sidebar-ring: 250 84% 60%;
 
     --font-heading: 'Plus Jakarta Sans', sans-serif;
     --font-body: 'Inter', sans-serif;
@@ -52,34 +60,162 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border) / 1);
   }
 
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
     font-family: var(--font-body);
+    overflow-x: hidden;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-heading);
   }
 
   html {
     scroll-behavior: smooth;
   }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--secondary));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--violet) / 0.4);
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--violet));
+  }
 }
 
 @layer utilities {
+
+  /* Gradient texts */
   .text-gradient {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--foreground)), hsl(var(--muted-foreground)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(135deg, hsl(var(--violet)), hsl(var(--cyan)));
   }
 
+  .text-gradient-rose {
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(135deg, hsl(var(--rose)), hsl(var(--amber)));
+  }
+
+  .text-gradient-emerald {
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(135deg, hsl(var(--emerald)), hsl(var(--cyan)));
+  }
+
+  .text-gradient-indigo {
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(135deg, hsl(var(--indigo)), hsl(var(--violet)));
+  }
+
+  /* Glass on white */
   .glass {
-    @apply bg-white/80 backdrop-blur-lg border border-border;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid hsl(var(--border));
   }
 
+  /* Shadow utilities */
+  .shadow-violet {
+    box-shadow: 0 8px 30px hsl(var(--violet) / 0.18);
+  }
+
+  .shadow-cyan {
+    box-shadow: 0 8px 30px hsl(var(--cyan) / 0.18);
+  }
+
+  .shadow-rose {
+    box-shadow: 0 8px 30px hsl(var(--rose) / 0.18);
+  }
+
+  .shadow-emerald {
+    box-shadow: 0 8px 30px hsl(var(--emerald)/ 0.18);
+  }
+
+  /* Card hover */
   .card-hover {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-hover:hover {
+    transform: translateY(-0.375rem);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+
+  /* Section stripe */
+  .section-stripe {
+    background: linear-gradient(180deg, #fff 0%, hsl(220 20% 97%) 100%);
+  }
+
+  /* Marquee */
+  .marquee-wrapper {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .marquee-wrapper::before,
+  .marquee-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 80px;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .marquee-wrapper::before {
+    left: 0;
+    background: linear-gradient(90deg, white, transparent);
+  }
+
+  .marquee-wrapper::after {
+    right: 0;
+    background: linear-gradient(-90deg, white, transparent);
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-scroll 28s linear infinite;
+  }
+
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-50%);
+    }
   }
 }

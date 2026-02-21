@@ -2,13 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 const stats = [
-  { value: 8, suffix: "+", label: "Projects Completed" },
-  { value: 3500, suffix: "+", label: "Event Participants" },
-  { value: 3.97, suffix: "", label: "GPA", decimals: 2 },
-  { value: 3, suffix: "+", label: "Years Leadership" },
+  { value: 8, suffix: "+", label: "Projects Completed", from: "hsl(250 84% 60%)", to: "hsl(196 100% 47%)", shadow: "hsl(250 84% 60% / 0.2)", border: "hsl(250 84% 60% / 0.18)", bg: "hsl(250 84% 60% / 0.05)" },
+  { value: 3500, suffix: "+", label: "Event Participants", from: "hsl(344 85% 60%)", to: "hsl(37 100% 50%)", shadow: "hsl(344 85% 60% / 0.2)", border: "hsl(344 85% 60% / 0.18)", bg: "hsl(344 85% 60% / 0.05)" },
+  { value: 3.97, suffix: "", label: "GPA", decimals: 2, from: "hsl(158 80% 42%)", to: "hsl(196 100% 47%)", shadow: "hsl(158 80% 42% / 0.2)", border: "hsl(158 80% 42% / 0.18)", bg: "hsl(158 80% 42% / 0.05)" },
+  { value: 3, suffix: "+", label: "Years Leadership", from: "hsl(37 100% 50%)", to: "hsl(250 84% 60%)", shadow: "hsl(37 100% 50% / 0.2)", border: "hsl(37 100% 50% / 0.18)", bg: "hsl(37 100% 50% / 0.05)" },
 ];
 
-const Counter = ({ target, suffix, decimals = 0 }: { target: number; suffix: string; decimals?: number }) => {
+const Counter = ({ target, suffix, decimals = 0, from, to }: {
+  target: number; suffix: string; decimals?: number; from: string; to: string;
+}) => {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
   const started = useRef(false);
@@ -33,27 +35,35 @@ const Counter = ({ target, suffix, decimals = 0 }: { target: number; suffix: str
   }, [target]);
 
   return (
-    <span ref={ref} className="font-heading text-4xl md:text-5xl font-extrabold text-accent-foreground">
+    <span ref={ref} className="font-heading text-4xl md:text-5xl font-extrabold bg-clip-text text-transparent"
+      style={{ backgroundImage: `linear-gradient(135deg, ${from}, ${to})` }}>
       {decimals ? count.toFixed(decimals) : Math.floor(count).toLocaleString()}{suffix}
     </span>
   );
 };
 
 const Stats = () => (
-  <section className="py-20 bg-foreground">
+  <section className="py-20 relative overflow-hidden" style={{ background: "hsl(220 20% 97%)" }}>
+    <div className="absolute top-0 left-0 right-0 h-px"
+      style={{ background: "linear-gradient(90deg, transparent, hsl(220 20% 88%), transparent)" }} />
+    <div className="absolute bottom-0 left-0 right-0 h-px"
+      style={{ background: "linear-gradient(90deg, transparent, hsl(220 20% 88%), transparent)" }} />
+
     <div className="container mx-auto px-6">
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
+      <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
-      >
+        className="grid grid-cols-2 md:grid-cols-4 gap-5">
         {stats.map((s) => (
-          <div key={s.label} className="space-y-2">
-            <Counter target={s.value} suffix={s.suffix} decimals={s.decimals} />
-            <p className="text-sm text-accent-foreground/60">{s.label}</p>
-          </div>
+          <motion.div key={s.label}
+            whileHover={{ y: -4, scale: 1.02 }}
+            transition={{ duration: 0.2 }}
+            className="text-center space-y-2 p-6 rounded-2xl bg-white cursor-default"
+            style={{ border: `1px solid ${s.border}`, boxShadow: `0 4px 16px hsl(220 20% 70% / 0.1)` }}
+            onMouseEnter={e => (e.currentTarget as HTMLElement).style.boxShadow = `0 12px 32px ${s.shadow}`}
+            onMouseLeave={e => (e.currentTarget as HTMLElement).style.boxShadow = `0 4px 16px hsl(220 20% 70% / 0.1)`}>
+            <Counter target={s.value} suffix={s.suffix} decimals={s.decimals} from={s.from} to={s.to} />
+            <p className="text-sm text-muted-foreground">{s.label}</p>
+          </motion.div>
         ))}
       </motion.div>
     </div>

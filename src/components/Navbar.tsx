@@ -7,11 +7,24 @@ const navLinks = ["About", "Experience", "Projects", "Skills", "Contact"];
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => { entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id); }); },
+      { threshold: 0.4 }
+    );
+    navLinks.forEach(link => {
+      const el = document.getElementById(link.toLowerCase());
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
   }, []);
 
   const scrollTo = (id: string) => {
@@ -21,31 +34,47 @@ const Navbar = () => {
 
   return (
     <motion.nav
-      initial={{ y: -80 }}
-      animate={{ y: 0 }}
+      initial={{ y: -80 }} animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "glass shadow-sm" : "bg-transparent"
-      }`}
-    >
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "bg-white/90 shadow-sm backdrop-blur-md border-b border-border" : "bg-transparent"
+        }`}>
       <div className="container mx-auto flex items-center justify-between px-6 py-4">
-        <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="font-heading text-xl font-bold tracking-tight">
-          Rakha<span className="text-accent">.</span>
+        <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="font-heading text-xl font-bold tracking-tight">
+          <span className="text-gradient">Rakha</span>
+          <span className="text-muted-foreground/50">.</span>
         </button>
 
         {/* Desktop */}
-        <ul className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <li key={link}>
-              <button
-                onClick={() => scrollTo(link)}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {link}
-              </button>
-            </li>
-          ))}
+        <ul className="hidden md:flex items-center gap-1">
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.toLowerCase();
+            return (
+              <li key={link}>
+                <button onClick={() => scrollTo(link)}
+                  className="relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg"
+                  style={{ color: isActive ? "hsl(250 84% 50%)" : "hsl(215 16% 48%)" }}
+                  onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLElement).style.color = "hsl(222 47% 10%)"; }}
+                  onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLElement).style.color = "hsl(215 16% 48%)"; }}>
+                  {link}
+                  {isActive && (
+                    <motion.div layoutId="navIndicator"
+                      className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full"
+                      style={{ background: "linear-gradient(90deg, hsl(250 84% 60%), hsl(196 100% 47%))" }}
+                    />
+                  )}
+                </button>
+              </li>
+            );
+          })}
         </ul>
+
+        {/* CTA */}
+        <button className="hidden md:flex rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:opacity-90"
+          style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))", boxShadow: "0 4px 16px hsl(250 84% 60% / 0.25)" }}
+          onClick={() => scrollTo("Contact")}>
+          Hire Me
+        </button>
 
         {/* Mobile toggle */}
         <button className="md:hidden text-foreground" onClick={() => setMobileOpen(!mobileOpen)}>
@@ -53,26 +82,28 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden glass border-t border-border"
-          >
+            initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-white border-t border-border">
             <ul className="flex flex-col items-center gap-4 py-6">
               {navLinks.map((link) => (
                 <li key={link}>
-                  <button
-                    onClick={() => scrollTo(link)}
-                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                  >
+                  <button onClick={() => scrollTo(link)}
+                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                     {link}
                   </button>
                 </li>
               ))}
+              <li>
+                <button onClick={() => scrollTo("Contact")}
+                  className="rounded-full px-5 py-2 text-sm font-semibold text-white"
+                  style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))" }}>
+                  Hire Me
+                </button>
+              </li>
             </ul>
           </motion.div>
         )}
