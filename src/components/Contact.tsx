@@ -18,8 +18,6 @@ const contactInfo = [
   { icon: <Linkedin size={18} />, label: "linkedin.com/in/rakha05", href: "https://www.linkedin.com/in/rakha05/", color: "hsl(196 100% 36%)", bg: "hsl(196 100% 47% / 0.08)", border: "hsl(196 100% 47% / 0.2)" },
 ];
 
-
-
 type Status = "idle" | "sending" | "success" | "error" | "cooldown";
 
 const Contact = () => {
@@ -108,14 +106,13 @@ const Contact = () => {
       );
 
       markSent();
-      setStatus("success");
       setForm({ name: "", email: "", subject: "", message: "" });
       formOpenedAt.current = Date.now();
 
-      // Mulai timer cooldown tapi tetap tampilkan status success
+      // Mulai timer cooldown dan tampilkan instruksi tunggu
       const sec = getRateLimitSecondsLeft();
-      if (sec > 0) startCooldownTimer(sec, true);
-      else setTimeout(() => setStatus("idle"), 5000);
+      if (sec > 0) startCooldownTimer(sec);
+      else setStatus("idle");
     } catch {
       setStatus("error");
       setErrorMsg("Gagal mengirim pesan. Silakan coba lagi atau hubungi langsung via email.");
@@ -287,19 +284,10 @@ const Contact = () => {
                       </div>
                     </motion.div>
                   )}
-                  {status === "success" && (
-                    <motion.div key="success"
-                      initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                      className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm"
-                      style={{ background: "hsl(158 80% 42% / 0.08)", border: "1px solid hsl(158 80% 42% / 0.2)", color: "hsl(158 80% 30%)" }}>
-                      <CheckCircle2 size={16} className="flex-shrink-0" />
-                      Pesan berhasil terkirim! Saya akan membalas secepatnya, maximal 1x24 jam.
-                    </motion.div>
-                  )}
                 </AnimatePresence>
 
                 {/* Submit button */}
-                <button type="submit" disabled={isBusy || status === "success"}
+                <button type="submit" disabled={isBusy}
                   className="w-full rounded-xl px-6 py-3.5 sm:py-4 text-sm font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed active:scale-95"
                   style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))", boxShadow: "0 4px 20px hsl(250 84% 60% / 0.3)" }}>
                   {status === "sending" ? (
@@ -308,8 +296,6 @@ const Contact = () => {
                         className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full" />
                       Mengirim...
                     </>
-                  ) : status === "success" ? (
-                    <><CheckCircle2 size={16} /> Terkirim! {cooldownSec > 0 && `(${formatTime(cooldownSec)})`}</>
                   ) : status === "cooldown" ? (
                     <><Clock size={16} /> Tunggu {formatTime(cooldownSec)}</>
                   ) : (
