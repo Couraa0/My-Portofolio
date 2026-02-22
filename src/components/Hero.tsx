@@ -45,8 +45,8 @@ const Hero = () => {
           <motion.div variants={fadeUp}>
             <div className="flex flex-wrap items-center gap-3">
               {[
-                { label: "IT Project/Product Manager", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.25)", color: "hsl(250 84% 45%)" },
-                { label: "Software Developer", bg: "hsl(196 100% 47% / 0.08)", border: "hsl(196 100% 47% / 0.25)", color: "hsl(196 100% 36%)" },
+                { label: "IT Project Manager", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.25)", color: "hsl(250 84% 45%)" },
+                { label: "Software Developer Enthusiast", bg: "hsl(196 100% 47% / 0.08)", border: "hsl(196 100% 47% / 0.25)", color: "hsl(196 100% 36%)" },
               ].map((r, i) => (
                 <span key={i} className="rounded-full px-3 py-1.5 text-xs font-semibold"
                   style={{ background: r.bg, border: `1px solid ${r.border}`, color: r.color }}>
@@ -161,7 +161,11 @@ const Hero = () => {
                   alt="Muhammad Rakha Syamputra"
                   className="w-full h-full object-contain object-bottom select-none"
                   style={{
-                    filter: "drop-shadow(0 20px 40px hsl(250 84% 60% / 0.18)) drop-shadow(0 4px 12px hsl(220 20% 50% / 0.1))",
+                    filter: "drop-shadow(0 20px 40px hsl(250 84% 60% / 0.18)) drop-shadow(0 4px 12px hsl(220 20% 50% / 0.1)) contrast(1.02)",
+                    imageRendering: "auto",
+                    WebkitFontSmoothing: "antialiased",
+                    transform: "perspective(1px) translateZ(0)",
+                    backfaceVisibility: "hidden",
                   }}
                   draggable={false}
                 />
@@ -174,7 +178,7 @@ const Hero = () => {
                   style={{ background: "linear-gradient(to top, white 70%, transparent)" }} />
                 <div className="relative z-10">
                   <p className="font-heading font-bold text-foreground text-lg leading-tight">Muhammad Rakha S.</p>
-                  <p className="text-xs text-muted-foreground mt-1">IT Project Manager · Software Developer</p>
+                  <p className="text-xs text-muted-foreground mt-1">IT Project Manager · Software Developer Enthusiast</p>
                   <div className="flex items-center justify-center gap-2 mt-3 rounded-full px-4 py-1.5 mx-auto w-fit"
                     style={{ background: "hsl(158 80% 42% / 0.09)", border: "1px solid hsl(158 80% 42% / 0.22)" }}>
                     <span className="w-2 h-2 rounded-full flex-shrink-0"

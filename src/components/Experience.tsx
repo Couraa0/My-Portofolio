@@ -2,17 +2,17 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import AnimatedSection from "./AnimatedSection";
 import { experiences } from "@/data/experience";
-import { ChevronDown, MapPin, Calendar, Briefcase, Award } from "lucide-react";
+import { ChevronDown, MapPin, Calendar, Briefcase, Rocket, Users, Bot, FlaskConical } from "lucide-react";
 
 const palette = [
-  { dot: "hsl(250 84% 60%)", shadow: "hsl(250 84% 60% / 0.25)", tag: "hsl(250 84% 50%)", tagBg: "hsl(250 84% 60% / 0.09)", border: "hsl(250 84% 60% / 0.18)", glow: "hsl(250 84% 60% / 0.12)", icon: "hsl(250 84% 55%)" },
   { dot: "hsl(196 100% 42%)", shadow: "hsl(196 100% 42% / 0.25)", tag: "hsl(196 100% 30%)", tagBg: "hsl(196 100% 42% / 0.09)", border: "hsl(196 100% 42% / 0.18)", glow: "hsl(196 100% 42% / 0.12)", icon: "hsl(196 100% 36%)" },
+  { dot: "hsl(250 84% 60%)", shadow: "hsl(250 84% 60% / 0.25)", tag: "hsl(250 84% 50%)", tagBg: "hsl(250 84% 60% / 0.09)", border: "hsl(250 84% 60% / 0.18)", glow: "hsl(250 84% 60% / 0.12)", icon: "hsl(250 84% 55%)" },
   { dot: "hsl(344 85% 58%)", shadow: "hsl(344 85% 58% / 0.25)", tag: "hsl(344 85% 48%)", tagBg: "hsl(344 85% 58% / 0.09)", border: "hsl(344 85% 58% / 0.18)", glow: "hsl(344 85% 58% / 0.12)", icon: "hsl(344 85% 53%)" },
-  { dot: "hsl(158 72% 38%)", shadow: "hsl(158 72% 38% / 0.25)", tag: "hsl(158 72% 30%)", tagBg: "hsl(158 72% 38% / 0.09)", border: "hsl(158 72% 38% / 0.18)", glow: "hsl(158 72% 38% / 0.12)", icon: "hsl(158 72% 35%)" },
   { dot: "hsl(37 100% 50%)", shadow: "hsl(37 100% 50% / 0.25)", tag: "hsl(37 100% 36%)", tagBg: "hsl(37 100% 50% / 0.09)", border: "hsl(37 100% 50% / 0.18)", glow: "hsl(37 100% 50% / 0.12)", icon: "hsl(37 100% 40%)" },
+  { dot: "hsl(158 72% 38%)", shadow: "hsl(158 72% 38% / 0.25)", tag: "hsl(158 72% 30%)", tagBg: "hsl(158 72% 38% / 0.09)", border: "hsl(158 72% 38% / 0.18)", glow: "hsl(158 72% 38% / 0.12)", icon: "hsl(158 72% 35%)" },
 ];
 
-const roleIcons = [Briefcase, Award, Award, Award, Award];
+const roleIcons = [Briefcase, Rocket, Users, Bot, FlaskConical];
 
 const Experience = () => {
   const [activeId, setActiveId] = useState<number>(1);
@@ -20,6 +20,7 @@ const Experience = () => {
 
   const active = experiences.find((e) => e.id === activeId)!;
   const c = palette[(activeId - 1) % palette.length];
+  const ActiveIcon = roleIcons[(activeId - 1) % roleIcons.length];
 
   return (
     <section id="experience" className="py-28 relative overflow-hidden" style={{ background: "hsl(220 20% 97%)" }}>
@@ -106,19 +107,26 @@ const Experience = () => {
                     <Calendar size={12} /> {active.period}
                   </div>
                   <h3 className="font-heading text-3xl font-bold text-foreground tracking-tight">{active.company}</h3>
-                  <div className="flex items-center gap-2 text-muted-foreground font-medium">
-                    <MapPin size={14} className="text-violet-500" />
-                    <span>Location TBD</span>
-                    <span className="mx-1 opacity-30">•</span>
-                    <Briefcase size={14} className="text-violet-500" />
-                    <span>{active.role}</span>
+                  <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-muted-foreground font-medium">
+                    <div className="flex items-center gap-2">
+                      <MapPin size={14} className="text-violet-500" />
+                      <span>{active.location}</span>
+                    </div>
+                    <div className="hidden md:block w-1 h-1 rounded-full bg-border" />
+                    <div className="flex items-center gap-2">
+                      <ActiveIcon size={14} className="text-violet-500" />
+                      <span>{active.role}</span>
+                    </div>
                   </div>
                 </div>
-                <div className="w-20 h-20 rounded-3xl flex items-center justify-center flex-shrink-0 shadow-inner"
-                  style={{ background: `linear-gradient(135deg, ${c.tagBg}, white)` }}>
-                  <span className="font-heading font-black text-3xl" style={{ color: c.dot }}>
-                    {active.company.slice(0, 1).toUpperCase()}
-                  </span>
+                <div className="w-24 h-24 rounded-3xl flex items-center justify-center flex-shrink-0 bg-white shadow-xl shadow-black/5 border border-border p-2 overflow-hidden">
+                  {active.logo ? (
+                    <img src={active.logo} alt={active.company} className="w-full h-full object-contain" />
+                  ) : (
+                    <span className="font-heading font-black text-3xl" style={{ color: c.dot }}>
+                      {active.company.slice(0, 1).toUpperCase()}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -146,6 +154,7 @@ const Experience = () => {
         <div className="lg:hidden space-y-4 max-w-2xl mx-auto px-2">
           {experiences.map((exp, i) => {
             const cp = palette[i % palette.length];
+            const Icon = roleIcons[i % roleIcons.length];
             const isOpen = expandedId === exp.id;
             return (
               <div key={exp.id} className="rounded-3xl bg-white border shadow-sm"
@@ -160,13 +169,27 @@ const Experience = () => {
                   onClick={() => setExpandedId(isOpen ? null : exp.id)}
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 text-xl font-bold"
-                      style={{ background: cp.tagBg, color: cp.dot }}>
-                      {exp.company.slice(0, 1).toUpperCase()}
+                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 bg-white shadow-sm border border-border p-1 overflow-hidden">
+                      {exp.logo ? (
+                        <img src={exp.logo} alt={exp.company} className="w-full h-full object-contain" />
+                      ) : (
+                        <span className="font-heading font-bold" style={{ color: cp.dot }}>
+                          {exp.company.slice(0, 1).toUpperCase()}
+                        </span>
+                      )}
                     </div>
                     <div>
                       <h4 className="font-heading font-bold text-foreground text-lg">{exp.company}</h4>
-                      <p className="text-xs font-semibold text-muted-foreground tracking-wide uppercase">{exp.role}</p>
+                      <div className="flex flex-col gap-0.5 mt-0.5">
+                        <div className="flex items-center gap-1.5">
+                          <Icon size={10} className="text-muted-foreground" />
+                          <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">{exp.role}</p>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground/80">
+                          <MapPin size={10} />
+                          <span>{exp.location}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.3 }} className="text-muted-foreground flex-shrink-0">

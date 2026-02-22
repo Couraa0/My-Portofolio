@@ -17,16 +17,16 @@ const cards = [
   },
   {
     icon: <Briefcase size={20} />,
-    title: "IT Project Manager Intern @ Citiasia",
+    title: "IT Project Manager Intern @ Citiasia Internasional",
     sub: "2025",
     iconBg: "hsl(158 80% 42% / 0.1)", iconColor: "hsl(158 80% 35%)", border: "hsl(158 80% 42% / 0.18)",
   },
 ];
 
 const bars = [
-  { label: "Project Management", pct: 92, color: "hsl(250 84% 60%)", trail: "hsl(250 84% 60% / 0.12)" },
-  { label: "Web Development", pct: 82, color: "hsl(196 100% 47%)", trail: "hsl(196 100% 47% / 0.12)" },
-  { label: "Team Leadership", pct: 88, color: "hsl(158 80% 42%)", trail: "hsl(158 80% 42% / 0.12)" },
+  { label: "Project + Product Management", pct: 90, color: "hsl(250 84% 60%)", trail: "hsl(250 84% 60% / 0.12)" },
+  { label: "Web Development", pct: 85, color: "hsl(196 100% 47%)", trail: "hsl(196 100% 47% / 0.12)" },
+  { label: "Team Leadership", pct: 92, color: "hsl(158 80% 42%)", trail: "hsl(158 80% 42% / 0.12)" },
 ];
 
 const stats = [
@@ -118,21 +118,21 @@ const About = () => (
           <div className="space-y-5 text-muted-foreground leading-relaxed text-[15px]">
             <p>
               Saya adalah seorang{" "}
-              <span className="font-semibold" style={{ color: "hsl(250 84% 50%)" }}>IT Project Manager</span>{" "}
-              dan pengembang web yang sedang menempuh studi S1 Sistem Informasi di Universitas Singaperbangsa Karawang dengan IPK{" "}
+              <span className="font-semibold" style={{ color: "hsl(250 84% 50%)" }}>IT Project + Product Manager dan Software Developer Enthusiast</span>{" "}
+              yang sedang menempuh studi S1 Sistem Informasi di Universitas Singaperbangsa Karawang dengan IPK{" "}
               <span className="font-bold" style={{ color: "hsl(37 100% 45%)" }}>3,97</span>.
             </p>
             <p>
               Dengan pengalaman memimpin proyek berskala besar seperti{" "}
-              <span className="font-medium" style={{ color: "hsl(196 100% 36%)" }}>Smart Village Ecosystem</span>,{" "}
-              <span className="font-medium" style={{ color: "hsl(344 85% 50%)" }}>AI For All</span>, dan{" "}
-              <span className="font-medium" style={{ color: "hsl(158 80% 35%)" }}>City Super App</span>,{" "}
+              <span className="font-medium">Smart Village Ecosystem</span>,{" "}
+              <span className="font-medium">AI For All</span>, dan{" "}
+              <span className="font-medium">City Super App</span>,{" "}
               saya terbiasa mengelola tim lintas fungsi menggunakan metodologi Agile Scrum dan Waterfall.
             </p>
             <p>
               Selain manajemen proyek, saya juga aktif sebagai{" "}
               <span className="font-semibold" style={{ color: "hsl(250 84% 50%)" }}>Co-Founder Tixchain.id</span>{" "}
-              — sebuah platform tiket digital yang saya bangun dari nol.
+              — sebuah platform tiket digital yang saya bangun bersama tim dari tahap ide hingga operasional.
             </p>
 
             {/* Skill bars */}

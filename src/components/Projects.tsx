@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ExternalLink, Github, Star, FileText } from "lucide-react";
+import { ExternalLink, Github, Star, FileText, X, Maximize2 } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
 import { projects, type Project } from "@/data/projects";
 
@@ -26,7 +26,12 @@ const paletteMap = {
 
 const Projects = () => {
   const [filter, setFilter] = useState<Filter>("Professional");
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
   const filtered = filter === "All" ? projects : projects.filter((p) => p.category === filter);
+
+  const openModal = useCallback((img: string) => setSelectedImage(img), []);
+  const closeModal = useCallback(() => setSelectedImage(null), []);
 
   return (
     <section id="projects" className="py-28 bg-white relative overflow-hidden">
@@ -72,16 +77,55 @@ const Projects = () => {
             className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((project, i) => {
               const palette = project.color ? paletteMap[project.color] : cardPalette[i % cardPalette.length];
-              return <ProjectCard key={project.id} project={project} index={i} palette={palette} />;
+              return <ProjectCard key={project.id} project={project} index={i} palette={palette} onImageClick={openModal} />;
             })}
           </motion.div>
         </AnimatePresence>
       </div>
+
+      {/* Image Modal Lightbox */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeModal}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 cursor-zoom-out"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative max-w-5xl w-full max-h-[90vh] flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={closeModal}
+                className="absolute -top-12 right-0 text-white/70 hover:text-white transition-colors bg-white/10 p-2 rounded-full backdrop-blur-md"
+              >
+                <X size={24} />
+              </button>
+              <img
+                src={selectedImage}
+                alt="Project detail"
+                className="w-full h-full object-contain rounded-xl shadow-2xl border border-white/10"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
 
-const ProjectCard = ({ project, index, palette }: { project: Project; index: number; palette: typeof cardPalette[0] }) => (
+const ProjectCard = ({ project, index, palette, onImageClick }: {
+  project: Project;
+  index: number;
+  palette: typeof cardPalette[0];
+  onImageClick: (img: string) => void;
+}) => (
   <motion.div
     initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.4, delay: index * 0.07 }}
@@ -92,15 +136,23 @@ const ProjectCard = ({ project, index, palette }: { project: Project; index: num
     onMouseLeave={e => (e.currentTarget as HTMLElement).style.boxShadow = `0 2px 12px hsl(220 20% 70% / 0.12)`}>
 
     {/* Header (Image or Gradient) */}
-    <div className="h-48 relative overflow-hidden"
+    <div className="aspect-video relative overflow-hidden"
       style={{ background: project.image ? "none" : `linear-gradient(135deg, ${palette.fromLight}, hsl(220 20% 97%))` }}>
 
       {project.image ? (
-        <img
-          src={project.image}
-          alt={project.title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-        />
+        <div className="relative w-full h-full cursor-zoom-in" onClick={() => onImageClick(project.image!)}>
+          <img
+            src={project.image}
+            alt={project.title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            style={{ imageRendering: "auto", transform: "perspective(1px) translateZ(0)", backfaceVisibility: "hidden" }}
+          />
+          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <div className="bg-white/20 backdrop-blur-md p-3 rounded-full border border-white/30 text-white scale-75 group-hover:scale-100 transition-transform">
+              <Maximize2 size={20} />
+            </div>
+          </div>
+        </div>
       ) : (
         <div className="flex items-center justify-center h-full relative">
           <div className="absolute -right-8 -top-8 w-28 h-28 rounded-full opacity-40"
@@ -129,7 +181,7 @@ const ProjectCard = ({ project, index, palette }: { project: Project; index: num
       </div>
 
       <h3 className="font-heading font-bold text-foreground">{project.title}</h3>
-      <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">{project.description}</p>
+      <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">{project.description}</p>
 
       <div className="flex flex-wrap gap-1.5">
         {project.tech.map((t) => (
