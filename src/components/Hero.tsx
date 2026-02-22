@@ -178,7 +178,7 @@ const Hero = () => {
                   style={{ background: "linear-gradient(to top, white 70%, transparent)" }} />
                 <div className="relative z-10">
                   <p className="font-heading font-bold text-foreground text-lg leading-tight">Muhammad Rakha S.</p>
-                  <p className="text-xs text-muted-foreground mt-1">IT Project Manager · Software Developer Enthusiast</p>
+                  <p className="text-xs text-muted-foreground mt-1">IT Project + Product Manager · Software Developer Enthusiast</p>
                   <div className="flex items-center justify-center gap-2 mt-3 rounded-full px-4 py-1.5 mx-auto w-fit"
                     style={{ background: "hsl(158 80% 42% / 0.09)", border: "1px solid hsl(158 80% 42% / 0.22)" }}>
                     <span className="w-2 h-2 rounded-full flex-shrink-0"
