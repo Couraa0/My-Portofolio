@@ -9,11 +9,12 @@ const fadeUp: Variants = {
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-20 bg-white">
+    <section className="relative min-h-screen flex items-center overflow-hidden pt-20 pb-10 sm:pb-0 bg-white">
       {/* Decorative background elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden bg-white">
         {/* Graph Paper Grid */}
-        <div className="absolute inset-0 opacity-[0.8] bg-graph-paper pointer-events-none" />
+        <div className="absolute inset-0 opacity-[0.8] bg-graph-paper pointer-events-none"
+          style={{ maskImage: "linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)", WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)" }} />
 
         {/* Soft Background Tint */}
         <div className="hidden md:block absolute inset-0"
@@ -53,10 +54,10 @@ const Hero = () => {
 
       </div>
 
-      <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-8 lg:gap-16 items-center relative z-10">
 
         {/* ── Left — text ── */}
-        <motion.div variants={container} initial="hidden" animate="show" className="space-y-8">
+        <motion.div variants={container} initial="hidden" animate="show" className="space-y-6 sm:space-y-8 text-center lg:text-left">
 
           <motion.div variants={fadeUp}>
             <span className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs font-semibold border"
@@ -75,27 +76,27 @@ const Hero = () => {
           </motion.div>
 
           <motion.div variants={fadeUp}>
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3">
               {[
-                { label: "IT Project + Product Manager", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.25)", color: "hsl(250 84% 45%)" },
-                { label: "Software Developer Enthusiast", bg: "hsl(196 100% 47% / 0.08)", border: "hsl(196 100% 47% / 0.25)", color: "hsl(196 100% 36%)" },
+                { label: "IT Project + Product Manager", bg: "hsl(250 84% 60% / 0.12)", border: "hsl(250 84% 60% / 0.25)", color: "hsl(250 84% 45%)", solidBg: "hsl(247 60% 97%)" },
+                { label: "Software Developer Enthusiast", bg: "hsl(196 100% 47% / 0.12)", border: "hsl(196 100% 47% / 0.25)", color: "hsl(196 100% 36%)", solidBg: "hsl(196 50% 96%)" },
               ].map((r, i) => (
                 <span key={i} className="rounded-full px-2.5 py-1 sm:px-3 sm:py-1.5 text-[10px] sm:text-xs font-semibold"
-                  style={{ background: r.bg, border: `1px solid ${r.border}`, color: r.color }}>
+                  style={{ background: r.solidBg, border: `1px solid ${r.border}`, color: r.color }}>
                   {r.label}
                 </span>
               ))}
             </div>
           </motion.div>
 
-          <motion.p variants={fadeUp} className="text-base text-muted-foreground max-w-lg leading-relaxed">
+          <motion.p variants={fadeUp} className="text-sm sm:text-base text-muted-foreground max-w-lg mx-auto lg:mx-0 leading-relaxed">
             Mahasiswa Sistem Informasi dengan IPK{" "}
             <span className="font-semibold" style={{ color: "hsl(37 100% 45%)" }}>3,97</span>{" "}yang passionate dalam memimpin proyek teknologi — dari{" "}
             <span className="font-medium" style={{ color: "hsl(196 100% 36%)" }}>AI solutions</span> hingga{" "}
             <span className="font-medium" style={{ color: "hsl(250 84% 50%)" }}>Smart Village Ecosystem</span>.
           </motion.p>
 
-          <motion.div variants={fadeUp} className="flex flex-wrap gap-4 pt-2 relative">
+          <motion.div variants={fadeUp} className="flex flex-wrap justify-center lg:justify-start gap-4 pt-2 relative">
             <button
               onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
               className="group rounded-full px-5 py-3 sm:px-7 sm:py-3.5 text-[13px] sm:text-sm font-semibold text-white transition-all duration-300 hover:scale-105 shadow-violet"
@@ -130,7 +131,7 @@ const Hero = () => {
             </div>
           </motion.div>
 
-          <motion.div variants={fadeUp} className="flex items-center gap-4 pt-2">
+          <motion.div variants={fadeUp} className="flex items-center justify-center lg:justify-start gap-4 pt-2">
             {[
               { href: "https://github.com/Couraa0", icon: <Github size={16} />, color: "hsl(250 84% 55%)", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.2)" },
               { href: "https://www.linkedin.com/in/rakha05/", icon: <Linkedin size={18} />, color: "hsl(196 100% 36%)" },
@@ -274,11 +275,13 @@ const Hero = () => {
       </div >
 
       {/* Scroll indicator */}
-      < motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 2, repeat: Infinity }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-muted-foreground" >
-        <span className="text-[10px] font-medium tracking-widest uppercase">Scroll</span>
-        <ArrowDown size={14} color="hsla(250, 87%, 66%, 1.00)" />
-      </motion.div >
+      <div className="absolute bottom-10 left-0 right-0 hidden sm:flex justify-center pointer-events-none">
+        <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 2, repeat: Infinity }}
+          className="flex flex-col items-center gap-1.5 text-muted-foreground">
+          <span className="text-[10px] font-medium tracking-widest uppercase">Scroll</span>
+          <ArrowDown size={14} color="hsla(250, 87%, 66%, 1.00)" />
+        </motion.div>
+      </div>
     </section >
   );
 };

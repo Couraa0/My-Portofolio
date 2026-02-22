@@ -16,9 +16,25 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
+    const ratioMap = new Map<string, number>();
+
     const observer = new IntersectionObserver(
-      (entries) => { entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id); }); },
-      { threshold: 0.4 }
+      (entries) => {
+        entries.forEach(e => {
+          ratioMap.set(e.target.id, e.isIntersecting ? e.intersectionRatio : 0);
+        });
+        // Pick the section with the highest intersection ratio
+        let best = "";
+        let bestRatio = 0;
+        ratioMap.forEach((ratio, id) => {
+          if (ratio > bestRatio) {
+            bestRatio = ratio;
+            best = id;
+          }
+        });
+        if (best) setActiveSection(best);
+      },
+      { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6], rootMargin: "-80px 0px -20% 0px" }
     );
     navLinks.forEach(link => {
       const el = document.getElementById(link.toLowerCase());
