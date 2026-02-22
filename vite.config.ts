@@ -11,7 +11,6 @@ export default defineConfig({
       overlay: false,
     },
     headers: {
-      // Allow eval only in dev (HMR needs it); production won't use this header
       "Content-Security-Policy":
         "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://api.emailjs.com https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.emailjs.com https://vitals.vercel-insights.com; img-src 'self' data: blob: https://cdn.simpleicons.org https:;",
     },
@@ -24,7 +23,7 @@ export default defineConfig({
   },
   build: {
     minify: "esbuild",
-    sourcemap: false,   // Tidak pakai source map di production → tidak perlu eval
+    sourcemap: false,
   },
   esbuild: {
     drop: ["console", "debugger"],
