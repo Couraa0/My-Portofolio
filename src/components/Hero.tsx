@@ -45,7 +45,7 @@ const Hero = () => {
           <motion.div variants={fadeUp}>
             <div className="flex flex-wrap items-center gap-3">
               {[
-                { label: "IT Project Manager", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.25)", color: "hsl(250 84% 45%)" },
+                { label: "IT Project + Product Manager", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.25)", color: "hsl(250 84% 45%)" },
                 { label: "Software Developer Enthusiast", bg: "hsl(196 100% 47% / 0.08)", border: "hsl(196 100% 47% / 0.25)", color: "hsl(196 100% 36%)" },
               ].map((r, i) => (
                 <span key={i} className="rounded-full px-3 py-1.5 text-xs font-semibold"
