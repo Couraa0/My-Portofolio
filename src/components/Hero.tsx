@@ -27,7 +27,7 @@ const Hero = () => {
         <motion.div variants={container} initial="hidden" animate="show" className="space-y-8">
 
           <motion.div variants={fadeUp}>
-            <span className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold border"
+            <span className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs font-semibold border"
               style={{ background: "hsl(250 84% 60% / 0.08)", borderColor: "hsl(250 84% 60% / 0.25)", color: "hsl(250 84% 50%)" }}>
               <Sparkles size={12} />
               Available for Work
@@ -48,7 +48,7 @@ const Hero = () => {
                 { label: "IT Project + Product Manager", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.25)", color: "hsl(250 84% 45%)" },
                 { label: "Software Developer Enthusiast", bg: "hsl(196 100% 47% / 0.08)", border: "hsl(196 100% 47% / 0.25)", color: "hsl(196 100% 36%)" },
               ].map((r, i) => (
-                <span key={i} className="rounded-full px-3 py-1.5 text-xs font-semibold"
+                <span key={i} className="rounded-full px-2.5 py-1 sm:px-3 sm:py-1.5 text-[10px] sm:text-xs font-semibold"
                   style={{ background: r.bg, border: `1px solid ${r.border}`, color: r.color }}>
                   {r.label}
                 </span>
@@ -66,12 +66,12 @@ const Hero = () => {
           <motion.div variants={fadeUp} className="flex flex-wrap gap-4 pt-2">
             <button
               onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
-              className="group rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 shadow-violet"
+              className="group rounded-full px-5 py-3 sm:px-7 sm:py-3.5 text-[13px] sm:text-sm font-semibold text-white transition-all duration-300 hover:scale-105 shadow-violet"
               style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))" }}>
               View My Projects
             </button>
             <a href="#contact"
-              className="rounded-full border px-7 py-3.5 text-sm font-semibold transition-all duration-300 hover:scale-105"
+              className="rounded-full border px-5 py-3 sm:px-7 sm:py-3.5 text-[13px] sm:text-sm font-semibold transition-all duration-300 hover:scale-105"
               style={{ borderColor: "hsl(220 20% 88%)", color: "hsl(222 47% 20%)" }}
               onMouseEnter={e => {
                 (e.currentTarget as HTMLElement).style.borderColor = "hsl(250 84% 60% / 0.4)";

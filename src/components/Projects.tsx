@@ -51,10 +51,10 @@ const Projects = () => {
 
         {/* Filter tabs */}
         <AnimatedSection delay={0.1}>
-          <div className="flex justify-center gap-2 mb-14">
+          <div className="flex justify-center flex-wrap gap-1.5 sm:gap-2 mb-10 sm:mb-14">
             {(["Professional", "Personal", "All"] as Filter[]).map((f) => (
               <button key={f} onClick={() => setFilter(f)}
-                className="rounded-full px-6 py-2.5 text-sm font-semibold transition-all duration-300 hover:scale-105"
+                className="rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-[11px] sm:text-sm font-semibold transition-all duration-300 hover:scale-105"
                 style={filter === f ? {
                   background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))",
                   color: "white",

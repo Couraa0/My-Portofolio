@@ -44,7 +44,7 @@ const About = () => (
     <div className="container mx-auto px-6">
       <AnimatedSection>
         <div className="text-center mb-20">
-          <span className="inline-block rounded-full px-4 py-1.5 text-xs font-semibold mb-4"
+          <span className="inline-block rounded-full px-3 py-1 sm:px-4 sm:py-1.5 text-[10px] sm:text-xs font-semibold mb-4"
             style={{ background: "hsl(250 84% 60% / 0.08)", border: "1px solid hsl(250 84% 60% / 0.2)", color: "hsl(250 84% 50%)" }}>
             Who I Am
           </span>

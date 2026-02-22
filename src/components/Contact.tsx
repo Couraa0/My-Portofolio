@@ -118,7 +118,7 @@ const Contact = () => {
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <AnimatedSection>
           <div className="text-center mb-10 sm:mb-16">
-            <span className="inline-block rounded-full px-4 py-1.5 text-xs font-semibold mb-4"
+            <span className="inline-block rounded-full px-3 py-1 sm:px-4 sm:py-1.5 text-[10px] sm:text-xs font-semibold mb-4"
               style={{ background: "hsl(250 84% 60% / 0.08)", border: "1px solid hsl(250 84% 60% / 0.2)", color: "hsl(250 84% 50%)" }}>
               Get In Touch
             </span>

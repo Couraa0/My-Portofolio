@@ -125,7 +125,7 @@ const Skills = () => {
       <div className="container mx-auto px-6 relative z-10">
         <AnimatedSection>
           <div className="text-center mb-20">
-            <span className="inline-block rounded-full px-4 py-1.5 text-xs font-semibold mb-4 border"
+            <span className="inline-block rounded-full px-3 py-1 sm:px-4 sm:py-1.5 text-[10px] sm:text-xs font-semibold mb-4 border"
               style={{ background: "hsl(var(--violet) / 0.08)", borderColor: "hsl(var(--violet) / 0.2)", color: "hsl(var(--violet))" }}>
               Expertise
             </span>
