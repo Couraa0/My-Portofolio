@@ -115,11 +115,25 @@ const Skills = () => {
         style={{ background: "linear-gradient(90deg, transparent, hsl(250 84% 60% / 0.2), transparent)" }} />
       {/* Background decoration */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full opacity-[0.03]"
-          style={{ background: "radial-gradient(circle, hsl(250 84% 60%), transparent 70%)" }} />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full opacity-[0.03]"
-          style={{ background: "radial-gradient(circle, hsl(196 100% 47%), transparent 70%)" }} />
-        <div className="absolute inset-0 opacity-[0.3] bg-grid pointer-events-none" />
+        {/* Floating Doodles - Positioned near Title */}
+        <motion.div
+          animate={{ x: [-10, 10, -10], rotate: [-5, 5, -5] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          className="hidden md:block absolute top-[110px] left-[15%] opacity-[0.4] text-orange-500 z-0">
+          <svg width="45" height="45" viewBox="0 0 24 24" fill="hsl(37 100% 50%)" fillOpacity={0.15} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="16 18 22 12 16 6" />
+            <polyline points="8 6 2 12 8 18" />
+          </svg>
+        </motion.div>
+
+        <motion.div
+          animate={{ scale: [1, 1.1, 1], rotate: [0, 10, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          className="hidden md:block absolute top-[110px] right-[15%] opacity-[0.4] text-orange-500 z-0">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="hsl(37 100% 50%)" fillOpacity={0.15} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M11.767 19.089c4.924.868 6.14-6.025 1.216-6.894m-1.216 6.894c-4.924.868-6.14-6.025-1.216-6.894m1.216 6.894l-1.216-6.894m1.216 6.894.135 2.1c.063.985.922 1.706 1.918 1.61L21 21.84M1.5 20.35l7.9.643c1.11.09 2.1.84 2.37 1.91l.135 2.1m-10.405-4.653c.125.688.163 1.393.111 2.1m.036-7.394a10.02 10.02 0 0 0-2.112.564M6.54 6.777C4.65 4.3 9.49 1.5 11.38 3.98l.62 1.02m0 0 .62-1.02C14.51 1.5 19.35 4.3 17.46 6.777M12 5v2" />
+          </svg>
+        </motion.div>
       </div>
 
       <div className="container mx-auto px-6 relative z-10">

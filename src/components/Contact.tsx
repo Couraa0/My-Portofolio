@@ -126,7 +126,26 @@ const Contact = () => {
 
   return (
     <section id="contact" className="py-16 sm:py-24 bg-white relative overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.3] bg-grid pointer-events-none" />
+
+      {/* Floating Doodles - Positioned near Title */}
+      <motion.div
+        animate={{ y: [0, -10, 0], x: [0, 5, 0] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+        className="hidden md:block absolute top-20 left-[15%] opacity-[0.4] text-purple-500 z-0">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="hsl(250 84% 60%)" fillOpacity={0.15} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect width="20" height="16" x="2" y="4" rx="2" />
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+        </svg>
+      </motion.div>
+
+      <motion.div
+        animate={{ rotate: [-5, 5, -5], scale: [1, 1.05, 1] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        className="hidden md:block absolute top-20 right-[15%] opacity-[0.4] text-orange-500 z-0">
+        <svg width="35" height="35" viewBox="0 0 24 24" fill="hsl(37 100% 50%)" fillOpacity={0.15} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+        </svg>
+      </motion.div>
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xl h-px"
         style={{ background: "linear-gradient(90deg, transparent, hsl(250 84% 60% / 0.2), transparent)" }} />
 

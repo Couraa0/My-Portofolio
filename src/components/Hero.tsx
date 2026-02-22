@@ -10,15 +10,47 @@ const fadeUp: Variants = {
 const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden pt-20 bg-white">
-      {/* Decorative blobs */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full opacity-[0.12]"
-          style={{ background: "radial-gradient(circle, hsl(250 84% 60%), transparent 70%)" }} />
-        <div className="absolute -bottom-32 -left-32 w-[450px] h-[450px] rounded-full opacity-[0.1]"
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden bg-white">
+        {/* Graph Paper Grid */}
+        <div className="absolute inset-0 opacity-[0.8] bg-graph-paper pointer-events-none" />
+
+        {/* Soft Background Tint */}
+        <div className="hidden md:block absolute inset-0"
+          style={{ background: "radial-gradient(circle at center, transparent 30%, hsl(215 100% 97% / 0.5) 100%)" }} />
+
+        {/* Decorative blobs */}
+        <div className="hidden md:block absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full opacity-[0.2] blur-[100px]"
           style={{ background: "radial-gradient(circle, hsl(196 100% 47%), transparent 70%)" }} />
-        <div className="absolute top-1/2 left-1/3 w-[250px] h-[250px] rounded-full opacity-[0.07]"
-          style={{ background: "radial-gradient(circle, hsl(344 85% 60%), transparent 70%)" }} />
-        <div className="absolute inset-0 opacity-[0.4] bg-grid pointer-events-none" />
+        <div className="hidden md:block absolute top-1/2 left-1/3 w-[400px] h-[400px] rounded-full opacity-[0.15] blur-[80px]"
+          style={{ background: "radial-gradient(circle, hsl(215 100% 60%), transparent 70%)" }} />
+
+        {/* ── Floating Doodles ── */}
+
+        {/* Heart */}
+        <motion.div
+          animate={{ y: [0, -10, 0], rotate: [0, 10, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          className="hidden md:block absolute top-[15%] left-[40%] opacity-[0.4] text-rose-500 filter drop-shadow-sm z-0">
+          <svg width="45" height="45" viewBox="0 0 24 24" fill="hsl(344 85% 60%)">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+          </svg>
+        </motion.div>
+
+        {/* Rocket - Positioned between text and card */}
+        <motion.div
+          animate={{ y: [0, 20, 0], x: [0, 10, 0], rotate: [20, 30, 20] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          className="hidden lg:block absolute top-[45%] left-1/2 -translate-x-[280px] opacity-[0.4] text-blue-500 z-0">
+          <svg width="65" height="65" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+            <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+            <path d="M9 12H4s.55-3.03 2-5c1.62-2.2 5-3 5-3" />
+            <path d="M12 15v5c1.97 1.45 5 2 5 2s-.8-3.38-3-5" />
+            <circle cx="12" cy="12" r="2" fill="currentColor" />
+          </svg>
+        </motion.div>
+
       </div>
 
       <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center relative z-10">
@@ -63,26 +95,39 @@ const Hero = () => {
             <span className="font-medium" style={{ color: "hsl(250 84% 50%)" }}>Smart Village Ecosystem</span>.
           </motion.p>
 
-          <motion.div variants={fadeUp} className="flex flex-wrap gap-4 pt-2">
+          <motion.div variants={fadeUp} className="flex flex-wrap gap-4 pt-2 relative">
             <button
               onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
               className="group rounded-full px-5 py-3 sm:px-7 sm:py-3.5 text-[13px] sm:text-sm font-semibold text-white transition-all duration-300 hover:scale-105 shadow-violet"
               style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))" }}>
               View My Projects
             </button>
-            <a href="#contact"
-              className="rounded-full border px-5 py-3 sm:px-7 sm:py-3.5 text-[13px] sm:text-sm font-semibold transition-all duration-300 hover:scale-105"
-              style={{ borderColor: "hsl(220 20% 88%)", color: "hsl(222 47% 20%)" }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLElement).style.borderColor = "hsl(250 84% 60% / 0.4)";
-                (e.currentTarget as HTMLElement).style.color = "hsl(250 84% 50%)";
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLElement).style.borderColor = "hsl(220 20% 88%)";
-                (e.currentTarget as HTMLElement).style.color = "hsl(222 47% 20%)";
-              }}>
-              Contact Me
-            </a>
+            <div className="relative inline-flex items-center">
+              <a href="#contact"
+                className="rounded-full border px-5 py-3 sm:px-7 sm:py-3.5 text-[13px] sm:text-sm font-semibold transition-all duration-300 hover:scale-105"
+                style={{ borderColor: "hsl(220 20% 88%)", color: "hsl(222 47% 20%)" }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLElement).style.borderColor = "hsl(250 84% 60% / 0.4)";
+                  (e.currentTarget as HTMLElement).style.color = "hsl(250 84% 50%)";
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLElement).style.borderColor = "hsl(220 20% 88%)";
+                  (e.currentTarget as HTMLElement).style.color = "hsl(222 47% 20%)";
+                }}>
+                Contact Me
+              </a>
+
+              {/* Megaphone next to button */}
+              <motion.div
+                animate={{ x: [0, 5, 0], rotate: [-10, 5, -10] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="hidden sm:block absolute -right-12 top-0 text-orange-500 opacity-[0.5]">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m3 11 18-5v12L3 14v-3z" />
+                  <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+                </svg>
+              </motion.div>
+            </div>
           </motion.div>
 
           <motion.div variants={fadeUp} className="flex items-center gap-4 pt-2">
@@ -122,11 +167,6 @@ const Hero = () => {
             <div className="absolute inset-x-8 top-24 bottom-0 rounded-[2.5rem] pointer-events-none"
               style={{ background: "radial-gradient(ellipse at 50% 40%, hsl(250 84% 60% / 0.12), transparent 70%)", filter: "blur(24px)" }} />
 
-            {/*
-             * THE CARD — background of the photo.
-             * overflow: visible allows img to break out at the top.
-             * position: relative so the photo's absolute positioning is relative to this card.
-             */}
             <div
               className="relative rounded-[2.5rem]"
               style={{
@@ -143,12 +183,6 @@ const Hero = () => {
                 style={{ background: "linear-gradient(90deg, hsl(250 84% 60%), hsl(196 100% 47%), hsl(344 85% 60%), hsl(37 100% 50%))" }} />
 
               {/* ── Photo ── overflows top, bottom anchored inside card */}
-              {/*
-               * Photo is 500px tall, card is ~420px.
-               * bottom: 90 → photo bottom 90px from card bottom (where name sits)
-               * top of photo: 90 - 500 = -410px from card bottom  →  = extends 420-90-500 = -170px ABOVE card top
-               * So ~170px of head/shoulder sticks above the card.
-               */}
               <div
                 className="absolute left-1/2 -translate-x-1/2 z-10 pointer-events-none"
                 style={{ bottom: 112, width: 320, height: 520 }}>
@@ -237,15 +271,15 @@ const Hero = () => {
             </motion.div>
           </div>
         </motion.div>
-      </div>
+      </div >
 
       {/* Scroll indicator */}
-      <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 2, repeat: Infinity }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-muted-foreground">
+      < motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 2, repeat: Infinity }}
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-muted-foreground" >
         <span className="text-[10px] font-medium tracking-widest uppercase">Scroll</span>
         <ArrowDown size={14} color="hsla(250, 87%, 66%, 1.00)" />
-      </motion.div>
-    </section>
+      </motion.div >
+    </section >
   );
 };
 

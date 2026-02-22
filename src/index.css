@@ -178,6 +178,13 @@
     background-size: 32px 32px;
   }
 
+  .bg-graph-paper {
+    background-size: 40px 40px;
+    background-image: 
+      linear-gradient(to right, hsl(215 100% 90%) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(215 100% 90%) 1px, transparent 1px);
+  }
+
   /* Marquee */
   .marquee-wrapper {
     overflow: hidden;

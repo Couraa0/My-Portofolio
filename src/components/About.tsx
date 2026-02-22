@@ -39,7 +39,28 @@ const About = () => (
   <section id="about" className="py-28 bg-white relative overflow-hidden">
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-px"
       style={{ background: "linear-gradient(90deg, transparent, hsl(250 84% 60% / 0.2), transparent)" }} />
-    <div className="absolute inset-0 opacity-[0.3] bg-grid pointer-events-none" />
+    {/* Floating Doodles - Positioned near Title */}
+    <motion.div
+      animate={{ y: [0, -10, 0] }}
+      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+      className="hidden md:block absolute top-28 left-[12%] opacity-[0.4] text-blue-500 z-0">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="hsl(196 100% 47%)" fillOpacity={0.15} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m14 2 8 8" />
+        <path d="m6 10-4 4v4h4l4-4" />
+        <path d="M9 7c1 0 2 1 3 3" />
+      </svg>
+    </motion.div>
+
+    <motion.div
+      animate={{ rotate: [-5, 5, -5] }}
+      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+      className="hidden md:block absolute top-28 right-[12%] opacity-[0.4] text-orange-500 z-0">
+      <svg width="45" height="45" viewBox="0 0 24 24" fill="hsl(37 100% 50%)" fillOpacity={0.15} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5" />
+        <path d="M9 18h6" />
+        <path d="M10 22h4" />
+      </svg>
+    </motion.div>
 
     <div className="container mx-auto px-6">
       <AnimatedSection>

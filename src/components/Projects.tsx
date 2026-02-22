@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ExternalLink, Github, Star, FileText, X, Maximize2 } from "lucide-react";
+import { ExternalLink, Github, Star, FileText, X, Maximize2, Briefcase } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
 import { projects, type Project } from "@/data/projects";
 
@@ -35,7 +35,23 @@ const Projects = () => {
 
   return (
     <section id="projects" className="py-28 bg-white relative overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.3] bg-grid pointer-events-none" />
+
+      <motion.div
+        animate={{ scale: [1, 1.15, 1], rotate: [0, 15, 0] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+        className="hidden md:block absolute top-24 right-[12%] opacity-[0.4] text-orange-500 z-0">
+        <div className="flex items-center justify-center p-2 rounded-xl bg-orange-500/5 border border-orange-500/10">
+          <Star size={45} fill="currentColor" />
+        </div>
+      </motion.div>
+
+      <motion.div
+        animate={{ y: [0, -10, 0], rotate: [-10, 10, -10] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        className="hidden md:block absolute top-24 left-[15%] opacity-[0.4] text-red-500 z-0">
+        <Briefcase size={40} />
+      </motion.div>
+
       <div className="container mx-auto px-6 relative z-10">
         <AnimatedSection>
           <div className="text-center mb-16">

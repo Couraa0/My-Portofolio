@@ -23,14 +23,27 @@ const Experience = () => {
   const ActiveIcon = roleIcons[(activeId - 1) % roleIcons.length];
 
   return (
-    <section id="experience" className="py-28 relative overflow-hidden" style={{ background: "hsl(220 20% 97%)" }}>
+    <section id="experience" className="py-28 relative overflow-hidden bg-white">
       {/* Decorative top/bottom lines */}
       <div className="absolute top-0 left-0 right-0 h-px"
         style={{ background: "linear-gradient(90deg, transparent, hsl(220 20% 86%), transparent)" }} />
       <div className="absolute bottom-0 left-0 right-0 h-px"
         style={{ background: "linear-gradient(90deg, transparent, hsl(220 20% 86%), transparent)" }} />
 
-      <div className="absolute inset-0 opacity-[0.3] bg-grid pointer-events-none" />
+      {/* Floating Doodles - Positioned near Title */}
+      <motion.div
+        animate={{ y: [0, -10, 0], rotate: [-10, 10, -10] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        className="hidden md:block absolute top-24 left-[15%] opacity-[0.4] text-blue-500 z-0">
+        <Briefcase size={40} />
+      </motion.div>
+
+      <motion.div
+        animate={{ y: [0, -15, 0], rotate: [0, 10, 0] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        className="hidden md:block absolute top-24 right-[15%] opacity-[0.8] text-green-200 z-0">
+        <Rocket size={45} fill="currentColor" fillOpacity={0.2} strokeWidth={2.5} />
+      </motion.div>
 
       {/* Subtle background blob */}
       <div className="absolute top-20 right-0 w-80 h-80 rounded-full pointer-events-none opacity-[0.06]"
