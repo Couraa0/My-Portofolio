@@ -60,7 +60,7 @@ const Hero = () => {
             Mahasiswa Sistem Informasi dengan IPK{" "}
             <span className="font-semibold" style={{ color: "hsl(37 100% 45%)" }}>3,97</span>{" "}yang passionate dalam memimpin proyek teknologi — dari{" "}
             <span className="font-medium" style={{ color: "hsl(196 100% 36%)" }}>AI solutions</span> hingga{" "}
-            <span className="font-medium" style={{ color: "hsl(250 84% 50%)" }}>Smart City ecosystem</span>.
+            <span className="font-medium" style={{ color: "hsl(250 84% 50%)" }}>Smart Village Ecosystem</span>.
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex flex-wrap gap-4 pt-2">
