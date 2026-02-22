@@ -1,7 +1,13 @@
 const noop = () => { };
 
 // Silencing specific annoying logs (e.g., from browser extensions like MetaMask)
-const silencedMessages = ["SES Removing unpermitted intrinsics"];
+const silencedMessages = [
+    "SES Removing unpermitted intrinsics",
+    "violates the following Content Security Policy directive",
+    "requires a `DialogTitle`",
+    "Missing `Description` or `aria-describedby`",
+    "Default export is deprecated"
+];
 
 const wrapConsole = (method: keyof Console) => {
     const original = console[method] as (...args: any[]) => void;
