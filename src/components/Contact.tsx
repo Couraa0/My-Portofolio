@@ -57,17 +57,32 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 1️⃣ Honeypot check — bot mengisi field tersembunyi
+    // 1️⃣ Validation check — pastikan semua field terisi
+    if (!form.name.trim() || !form.email.trim() || !form.subject.trim() || !form.message.trim()) {
+      setStatus("error");
+      setErrorMsg("Semua bidang (Nama, Email, Subjek, Pesan) wajib diisi.");
+      return;
+    }
+
+    // 1.1️⃣ Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email.trim())) {
+      setStatus("error");
+      setErrorMsg("Format email tidak valid (contoh: nama@gmail.com).");
+      return;
+    }
+
+    // 2️⃣ Honeypot check — bot mengisi field tersembunyi
     if (honeypot.trim() !== "") return;
 
-    // 2️⃣ Minimum time check — form diisi terlalu cepat → bot
+    // 3️⃣ Minimum time check — form diisi terlalu cepat → bot
     if (Date.now() - formOpenedAt.current < MIN_FILL_MS) {
       setStatus("error");
       setErrorMsg("Mohon isi form dengan perlahan.");
       return;
     }
 
-    // 3️⃣ Rate limit check
+    // 4️⃣ Rate limit check
     const secLeft = getRateLimitSecondsLeft();
     if (secLeft > 0) {
       startCooldownTimer(secLeft);
@@ -178,7 +193,7 @@ const Contact = () => {
 
           {/* ── Form ── */}
           <AnimatedSection delay={0.2}>
-            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4" noValidate>
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
 
               {/* 🍯 Honeypot — hidden dari manusia, tapi bot akan mengisinya */}
               <input
@@ -195,7 +210,7 @@ const Contact = () => {
               {(["name", "email", "subject"] as const).map((field, i) => (
                 <input key={field}
                   type={field === "email" ? "email" : "text"}
-                  placeholder={field === "name" ? "Nama" : field === "email" ? "Email" : "Subjek"}
+                  placeholder={field === "name" ? "Nama *" : field === "email" ? "Email *" : "Subjek *"}
                   required
                   value={form[field]}
                   onChange={(e) => setForm({ ...form, [field]: e.target.value })}
@@ -214,7 +229,7 @@ const Contact = () => {
               ))}
 
               <textarea
-                placeholder="Pesan"
+                placeholder="Pesan *"
                 required
                 rows={4}
                 value={form.message}
