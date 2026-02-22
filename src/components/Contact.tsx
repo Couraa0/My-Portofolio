@@ -18,7 +18,7 @@ const contactInfo = [
   { icon: <Linkedin size={18} />, label: "linkedin.com/in/rakha05", href: "https://www.linkedin.com/in/rakha05/", color: "hsl(196 100% 36%)", bg: "hsl(196 100% 47% / 0.08)", border: "hsl(196 100% 47% / 0.2)" },
 ];
 
-const inputFocusColors = ["hsl(250 84% 60%)", "hsl(196 100% 47%)", "hsl(344 85% 60%)", "hsl(158 80% 42%)"];
+
 
 type Status = "idle" | "sending" | "success" | "error" | "cooldown";
 
@@ -39,9 +39,10 @@ const Contact = () => {
     return () => { if (cooldownTimer.current) clearInterval(cooldownTimer.current); };
   }, []);
 
-  const startCooldownTimer = (initialSec: number) => {
-    setStatus("cooldown");
+  const startCooldownTimer = (initialSec: number, preserveStatus = false) => {
+    if (!preserveStatus) setStatus("cooldown");
     setCooldownSec(initialSec);
+    if (cooldownTimer.current) clearInterval(cooldownTimer.current);
     cooldownTimer.current = setInterval(() => {
       setCooldownSec((s) => {
         if (s <= 1) {
@@ -111,8 +112,10 @@ const Contact = () => {
       setForm({ name: "", email: "", subject: "", message: "" });
       formOpenedAt.current = Date.now();
 
-      // Reset ke idle setelah 4 detik
-      setTimeout(() => setStatus("idle"), 4000);
+      // Mulai timer cooldown tapi tetap tampilkan status success
+      const sec = getRateLimitSecondsLeft();
+      if (sec > 0) startCooldownTimer(sec, true);
+      else setTimeout(() => setStatus("idle"), 5000);
     } catch {
       setStatus("error");
       setErrorMsg("Gagal mengirim pesan. Silakan coba lagi atau hubungi langsung via email.");
@@ -140,164 +143,182 @@ const Contact = () => {
             <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
               Let's Work <span className="text-gradient">Together</span>
             </h2>
-            <p className="text-muted-foreground mt-3 sm:mt-4 max-w-md mx-auto text-sm sm:text-base px-4">
-              Tertarik berkolaborasi? Jangan ragu untuk menghubungi saya.
+            <p className="text-muted-foreground mt-3 sm:mt-4 max-w-lg mx-auto text-sm sm:text-base px-4">
+              Tertarik berkolaborasi? Jangan ragu untuk menghubungi saya melalui formulir di bawah ini.
             </p>
           </div>
         </AnimatedSection>
 
-        <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-14 max-w-5xl mx-auto">
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 max-w-6xl mx-auto">
           {/* ── Info ── */}
-          <AnimatedSection delay={0.1}>
-            <div className="space-y-3">
-              {contactInfo.map((item, i) => (
-                <div key={i}
-                  className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl bg-white border transition-all duration-300"
-                  style={{ borderColor: "hsl(220 20% 90%)" }}
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.borderColor = item.border;
-                    (e.currentTarget as HTMLElement).style.boxShadow = `0 4px 20px ${item.bg}`;
-                    (e.currentTarget as HTMLElement).style.transform = "translateX(4px)";
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.borderColor = "hsl(220 20% 90%)";
-                    (e.currentTarget as HTMLElement).style.boxShadow = "";
-                    (e.currentTarget as HTMLElement).style.transform = "";
-                  }}>
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: item.bg, color: item.color }}>
-                    {item.icon}
+          <div className="lg:col-span-5">
+            <AnimatedSection delay={0.1}>
+              <div className="space-y-3">
+                {contactInfo.map((item, i) => (
+                  <div key={i}
+                    className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl bg-white border transition-all duration-300"
+                    style={{ borderColor: "hsl(220 20% 90%)" }}
+                    onMouseEnter={e => {
+                      (e.currentTarget as HTMLElement).style.borderColor = item.border;
+                      (e.currentTarget as HTMLElement).style.boxShadow = `0 4px 20px ${item.bg}`;
+                      (e.currentTarget as HTMLElement).style.transform = "translateX(4px)";
+                    }}
+                    onMouseLeave={e => {
+                      (e.currentTarget as HTMLElement).style.borderColor = "hsl(220 20% 90%)";
+                      (e.currentTarget as HTMLElement).style.boxShadow = "";
+                      (e.currentTarget as HTMLElement).style.transform = "";
+                    }}>
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={{ background: item.bg, color: item.color }}>
+                      {item.icon}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      {item.href ? (
+                        <a href={item.href} target="_blank" rel="noopener noreferrer"
+                          className="text-[13px] sm:text-sm text-muted-foreground hover:text-foreground transition-colors block break-words">
+                          {item.label}
+                        </a>
+                      ) : (
+                        <span className="text-[13px] sm:text-sm text-muted-foreground block break-words">{item.label}</span>
+                      )}
+                    </div>
                   </div>
-                  <div className="min-w-0 flex-1">
-                    {item.href ? (
-                      <a href={item.href} target="_blank" rel="noopener noreferrer"
-                        className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors block truncate">
-                        {item.label}
-                      </a>
-                    ) : (
-                      <span className="text-xs sm:text-sm text-muted-foreground block truncate">{item.label}</span>
-                    )}
-                  </div>
-                </div>
-              ))}
+                ))}
 
-              <div className="rounded-2xl p-4 sm:p-5 mt-2 sm:mt-4"
-                style={{ background: "linear-gradient(135deg, hsl(250 84% 60% / 0.07), hsl(196 100% 47% / 0.05))", border: "1px solid hsl(250 84% 60% / 0.18)" }}>
-                <p className="text-sm font-semibold text-foreground mb-1">Open to:</p>
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                  IT Project Manager, Product Manager, Fullstack Developer roles
-                </p>
+                <div className="rounded-2xl p-4 sm:p-6 mt-4 sm:mt-6"
+                  style={{
+                    background: "linear-gradient(135deg, hsl(250 84% 60% / 0.07), hsl(196 100% 47% / 0.05))",
+                    border: "1px solid hsl(250 84% 60% / 0.15)",
+                    boxShadow: "0 10px 30px -10px hsl(250 84% 60% / 0.1)"
+                  }}>
+                  <p className="text-sm font-bold text-foreground mb-2 flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                    Open to Opportunities:
+                  </p>
+                  <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
+                    IT Project Manager, Product Manager, or Fullstack Developer roles.
+                  </p>
+                </div>
               </div>
-            </div>
-          </AnimatedSection>
+            </AnimatedSection>
+          </div>
 
           {/* ── Form ── */}
-          <AnimatedSection delay={0.2}>
-            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+          <div className="lg:col-span-7">
+            <AnimatedSection delay={0.2}>
+              <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
 
-              {/* 🍯 Honeypot — hidden dari manusia, tapi bot akan mengisinya */}
-              <input
-                type="text"
-                name="website"
-                value={honeypot}
-                onChange={e => setHoneypot(e.target.value)}
-                tabIndex={-1}
-                autoComplete="off"
-                style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", opacity: 0 }}
-                aria-hidden="true"
-              />
+                {/* 🍯 Honeypot — hidden dari manusia, tapi bot akan mengisinya */}
+                <input
+                  type="text"
+                  name="website"
+                  value={honeypot}
+                  onChange={e => setHoneypot(e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", opacity: 0 }}
+                  aria-hidden="true"
+                />
 
-              {(["name", "email", "subject"] as const).map((field, i) => (
-                <input key={field}
-                  type={field === "email" ? "email" : "text"}
-                  placeholder={field === "name" ? "Nama *" : field === "email" ? "Email *" : "Subjek *"}
+                {(["name", "email", "subject"] as const).map((field) => (
+                  <input key={field}
+                    type={field === "email" ? "email" : "text"}
+                    placeholder={field === "name" ? "Nama *" : field === "email" ? "Email *" : "Subject *"}
+                    required
+                    value={form[field]}
+                    onChange={(e) => setForm({ ...form, [field]: e.target.value })}
+                    disabled={isBusy}
+                    className="w-full rounded-xl border px-4 py-3 sm:py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-200 bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ borderColor: "hsl(220 20% 90%)", fontSize: "16px" }}
+                    onFocus={e => {
+                      (e.currentTarget as HTMLElement).style.borderColor = "hsl(158 80% 42% / 0.5)";
+                      (e.currentTarget as HTMLElement).style.boxShadow = "0 0 0 3px hsl(158 80% 42% / 0.1)";
+                    }}
+                    onBlur={e => {
+                      (e.currentTarget as HTMLElement).style.borderColor = "hsl(220 20% 90%)";
+                      (e.currentTarget as HTMLElement).style.boxShadow = "";
+                    }}
+                  />
+                ))}
+
+                <textarea
+                  placeholder="Pesan *"
                   required
-                  value={form[field]}
-                  onChange={(e) => setForm({ ...form, [field]: e.target.value })}
+                  rows={5}
+                  value={form.message}
+                  onChange={(e) => setForm({ ...form, message: e.target.value })}
                   disabled={isBusy}
-                  className="w-full rounded-xl border px-4 py-3 sm:py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-200 bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full rounded-xl border px-4 py-3 sm:py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-200 resize-none bg-white disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{ borderColor: "hsl(220 20% 90%)", fontSize: "16px" }}
                   onFocus={e => {
-                    (e.currentTarget as HTMLElement).style.borderColor = `${inputFocusColors[i]}80`;
-                    (e.currentTarget as HTMLElement).style.boxShadow = `0 0 0 3px ${inputFocusColors[i]}15`;
+                    (e.currentTarget as HTMLElement).style.borderColor = "hsl(158 80% 42% / 0.5)";
+                    (e.currentTarget as HTMLElement).style.boxShadow = "0 0 0 3px hsl(158 80% 42% / 0.1)";
                   }}
                   onBlur={e => {
                     (e.currentTarget as HTMLElement).style.borderColor = "hsl(220 20% 90%)";
                     (e.currentTarget as HTMLElement).style.boxShadow = "";
                   }}
                 />
-              ))}
 
-              <textarea
-                placeholder="Pesan *"
-                required
-                rows={4}
-                value={form.message}
-                onChange={(e) => setForm({ ...form, message: e.target.value })}
-                disabled={isBusy}
-                className="w-full rounded-xl border px-4 py-3 sm:py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-200 resize-none bg-white disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ borderColor: "hsl(220 20% 90%)", fontSize: "16px" }}
-                onFocus={e => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "hsl(158 80% 42% / 0.5)";
-                  (e.currentTarget as HTMLElement).style.boxShadow = "0 0 0 3px hsl(158 80% 42% / 0.1)";
-                }}
-                onBlur={e => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "hsl(220 20% 90%)";
-                  (e.currentTarget as HTMLElement).style.boxShadow = "";
-                }}
-              />
+                {/* Status messages */}
+                <AnimatePresence mode="wait">
+                  {status === "error" && (
+                    <motion.div key="error"
+                      initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                      className="flex items-start gap-2 rounded-xl px-4 py-3 text-sm"
+                      style={{ background: "hsl(344 85% 60% / 0.08)", border: "1px solid hsl(344 85% 60% / 0.2)", color: "hsl(344 85% 40%)" }}>
+                      <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
+                      {errorMsg || "Terjadi kesalahan."}
+                    </motion.div>
+                  )}
+                  {status === "cooldown" && (
+                    <motion.div key="cooldown"
+                      initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                      className="space-y-2">
+                      <div className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm"
+                        style={{ background: "hsl(158 80% 42% / 0.08)", border: "1px solid hsl(158 80% 42% / 0.2)", color: "hsl(158 80% 30%)" }}>
+                        <CheckCircle2 size={16} className="flex-shrink-0" />
+                        Pesan berhasil terkirim! Saya akan membalas secepatnya, maximal 1x24 jam.
+                      </div>
+                      <div className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm"
+                        style={{ background: "hsl(37 100% 50% / 0.08)", border: "1px solid hsl(37 100% 50% / 0.2)", color: "hsl(37 100% 35%)" }}>
+                        <Clock size={16} className="flex-shrink-0" />
+                        Tunggu <strong>{formatTime(cooldownSec)}</strong> sebelum kirim pesan lagi.
+                      </div>
+                    </motion.div>
+                  )}
+                  {status === "success" && (
+                    <motion.div key="success"
+                      initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                      className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm"
+                      style={{ background: "hsl(158 80% 42% / 0.08)", border: "1px solid hsl(158 80% 42% / 0.2)", color: "hsl(158 80% 30%)" }}>
+                      <CheckCircle2 size={16} className="flex-shrink-0" />
+                      Pesan berhasil terkirim! Saya akan membalas secepatnya, maximal 1x24 jam.
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
-              {/* Status messages */}
-              <AnimatePresence mode="wait">
-                {status === "error" && (
-                  <motion.div key="error"
-                    initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                    className="flex items-start gap-2 rounded-xl px-4 py-3 text-sm"
-                    style={{ background: "hsl(344 85% 60% / 0.08)", border: "1px solid hsl(344 85% 60% / 0.2)", color: "hsl(344 85% 40%)" }}>
-                    <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
-                    {errorMsg || "Terjadi kesalahan."}
-                  </motion.div>
-                )}
-                {status === "cooldown" && (
-                  <motion.div key="cooldown"
-                    initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                    className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm"
-                    style={{ background: "hsl(37 100% 50% / 0.08)", border: "1px solid hsl(37 100% 50% / 0.2)", color: "hsl(37 100% 35%)" }}>
-                    <Clock size={16} className="flex-shrink-0" />
-                    Tunggu <strong>{formatTime(cooldownSec)}</strong> sebelum kirim pesan lagi.
-                  </motion.div>
-                )}
-                {status === "success" && (
-                  <motion.div key="success"
-                    initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                    className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm"
-                    style={{ background: "hsl(158 80% 42% / 0.08)", border: "1px solid hsl(158 80% 42% / 0.2)", color: "hsl(158 80% 30%)" }}>
-                    <CheckCircle2 size={16} className="flex-shrink-0" />
-                    Pesan berhasil terkirim! Saya akan membalas secepatnya.
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Submit button */}
-              <button type="submit" disabled={isBusy || status === "success"}
-                className="w-full rounded-xl px-6 py-3.5 sm:py-4 text-sm font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed active:scale-95"
-                style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))", boxShadow: "0 4px 20px hsl(250 84% 60% / 0.3)" }}>
-                {status === "sending" ? (
-                  <>
-                    <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
-                      className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full" />
-                    Mengirim...
-                  </>
-                ) : status === "success" ? (
-                  <><CheckCircle2 size={16} /> Terkirim!</>
-                ) : status === "cooldown" ? (
-                  <><Clock size={16} /> Tunggu {formatTime(cooldownSec)}</>
-                ) : (
-                  <><Send size={16} /> Kirim Pesan</>
-                )}
-              </button>
-            </form>
-          </AnimatedSection>
+                {/* Submit button */}
+                <button type="submit" disabled={isBusy || status === "success"}
+                  className="w-full rounded-xl px-6 py-3.5 sm:py-4 text-sm font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed active:scale-95"
+                  style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))", boxShadow: "0 4px 20px hsl(250 84% 60% / 0.3)" }}>
+                  {status === "sending" ? (
+                    <>
+                      <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
+                        className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full" />
+                      Mengirim...
+                    </>
+                  ) : status === "success" ? (
+                    <><CheckCircle2 size={16} /> Terkirim! {cooldownSec > 0 && `(${formatTime(cooldownSec)})`}</>
+                  ) : status === "cooldown" ? (
+                    <><Clock size={16} /> Tunggu {formatTime(cooldownSec)}</>
+                  ) : (
+                    <><Send size={16} /> Kirim Pesan</>
+                  )}
+                </button>
+              </form>
+            </AnimatedSection>
+          </div>
         </div>
       </div>
     </section>
