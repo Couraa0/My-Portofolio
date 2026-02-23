@@ -1,12 +1,11 @@
 import { Github, Linkedin, Mail, ArrowUp, Instagram, MessageCircle } from "lucide-react";
 
 const socials = [
-  
-  { href: "https://www.linkedin.com/in/rakha05/", icon: <Linkedin size={16} />, color: "hsl(196 100% 36%)", bg: "hsl(196 100% 47% / 0.08)", border: "hsl(196 100% 47% / 0.2)" },
-  { href: "https://wa.me/6287871310560", icon: <MessageCircle size={16} />, color: "hsl(158 80% 40%)", bg: "hsl(158 80% 42% / 0.08)", border: "hsl(158 80% 42% / 0.2)" },
-  { href: "https://www.instagram.com/couraa0", icon: <Instagram size={16} />, color: "hsl(344 85% 50%)", bg: "hsl(344 85% 60% / 0.08)", border: "hsl(344 85% 60% / 0.2)" },
-  { href: "mailto:muhammadrakhasyamputra@gmail.com", icon: <Mail size={16} />, color: "hsl(344 85% 50%)", bg: "hsl(344 85% 60% / 0.08)", border: "hsl(344 85% 60% / 0.2)" },
-  { href: "https://github.com/Couraa0", icon: <Github size={16} />, color: "hsl(250 84% 55%)", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.2)" },
+  { href: "https://www.linkedin.com/in/rakha05/", icon: <Linkedin size={16} />, label: "LinkedIn", color: "hsl(196 100% 36%)", bg: "hsl(196 100% 47% / 0.08)", border: "hsl(196 100% 47% / 0.2)" },
+  { href: "https://wa.me/6287871310560", icon: <MessageCircle size={16} />, label: "WhatsApp", color: "hsl(158 80% 40%)", bg: "hsl(158 80% 42% / 0.08)", border: "hsl(158 80% 42% / 0.2)" },
+  { href: "https://www.instagram.com/couraa0", icon: <Instagram size={16} />, label: "Instagram", color: "hsl(344 85% 50%)", bg: "hsl(344 85% 60% / 0.08)", border: "hsl(344 85% 60% / 0.2)" },
+  { href: "mailto:muhammadrakhasyamputra@gmail.com", icon: <Mail size={16} />, label: "Email", color: "hsl(344 85% 50%)", bg: "hsl(344 85% 60% / 0.08)", border: "hsl(344 85% 60% / 0.2)" },
+  { href: "https://github.com/Couraa0", icon: <Github size={16} />, label: "GitHub", color: "hsl(250 84% 55%)", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.2)" },
 ];
 
 const Footer = () => (
@@ -27,6 +26,7 @@ const Footer = () => (
       <div className="flex items-center gap-3">
         {socials.map((s, i) => (
           <a key={i} href={s.href} target="_blank" rel="noopener noreferrer"
+            aria-label={s.label}
             className="w-9 h-9 rounded-full border flex items-center justify-center text-muted-foreground transition-all duration-300 hover:scale-110"
             style={{ borderColor: "hsl(220 20% 90%)" }}
             onMouseEnter={e => {
@@ -46,6 +46,7 @@ const Footer = () => (
 
       {/* Back to top */}
       <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        aria-label="Back to top"
         className="w-9 h-9 rounded-full border flex items-center justify-center text-muted-foreground transition-all duration-300 hover:scale-110 hover:text-white"
         style={{ borderColor: "hsl(220 20% 90%)" }}
         onMouseEnter={e => {

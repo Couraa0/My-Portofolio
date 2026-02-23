@@ -133,10 +133,11 @@ const Hero = () => {
 
           <motion.div variants={fadeUp} className="flex items-center justify-center lg:justify-start gap-4 pt-2">
             {[
-              { href: "https://github.com/Couraa0", icon: <Github size={16} />, color: "hsl(250 84% 55%)", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.2)" },
-              { href: "https://www.linkedin.com/in/rakha05/", icon: <Linkedin size={18} />, color: "hsl(196 100% 36%)" },
+              { href: "https://github.com/Couraa0", icon: <Github size={16} />, label: "GitHub", color: "hsl(250 84% 55%)", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.2)" },
+              { href: "https://www.linkedin.com/in/rakha05/", icon: <Linkedin size={18} />, label: "LinkedIn", color: "hsl(196 100% 36%)" },
             ].map((s, i) => (
               <a key={i} href={s.href} target="_blank" rel="noopener noreferrer"
+                aria-label={s.label}
                 className="w-10 h-10 rounded-full border flex items-center justify-center text-muted-foreground transition-all duration-300 hover:scale-110"
                 style={{ borderColor: "hsl(220 20% 88%)" }}
                 onMouseEnter={e => {
