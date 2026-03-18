@@ -81,8 +81,8 @@ export default function GuestbookPopup() {
           await fetchMessages();
           setName("");
           setText("");
-          toast.success("Hooray!", { 
-            description: "Pesan Anda berhasil dikirim!",
+          toast.success(t("Hooray!"), { 
+            description: t("Message sent!"),
             style: { 
               background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))", 
               color: "#ffffff", 
@@ -91,11 +91,11 @@ export default function GuestbookPopup() {
             descriptionClassName: "text-white opacity-100 font-medium"
           });
         } else {
-          toast.error("Waduh!", { description: "Gagal mengirim pesan, coba lagi nanti." });
+          toast.error(t("Oops!"), { description: t("Failed to send") });
         }
       } catch (err) {
         console.error("Supabase insert failed", err);
-        toast.error("Waduh!", { description: "Koneksi ke database bermasalah." });
+        toast.error(t("Oops!"), { description: t("Database connection error") });
       }
     } else {
       // Fallback
@@ -105,7 +105,7 @@ export default function GuestbookPopup() {
       localStorage.setItem("guestbook-messages", JSON.stringify(newMessages));
       setName("");
       setText("");
-      toast.success("Pesan terkirim sementara!", { description: "Disimpan di localStorage." });
+      toast.success(t("Saved locally!"));
     }
     setLoading(false);
   };
@@ -165,7 +165,7 @@ export default function GuestbookPopup() {
             <div className="p-4 border-b flex items-center justify-between" style={{ background: "linear-gradient(135deg, hsl(250 84% 60% / 0.1), hsl(196 100% 47% / 0.1))" }}>
               <div className="flex items-center gap-2">
                 <MessageSquare className="text-blue-500" size={18} />
-                <h3 className="font-heading font-bold">Guestbook</h3>
+                <h3 className="font-heading font-bold">{t("Guestbook")}</h3>
               </div>
               <button 
                 onClick={() => setOpen(false)} 
@@ -179,7 +179,7 @@ export default function GuestbookPopup() {
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-muted/30">
               {messages.length === 0 ? (
                 <div className="text-center py-8 text-sm text-muted-foreground">
-                  Belum ada pesan. Kiri pesan pertamamu!
+                  {t("No messages yet")}
                 </div>
               ) : (
                 messages.map((m) => (
@@ -229,7 +229,7 @@ export default function GuestbookPopup() {
                   <input 
                     type="text" 
                     value={name} onChange={e => setName(e.target.value)}
-                    placeholder="Nama Anda" 
+                    placeholder={t("Your Name")} 
                     className="w-full bg-muted/50 border rounded-lg py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                     required maxLength={30}
                   />
@@ -237,7 +237,7 @@ export default function GuestbookPopup() {
                 <div className="relative">
                   <textarea 
                     value={text} onChange={e => setText(e.target.value)}
-                    placeholder="Tinggalkan jejak asikmu di sini..." 
+                    placeholder={t("Leave a message placeholder")} 
                     className="w-full bg-muted/50 border rounded-lg py-2 pl-3 pr-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none h-20"
                     required maxLength={200}
                   />

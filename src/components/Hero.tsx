@@ -233,7 +233,7 @@ const Hero = () => {
               </div>
               <div className="text-left">
                 <p className="font-heading text-lg font-bold leading-none text-foreground">3.97</p>
-                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">GPA</p>
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">{t("GPA")}</p>
               </div>
             </motion.div>
 
@@ -248,7 +248,7 @@ const Hero = () => {
               </div>
               <div className="text-left">
                 <p className="font-heading text-lg font-bold leading-none text-foreground">10+</p>
-                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">Projects</p>
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">{t("Projects Completed")}</p>
               </div>
             </motion.div>
 
@@ -263,7 +263,7 @@ const Hero = () => {
               </div>
               <div className="text-left">
                 <p className="font-heading text-lg font-bold leading-none text-foreground">3+</p>
-                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">Yrs Exp</p>
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">{t("Years Experience")}</p>
               </div>
             </motion.div>
           </div>

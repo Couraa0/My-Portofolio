@@ -14,6 +14,9 @@ const resources = {
       "About Me": "About Me",
       "GPA": "GPA",
       "Yrs Exp": "Yrs Exp",
+      "Projects Completed": "Projects Completed",
+      "Tech Stack used": "Tech Stack used",
+      "Years Experience": "Years Experience",
       "Download CV": "Download CV",
       "About Paragraph 1": "I am an IT Project + Product Manager and Software Developer Enthusiast currently pursuing a Bachelor's degree in Information Systems at Singaperbangsa Karawang University with a GPA of 3.97.",
       "About Paragraph 2": "With experience leading large-scale projects like Smart Village Ecosystem, AI For All, and City Super App, I am accustomed to managing cross-functional teams using Agile Scrum and Waterfall methodologies.",
@@ -136,7 +139,18 @@ const resources = {
       "Hire Me": "Hire Me",
       "Role": "Role",
       "Status": "Status",
-      "Completed": "Completed"
+      "Completed": "Completed",
+      "Guestbook": "Guestbook",
+      "Leave a message for me!": "Leave a message for me!",
+      "Your Name": "Your Name",
+      "Leave a message placeholder": "Wanna say something? Leave your mark here...",
+      "No messages yet": "No messages yet. Be the first!",
+      "Hooray!": "Hooray!",
+      "Oops!": "Oops!",
+      "Message sent!": "Your message has been sent!",
+      "Failed to send": "Failed to send message, try again later.",
+      "Database connection error": "Database connection problem.",
+      "Saved locally": "Message saved locally!"
     }
   },
   id: {
@@ -151,6 +165,9 @@ const resources = {
       "About Me": "Tentang Saya",
       "GPA": "IPK",
       "Yrs Exp": "Pengalaman",
+      "Projects Completed": "Proyek Selesai",
+      "Tech Stack used": "Teknologi yang digunakan",
+      "Years Experience": "Tahun Pengalaman",
       "Download CV": "Unduh CV",
       "About Paragraph 1": "Saya adalah seorang IT Project + Product Manager dan Software Developer Enthusiast yang sedang menempuh studi S1 Sistem Informasi di Universitas Singaperbangsa Karawang dengan IPK 3,97.",
       "About Paragraph 2": "Dengan pengalaman memimpin proyek berskala besar seperti Smart Village Ecosystem, AI For All, dan City Super App, saya terbiasa mengelola tim lintas fungsi menggunakan metodologi Agile Scrum dan Waterfall.",
@@ -268,7 +285,18 @@ const resources = {
       "Hire Me": "Hubungi Saya",
       "Role": "Peran",
       "Status": "Status",
-      "Completed": "Selesai"
+      "Completed": "Selesai",
+      "Guestbook": "Buku Tamu",
+      "Leave a message for me!": "Tinggalkan pesan asikmu di sini!",
+      "Your Name": "Nama Anda",
+      "Leave a message placeholder": "Tinggalkan jejak asikmu di sini...",
+      "No messages yet": "Belum ada pesan. Kirim pesan pertamamu!",
+      "Hooray!": "Hore!",
+      "Oops!": "Waduh!",
+      "Message sent!": "Pesan Anda berhasil dikirim!",
+      "Failed to send": "Gagal mengirim pesan, coba lagi nanti.",
+      "Database connection error": "Koneksi ke database bermasalah.",
+      "Saved locally": "Pesan tersimpan secara lokal!"
     }
   }
 };
@@ -277,10 +305,10 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: "en", 
+    lng: "en",
     fallbackLng: "en",
     interpolation: {
-      escapeValue: false 
+      escapeValue: false
     }
   });
 

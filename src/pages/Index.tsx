@@ -8,12 +8,10 @@ import Stats from "@/components/Stats";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import Guestbook from "@/components/Guestbook";
-import CommandPalette from "@/components/CommandPalette";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background bg-grid">
-      <CommandPalette />
       <Navbar />
       <Hero />
       <About />
