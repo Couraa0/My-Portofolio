@@ -1,5 +1,6 @@
 import { motion, Variants } from "framer-motion";
 import { Github, Linkedin, ArrowDown, Sparkles, Briefcase, Instagram, MessageCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const container: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.15 } } };
 const fadeUp: Variants = {
@@ -8,6 +9,7 @@ const fadeUp: Variants = {
 };
 
 const Hero = () => {
+  const { t } = useTranslation();
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden pt-20 pb-10 sm:pb-0 bg-background">
       {/* Decorative background elements */}
@@ -63,13 +65,13 @@ const Hero = () => {
             <span className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs font-semibold border"
               style={{ background: "hsl(250 84% 60% / 0.08)", borderColor: "hsl(250 84% 60% / 0.25)", color: "hsl(250 84% 50%)" }}>
               <Sparkles size={12} />
-              Available for Work
+              {t("Available for Work")}
             </span>
           </motion.div>
 
           <motion.div variants={fadeUp}>
             <h1 className="font-heading text-4xl sm:text-5xl lg:text-[3.8rem] font-extrabold leading-[1.2] tracking-tight text-foreground">
-              Hi, I'm{" "}
+              {t("Hi, I'm")} {" "}
               <span className="block mt-2">Muhammad Rakha</span>
               <span className="block text-gradient mt-2 pb-2">Syamputra</span>
             </h1>
@@ -90,10 +92,7 @@ const Hero = () => {
           </motion.div>
 
           <motion.p variants={fadeUp} className="text-sm sm:text-base text-muted-foreground max-w-lg mx-auto lg:mx-0 leading-relaxed">
-            Mahasiswa Sistem Informasi dengan IPK{" "}
-            <span className="font-semibold" style={{ color: "hsl(37 100% 45%)" }}>3,97</span>{" "}yang passionate dalam memimpin proyek teknologi — dari{" "}
-            <span className="font-medium" style={{ color: "hsl(196 100% 36%)" }}>AI solutions</span> hingga{" "}
-            <span className="font-medium" style={{ color: "hsl(250 84% 50%)" }}>Smart Village Ecosystem</span>.
+            {t("Hero Description")}
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex flex-wrap justify-center lg:justify-start gap-4 pt-2 relative">
@@ -101,13 +100,19 @@ const Hero = () => {
               onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
               className="group rounded-full px-5 py-3 sm:px-7 sm:py-3.5 text-[13px] sm:text-sm font-semibold text-white transition-all duration-300 hover:scale-105 shadow-violet"
               style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))" }}>
-              View My Projects
+              {t("View My Projects")}
             </button>
-            <div className="relative inline-flex items-center">
+            <div className="relative inline-flex items-center gap-4">
+              <a href="/Muhammad_Rakha_Syamputra_CV.pdf" download
+                className="rounded-full border px-5 py-3 sm:px-7 sm:py-3.5 text-[13px] sm:text-sm font-semibold transition-all duration-300 hover:scale-105 border-border text-foreground hover:bg-secondary/80 flex items-center gap-2"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                {t("Resume")}
+              </a>
               <a href="#contact"
                 className="rounded-full border px-5 py-3 sm:px-7 sm:py-3.5 text-[13px] sm:text-sm font-semibold transition-all duration-300 hover:scale-105 border-border text-foreground hover:border-primary hover:text-primary"
                 >
-                Contact Me
+                {t("Contact Me")}
               </a>
 
               {/* Megaphone next to button */}

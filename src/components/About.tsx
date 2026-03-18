@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import AnimatedSection from "./AnimatedSection";
 import { GraduationCap, Briefcase, Rocket, Download } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const cards = [
   {
@@ -29,13 +30,16 @@ const bars = [
   { label: "Team Leadership", pct: 92, color: "hsl(158 80% 42%)", trail: "hsl(158 80% 42% / 0.12)" },
 ];
 
-const stats = [
-  { value: "3.97", label: "GPA", from: "hsl(250 84% 60%)", to: "hsl(196 100% 47%)" },
-  { value: "10+", label: "Projects", from: "hsl(344 85% 58%)", to: "hsl(37 100% 50%)" },
-  { value: "3+", label: "Yrs Exp", from: "hsl(158 72% 38%)", to: "hsl(196 100% 47%)" },
-];
+const About = () => {
+  const { t } = useTranslation();
+  
+  const stats = [
+    { value: "3.97", label: t("GPA"), from: "hsl(250 84% 60%)", to: "hsl(196 100% 47%)" },
+    { value: "10+", label: t("Projects"), from: "hsl(344 85% 58%)", to: "hsl(37 100% 50%)" },
+    { value: "3+", label: t("Yrs Exp"), from: "hsl(158 72% 38%)", to: "hsl(196 100% 47%)" },
+  ];
 
-const About = () => (
+  return (
   <section id="about" className="py-28 bg-background relative overflow-hidden">
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-px"
       style={{ background: "linear-gradient(90deg, transparent, hsl(250 84% 60% / 0.2), transparent)" }} />
@@ -67,10 +71,10 @@ const About = () => (
         <div className="text-center mb-20">
           <span className="inline-block rounded-full px-3 py-1 sm:px-4 sm:py-1.5 text-[10px] sm:text-xs font-semibold mb-4"
             style={{ background: "hsl(250 84% 60% / 0.08)", border: "1px solid hsl(250 84% 60% / 0.2)", color: "hsl(250 84% 50%)" }}>
-            Who I Am
+            {t("Who I Am")}
           </span>
           <h2 className="font-heading text-3xl sm:text-4xl font-bold text-foreground">
-            About <span className="text-gradient">Me</span>
+            {t("About Me").split(" ")[0]} <span className="text-gradient">{t("About Me").split(" ")[1]}</span>
           </h2>
         </div>
       </AnimatedSection>
@@ -128,7 +132,7 @@ const About = () => (
               whileTap={{ scale: 0.97 }}
               className="flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-semibold text-white w-full justify-center"
               style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))", boxShadow: "0 4px 16px hsl(250 84% 60% / 0.25)" }}>
-              <Download size={13} /> Download CV
+              <Download size={13} /> {t("Download CV")}
             </motion.a>
           </div>
         </AnimatedSection>
@@ -137,27 +141,18 @@ const About = () => (
         <AnimatedSection delay={0.15}>
           <div className="space-y-5 text-muted-foreground leading-relaxed text-[15px]">
             <p>
-              Saya adalah seorang{" "}
-              <span className="font-semibold" style={{ color: "hsl(250 84% 50%)" }}>IT Project + Product Manager dan Software Developer Enthusiast</span>{" "}
-              yang sedang menempuh studi S1 Sistem Informasi di Universitas Singaperbangsa Karawang dengan IPK{" "}
-              <span className="font-bold" style={{ color: "hsl(37 100% 45%)" }}>3,97</span>.
+              {t("About Paragraph 1")}
             </p>
             <p>
-              Dengan pengalaman memimpin proyek berskala besar seperti{" "}
-              <span className="font-medium">Smart Village Ecosystem</span>,{" "}
-              <span className="font-medium">AI For All</span>, dan{" "}
-              <span className="font-medium">City Super App</span>,{" "}
-              saya terbiasa mengelola tim lintas fungsi menggunakan metodologi Agile Scrum dan Waterfall.
+              {t("About Paragraph 2")}
             </p>
             <p>
-              Selain manajemen proyek, saya juga aktif sebagai{" "}
-              <span className="font-semibold" style={{ color: "hsl(250 84% 50%)" }}>Co-Founder Tixchain.id</span>{" "}
-              — sebuah platform tiket digital yang saya bangun bersama tim dari tahap ide hingga operasional.
+              {t("About Paragraph 3")}
             </p>
 
             {/* Skill bars */}
             <div className="space-y-4 pt-6">
-              <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Core Proficiencies</p>
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">{t("Core Proficiencies")}</p>
               {bars.map((s) => (
                 <div key={s.label} className="space-y-1.5">
                   <div className="flex justify-between text-xs">
@@ -183,7 +178,7 @@ const About = () => (
         {/* ── Card column ── */}
         <AnimatedSection delay={0.25}>
           <div className="space-y-4">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-5">Highlights</p>
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-5">{t("Highlights")}</p>
             {cards.map((item, i) => (
               <motion.div key={i}
                 initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }}
@@ -198,8 +193,8 @@ const About = () => (
                   {item.icon}
                 </div>
                 <div>
-                  <p className="font-heading font-semibold text-foreground text-[13px] leading-snug">{item.title}</p>
-                  <p className="text-[11px] text-muted-foreground mt-1">{item.sub}</p>
+                  <p className="font-heading font-semibold text-foreground text-[13px] leading-snug">{t(item.title)}</p>
+                  <p className="text-[11px] text-muted-foreground mt-1">{t(item.sub)}</p>
                 </div>
               </motion.div>
             ))}
@@ -208,6 +203,7 @@ const About = () => (
       </div>
     </div>
   </section>
-);
+  );
+};
 
 export default About;

@@ -9,6 +9,7 @@ import {
   getRateLimitSecondsLeft,
   markSent,
 } from "@/lib/emailjs";
+import { useTranslation } from "react-i18next";
 
 const contactInfo = [
   { icon: <Mail size={18} />, label: "muhammadrakhasyamputra@gmail.com", href: "mailto:muhammadrakhasyamputra@gmail.com", color: "hsl(250 84% 50%)", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.2)" },
@@ -21,6 +22,7 @@ const contactInfo = [
 type Status = "idle" | "sending" | "success" | "error" | "cooldown";
 
 const Contact = () => {
+  const { t } = useTranslation();
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   // 🍯 Honeypot: field hidden — jika diisi, request dari bot → diabaikan
   const [honeypot, setHoneypot] = useState("");
@@ -59,7 +61,7 @@ const Contact = () => {
     // 1️⃣ Validation check — pastikan semua field terisi
     if (!form.name.trim() || !form.email.trim() || !form.subject.trim() || !form.message.trim()) {
       setStatus("error");
-      setErrorMsg("Semua bidang (Nama, Email, Subjek, Pesan) wajib diisi.");
+      setErrorMsg(t("Form error"));
       return;
     }
 
@@ -67,7 +69,7 @@ const Contact = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(form.email.trim())) {
       setStatus("error");
-      setErrorMsg("Format email tidak valid (contoh: nama@gmail.com).");
+      setErrorMsg(t("Email error"));
       return;
     }
 
@@ -77,7 +79,7 @@ const Contact = () => {
     // 3️⃣ Minimum time check — form diisi terlalu cepat → bot
     if (Date.now() - formOpenedAt.current < MIN_FILL_MS) {
       setStatus("error");
-      setErrorMsg("Mohon isi form dengan perlahan.");
+      setErrorMsg(t("Form slow"));
       return;
     }
 
@@ -115,7 +117,7 @@ const Contact = () => {
       else setStatus("idle");
     } catch {
       setStatus("error");
-      setErrorMsg("Gagal mengirim pesan. Silakan coba lagi atau hubungi langsung via email.");
+      setErrorMsg(t("Form fail"));
     }
   };
 
@@ -154,13 +156,13 @@ const Contact = () => {
           <div className="text-center mb-10 sm:mb-16">
             <span className="inline-block rounded-full px-3 py-1 sm:px-4 sm:py-1.5 text-[10px] sm:text-xs font-semibold mb-4"
               style={{ background: "hsl(250 84% 60% / 0.08)", border: "1px solid hsl(250 84% 60% / 0.2)", color: "hsl(250 84% 50%)" }}>
-              Get In Touch
+              {t("Get In Touch")}
             </span>
             <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
-              Let's Work <span className="text-gradient">Together</span>
+              {t("Let's Work Together").split(" ").slice(0, 2).join(" ")} <span className="text-gradient">{t("Let's Work Together").split(" ").slice(2).join(" ")}</span>
             </h2>
             <p className="text-muted-foreground mt-3 sm:mt-4 max-w-lg mx-auto text-sm sm:text-base px-4">
-              Tertarik berkolaborasi? Jangan ragu untuk menghubungi saya melalui formulir di bawah ini.
+              {t("Contact Description")}
             </p>
           </div>
         </AnimatedSection>
@@ -209,10 +211,10 @@ const Contact = () => {
                   }}>
                   <p className="text-sm font-bold text-foreground mb-2 flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-                    Open to Opportunities:
+                    {t("Open to Opportunities title")}
                   </p>
                   <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
-                    IT Project Manager, Product Manager, or Fullstack Developer roles.
+                    {t("Open to Opportunities desc")}
                   </p>
                 </div>
               </div>
@@ -239,7 +241,7 @@ const Contact = () => {
                 {(["name", "email", "subject"] as const).map((field) => (
                   <input key={field}
                     type={field === "email" ? "email" : "text"}
-                    placeholder={field === "name" ? "Nama *" : field === "email" ? "Email *" : "Subject *"}
+                    placeholder={field === "name" ? t("Name placeholder") : field === "email" ? t("Email placeholder") : t("Subject placeholder")}
                     required
                     value={form[field]}
                     onChange={(e) => setForm({ ...form, [field]: e.target.value })}
@@ -258,7 +260,7 @@ const Contact = () => {
                 ))}
 
                 <textarea
-                  placeholder="Pesan *"
+                  placeholder={t("Message placeholder")}
                   required
                   rows={5}
                   value={form.message}
@@ -294,12 +296,12 @@ const Contact = () => {
                       <div className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm"
                         style={{ background: "hsl(158 80% 42% / 0.08)", border: "1px solid hsl(158 80% 42% / 0.2)", color: "hsl(158 80% 30%)" }}>
                         <CheckCircle2 size={16} className="flex-shrink-0" />
-                        Pesan berhasil terkirim! Saya akan membalas secepatnya, maximal 1x24 jam.
+                        {t("Message success")}
                       </div>
                       <div className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm"
                         style={{ background: "hsl(37 100% 50% / 0.08)", border: "1px solid hsl(37 100% 50% / 0.2)", color: "hsl(37 100% 35%)" }}>
                         <Clock size={16} className="flex-shrink-0" />
-                        Tunggu <strong>{formatTime(cooldownSec)}</strong> sebelum kirim pesan lagi.
+                        {t("Wait cooldown", { time: formatTime(cooldownSec) })}
                       </div>
                     </motion.div>
                   )}
@@ -313,12 +315,12 @@ const Contact = () => {
                     <>
                       <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
                         className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full" />
-                      Mengirim...
+                      {t("Sending...")}
                     </>
                   ) : status === "cooldown" ? (
-                    <><Clock size={16} /> Tunggu {formatTime(cooldownSec)}</>
+                    <><Clock size={16} /> {t("Wait")} {formatTime(cooldownSec)}</>
                   ) : (
-                    <><Send size={16} /> Kirim Pesan</>
+                    <><Send size={16} /> {t("Send Message")}</>
                   )}
                 </button>
               </form>

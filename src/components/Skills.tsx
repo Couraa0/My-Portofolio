@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import AnimatedSection from "./AnimatedSection";
 import { softSkills } from "@/data/skills";
+import { useTranslation } from "react-i18next";
 
 /* ── Icon Utilities ────────────────────────────────── */
 
@@ -94,7 +95,7 @@ const MarqueeSection = ({ title, items, direction = "left", speed = "25s" }: { t
         <h3 className="font-heading font-bold text-foreground text-sm uppercase tracking-wider">{title}</h3>
       </div>
 
-      <div className="marquee-wrapper">
+      <div className="marquee-track-container marquee-wrapper">
         <div className="marquee-track px-4" style={{
           animation: `marquee-scroll ${speed} linear infinite`,
           animationDirection: direction === "right" ? "reverse" : "normal"
@@ -109,6 +110,8 @@ const MarqueeSection = ({ title, items, direction = "left", speed = "25s" }: { t
 };
 
 const Skills = () => {
+  const { t } = useTranslation();
+
   return (
     <section id="skills" className="py-28 bg-background relative overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-px z-20"
@@ -117,7 +120,7 @@ const Skills = () => {
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Floating Doodles - Positioned near Title */}
         <motion.div
-          animate={{ x: [-10, 10, -10], rotate: [-5, 5, -5] }}
+  animate={{ x: [-10, 10, -10], rotate: [-5, 5, -5] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           className="hidden md:block absolute top-[110px] left-[15%] opacity-[0.4] text-orange-500 z-0">
           <svg width="45" height="45" viewBox="0 0 24 24" fill="hsl(37 100% 50%)" fillOpacity={0.15} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -131,7 +134,7 @@ const Skills = () => {
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
           className="hidden md:block absolute top-[110px] right-[15%] opacity-[0.4] text-orange-500 z-0">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="hsl(37 100% 50%)" fillOpacity={0.15} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M11.767 19.089c4.924.868 6.14-6.025 1.216-6.894m-1.216 6.894c-4.924.868-6.14-6.025-1.216-6.894m1.216 6.894l-1.216-6.894m1.216 6.894.135 2.1c.063.985.922 1.706 1.918 1.61L21 21.84M1.5 20.35l7.9.643c1.11.09 2.1.84 2.37 1.91l.135 2.1m-10.405-4.653c.125.688.163 1.393.111 2.1m.036-7.394a10.02 10.02 0 0 0-2.112.564M6.54 6.777C4.65 4.3 9.49 1.5 11.38 3.98l.62 1.02m0 0 .62-1.02C14.51 1.5 19.35 4.3 17.46 6.777M12 5v2" />
+            <path d="M11.767 19.089c4.924.868 6.14-6.025 1.216-6.894m-1.216 6.894c-4.924.868-6.14-6.025-1.216-6.894m1.216 6.894l-1.216-6.894m1.216 6.894.135 2.1c.063.985.922 1.706 1.918 1.61L21 21.84M1.5 20.35l7.9.643c1.11.09 2.1.84 2.37 1.91 l.135 2.1m-10.405-4.653c.125.688.163 1.393.111 2.1m.036-7.394a10.02 10.02 0 0 0-2.112.564M6.54 6.777C4.65 4.3 9.49 1.5 11.38 3.98l.62 1.02m0 0 .62-1.02C14.51 1.5 19.35 4.3 17.46 6.777M12 5v2" />
           </svg>
         </motion.div>
       </div>
@@ -141,10 +144,10 @@ const Skills = () => {
           <div className="text-center mb-20">
             <span className="inline-block rounded-full px-3 py-1 sm:px-4 sm:py-1.5 text-[10px] sm:text-xs font-semibold mb-4 border"
               style={{ background: "hsl(var(--violet) / 0.08)", borderColor: "hsl(var(--violet) / 0.2)", color: "hsl(var(--violet))" }}>
-              Expertise
+              {t("Expertise")}
             </span>
             <h2 className="font-heading text-3xl sm:text-4xl font-bold text-foreground">
-              Skills & <span className="text-gradient">Tech Stack</span>
+              {t("Skills & Tech Stack").split(" & ")[0]} & <span className="text-gradient">{t("Skills & Tech Stack").split(" & ")[1]}</span>
             </h2>
           </div>
         </AnimatedSection>
@@ -154,7 +157,7 @@ const Skills = () => {
           <div className="max-w-4xl mx-auto mb-20">
             <div className="flex items-center gap-2 mb-8 justify-center">
               <div className="w-2 h-2 rounded-full bg-rose-500" />
-              <h3 className="font-heading font-bold text-foreground text-sm uppercase tracking-wider">Soft Skills</h3>
+              <h3 className="font-heading font-bold text-foreground text-sm uppercase tracking-wider">{t("Soft Skills")}</h3>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -171,7 +174,7 @@ const Skills = () => {
                   <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center text-2xl flex-shrink-0">
                     {s.icon}
                   </div>
-                  <span className="text-sm md:text-base font-bold text-foreground leading-snug">{s.name}</span>
+                  <span className="text-sm md:text-base font-bold text-foreground leading-snug">{t(s.name)}</span>
                 </motion.div>
               ))}
             </div>
@@ -182,7 +185,7 @@ const Skills = () => {
         <div className="space-y-16">
           <AnimatedSection delay={0.2}>
             <MarqueeSection
-              title="Programming & Frameworks"
+              title={t("Programming & Frameworks")}
               items={programmingIcons}
               speed="30s"
             />
@@ -190,7 +193,7 @@ const Skills = () => {
 
           <AnimatedSection delay={0.3}>
             <MarqueeSection
-              title="Tools & Environment"
+              title={t("Tools & Environment")}
               items={toolIcons}
               direction="right"
               speed="35s"

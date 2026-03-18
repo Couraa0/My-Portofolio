@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { Github, Linkedin, Mail, ArrowUp, Instagram, MessageCircle } from "lucide-react";
+import { toast } from "sonner";
 
 const socials = [
   { href: "https://www.linkedin.com/in/rakha05/", icon: <Linkedin size={16} />, label: "LinkedIn", color: "hsl(196 100% 36%)", bg: "hsl(196 100% 47% / 0.08)", border: "hsl(196 100% 47% / 0.2)" },
@@ -8,7 +10,27 @@ const socials = [
   { href: "https://github.com/Couraa0", icon: <Github size={16} />, label: "GitHub", color: "hsl(250 84% 55%)", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.2)" },
 ];
 
-const Footer = () => (
+const Footer = () => {
+  const [clicks, setClicks] = useState(0);
+
+  const handleBrandClick = () => {
+    const newClicks = clicks + 1;
+    setClicks(newClicks);
+    if (newClicks === 5) {
+      toast.success("🎉 You found the Easter Egg!", {
+        description: "Thanks for checking out my portfolio closely!",
+        style: { 
+          background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))", 
+          color: "#ffffff", 
+          border: "none" 
+        },
+        descriptionClassName: "text-white opacity-100 font-medium"
+      });
+      setClicks(0);
+    }
+  };
+
+  return (
   <footer className="relative py-10 bg-background overflow-hidden">
     <div className="absolute top-0 left-0 right-0 h-px"
       style={{ background: "linear-gradient(90deg, transparent, hsl(250 84% 60% / 0.3), hsl(196 100% 47% / 0.3), hsl(344 85% 60% / 0.25), transparent)" }} />
@@ -16,7 +38,13 @@ const Footer = () => (
     <div className="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
       {/* Brand */}
       <div className="flex flex-col items-center sm:items-start gap-1">
-        <span className="font-heading font-bold text-lg text-gradient">Rakha.</span>
+        <span 
+          onClick={handleBrandClick}
+          className="font-heading font-bold text-lg text-gradient cursor-pointer select-none"
+          title="Click me!"
+        >
+          Rakha.
+        </span>
         <p className="text-xs text-muted-foreground">
           © {new Date().getFullYear()} Muhammad Rakha Syamputra
         </p>
@@ -61,6 +89,7 @@ const Footer = () => (
       </button>
     </div>
   </footer>
-);
+  );
+};
 
 export default Footer;

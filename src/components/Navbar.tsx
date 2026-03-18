@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Sun, Moon } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
+import { useTranslation } from "react-i18next";
 
 const navLinks = ["About", "Experience", "Projects", "Skills", "Contact"];
 
@@ -10,6 +11,7 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const { theme, setTheme } = useTheme();
+  const { i18n, t } = useTranslation();
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -76,7 +78,7 @@ const Navbar = () => {
                 <button onClick={() => scrollTo(link)}
                   className={`group px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg flex items-center justify-center ${isActive ? "text-[hsl(250_84%_50%)] dark:text-[hsl(250_84%_60%)]" : "text-muted-foreground hover:text-foreground"}`}>
                   <span className="relative">
-                    {link}
+                    {t(link)}
                     {isActive ? (
                       <motion.div layoutId="navIndicator"
                         className="absolute -bottom-1 left-0 w-full h-0.5 rounded-full"
@@ -94,22 +96,28 @@ const Navbar = () => {
 
         {/* CTA & Theme */}
         <div className="hidden md:flex items-center gap-4">
+          <button onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'id' : 'en')} aria-label="Toggle Language" className="font-semibold text-sm px-2 text-muted-foreground hover:text-foreground transition-colors">
+            {i18n.language === 'en' ? 'ID' : 'EN'}
+          </button>
           <button onClick={toggleTheme} aria-label="Toggle Theme" className="p-2 rounded-full hover:bg-muted text-foreground transition-colors">
             {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
           </button>
           <button className="rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:opacity-90"
             style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))", boxShadow: "0 4px 16px hsl(250 84% 60% / 0.25)" }}
             onClick={() => scrollTo("Contact")}>
-            Hire Me
+            {t("Hire Me")}
           </button>
         </div>
 
         {/* Mobile toggle & Theme */}
-        <div className="flex md:hidden items-center gap-4">
+        <div className="flex md:hidden items-center gap-2">
+          <button onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'id' : 'en')} aria-label="Toggle Language" className="font-semibold text-sm px-2 text-foreground">
+            {i18n.language === 'en' ? 'ID' : 'EN'}
+          </button>
           <button onClick={toggleTheme} aria-label="Toggle Theme" className="p-2 text-foreground">
             {theme === "dark" ? <Sun size={24} /> : <Moon size={24} />}
           </button>
-          <button className="text-foreground" onClick={() => setMobileOpen(!mobileOpen)}>
+          <button className="text-foreground p-2" onClick={() => setMobileOpen(!mobileOpen)}>
             {mobileOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
@@ -139,7 +147,7 @@ const Navbar = () => {
                         borderWidth: isActive ? "1px" : "1px",
                         borderStyle: "solid",
                       }}>
-                      {link}
+                      {t(link)}
                     </button>
                   );
                 })}
@@ -152,7 +160,7 @@ const Navbar = () => {
               <button onClick={() => scrollTo("Contact")}
                 className="w-full rounded-full py-3 text-sm font-semibold text-white transition-all duration-200 active:scale-95"
                 style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))", boxShadow: "0 4px 16px hsl(250 84% 60% / 0.25)" }}>
-                Hire Me
+                {t("Hire Me")}
               </button>
             </div>
           </motion.div>

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import AnimatedSection from "./AnimatedSection";
 import { experiences } from "@/data/experience";
 import { ChevronDown, MapPin, Calendar, Briefcase, Rocket, Users, Bot, FlaskConical } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const palette = [
   { dot: "hsl(196 100% 42%)", shadow: "hsl(196 100% 42% / 0.25)", tag: "hsl(196 100% 30%)", tagBg: "hsl(196 100% 42% / 0.09)", border: "hsl(196 100% 42% / 0.18)", glow: "hsl(196 100% 42% / 0.12)", icon: "hsl(196 100% 36%)" },
@@ -15,6 +16,7 @@ const palette = [
 const roleIcons = [Briefcase, Rocket, Users, Bot, FlaskConical];
 
 const Experience = () => {
+  const { t } = useTranslation();
   const [activeId, setActiveId] = useState<number>(1);
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
@@ -54,12 +56,12 @@ const Experience = () => {
           <div className="text-center mb-16">
             <span className="inline-block rounded-full px-3 py-1 sm:px-4 sm:py-1.5 text-[10px] sm:text-xs font-semibold mb-4"
               style={{ background: "hsl(196 100% 42% / 0.09)", border: "1px solid hsl(196 100% 42% / 0.25)", color: "hsl(196 100% 30%)" }}>
-              My Journey
+              {t("My Journey")}
             </span>
             <h2 className="font-heading text-3xl sm:text-4xl font-bold text-foreground">
-              My <span className="text-gradient-emerald">Experience</span>
+              {t("My Experience").split(" ")[0]} <span className="text-gradient-emerald">{t("My Experience").split(" ")[1]}</span>
             </h2>
-            <p className="text-muted-foreground mt-3 text-sm">Klik kartu untuk melihat detail.</p>
+            <p className="text-muted-foreground mt-3 text-sm">{t("Click card for details")}</p>
           </div>
         </AnimatedSection>
 
@@ -95,7 +97,7 @@ const Experience = () => {
                       <h4 className={`font-heading font-bold text-sm truncate ${isActive ? "text-foreground" : "text-muted-foreground"}`}>
                         {exp.company}
                       </h4>
-                      <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{exp.role}</p>
+                      <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{t(exp.role)}</p>
                     </div>
                   </div>
                 </motion.button>
@@ -128,7 +130,7 @@ const Experience = () => {
                     <div className="hidden md:block w-1 h-1 rounded-full bg-border" />
                     <div className="flex items-center gap-2">
                       <ActiveIcon size={14} className="text-violet-500" />
-                      <span>{active.role}</span>
+                      <span>{t(active.role)}</span>
                     </div>
                   </div>
                 </div>
@@ -147,7 +149,7 @@ const Experience = () => {
                 {active.description.map((point, idx) => (
                   <div key={idx} className="flex gap-4 group">
                     <div className="mt-2 w-1.5 h-1.5 rounded-full flex-shrink-0 transition-transform group-hover:scale-150" style={{ background: c.dot }} />
-                    <p className="text-muted-foreground leading-relaxed text-base">{point}</p>
+                    <p className="text-muted-foreground leading-relaxed text-base">{t(point)}</p>
                   </div>
                 ))}
               </div>
@@ -196,7 +198,7 @@ const Experience = () => {
                       <div className="flex flex-col gap-0.5 mt-0.5">
                         <div className="flex items-center gap-1.5">
                           <Icon size={10} className="text-muted-foreground" />
-                          <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">{exp.role}</p>
+                          <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">{t(exp.role)}</p>
                         </div>
                         <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground/80">
                           <MapPin size={10} />
@@ -228,7 +230,7 @@ const Experience = () => {
                           {exp.description.map((d, j) => (
                             <div key={j} className="flex gap-3">
                               <div className="mt-2 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: cp.dot }} />
-                              <p className="text-sm text-muted-foreground leading-relaxed">{d}</p>
+                              <p className="text-sm text-muted-foreground leading-relaxed">{t(d)}</p>
                             </div>
                           ))}
                         </div>
