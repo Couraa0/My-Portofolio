@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sun, Moon } from "lucide-react";
+import { useTheme } from "@/components/theme-provider";
 
 const navLinks = ["About", "Experience", "Projects", "Skills", "Contact"];
 
@@ -8,6 +9,11 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -52,7 +58,7 @@ const Navbar = () => {
     <motion.nav
       initial={{ y: -80 }} animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "bg-white/90 shadow-sm backdrop-blur-md border-b border-border" : "bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "bg-background/90 shadow-sm backdrop-blur-md border-b border-border" : "bg-transparent"
         }`}>
       <div className="container mx-auto flex items-center justify-between px-6 py-4">
         <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -68,10 +74,7 @@ const Navbar = () => {
             return (
               <li key={link}>
                 <button onClick={() => scrollTo(link)}
-                  className="group px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg flex items-center justify-center"
-                  style={{ color: isActive ? "hsl(250 84% 50%)" : "hsl(215 16% 48%)" }}
-                  onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLElement).style.color = "hsl(222 47% 10%)"; }}
-                  onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLElement).style.color = "hsl(215 16% 48%)"; }}>
+                  className={`group px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg flex items-center justify-center ${isActive ? "text-[hsl(250_84%_50%)] dark:text-[hsl(250_84%_60%)]" : "text-muted-foreground hover:text-foreground"}`}>
                   <span className="relative">
                     {link}
                     {isActive ? (
@@ -89,17 +92,27 @@ const Navbar = () => {
           })}
         </ul>
 
-        {/* CTA */}
-        <button className="hidden md:flex rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:opacity-90"
-          style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))", boxShadow: "0 4px 16px hsl(250 84% 60% / 0.25)" }}
-          onClick={() => scrollTo("Contact")}>
-          Hire Me
-        </button>
+        {/* CTA & Theme */}
+        <div className="hidden md:flex items-center gap-4">
+          <button onClick={toggleTheme} aria-label="Toggle Theme" className="p-2 rounded-full hover:bg-muted text-foreground transition-colors">
+            {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+          <button className="rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:opacity-90"
+            style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))", boxShadow: "0 4px 16px hsl(250 84% 60% / 0.25)" }}
+            onClick={() => scrollTo("Contact")}>
+            Hire Me
+          </button>
+        </div>
 
-        {/* Mobile toggle */}
-        <button className="md:hidden text-foreground" onClick={() => setMobileOpen(!mobileOpen)}>
-          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        {/* Mobile toggle & Theme */}
+        <div className="flex md:hidden items-center gap-4">
+          <button onClick={toggleTheme} aria-label="Toggle Theme" className="p-2 text-foreground">
+            {theme === "dark" ? <Sun size={24} /> : <Moon size={24} />}
+          </button>
+          <button className="text-foreground" onClick={() => setMobileOpen(!mobileOpen)}>
+            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile */}
@@ -110,8 +123,8 @@ const Navbar = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="md:hidden border-t border-border"
-            style={{ background: "white", position: "relative", zIndex: 50 }}>
+            className="md:hidden border-t border-border bg-background"
+            style={{ position: "relative", zIndex: 50 }}>
             <div className="px-4 py-5">
               {/* 2-column grid for nav links */}
               <div className="grid grid-cols-2 gap-1 mb-4">
@@ -120,11 +133,11 @@ const Navbar = () => {
                   return (
                     <button key={link}
                       onClick={() => scrollTo(link)}
-                      className="rounded-xl py-3 px-4 text-sm font-medium text-center transition-all duration-200"
+                      className={`rounded-xl py-3 px-4 text-sm font-medium text-center transition-all duration-200 ${isActive ? "text-[hsl(250_84%_50%)] dark:text-[hsl(250_84%_60%)] bg-[hsl(250_84%_60%/0.07)] border-[hsl(250_84%_60%/0.18)]" : "text-muted-foreground hover:text-foreground bg-transparent border-transparent"
+                        }`}
                       style={{
-                        color: isActive ? "hsl(250 84% 50%)" : "hsl(215 16% 48%)",
-                        background: isActive ? "hsl(250 84% 60% / 0.07)" : "transparent",
-                        border: isActive ? "1px solid hsl(250 84% 60% / 0.18)" : "1px solid transparent",
+                        borderWidth: isActive ? "1px" : "1px",
+                        borderStyle: "solid",
                       }}>
                       {link}
                     </button>
@@ -133,7 +146,7 @@ const Navbar = () => {
               </div>
 
               {/* Divider */}
-              <div className="h-px mb-4" style={{ background: "linear-gradient(90deg, transparent, hsl(220 20% 88%), transparent)" }} />
+              <div className="h-px mb-4" style={{ background: "linear-gradient(90deg, transparent, hsl(var(--border)), transparent)" }} />
 
               {/* Hire Me CTA - centered full width */}
               <button onClick={() => scrollTo("Contact")}

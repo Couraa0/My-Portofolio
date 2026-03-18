@@ -9,7 +9,7 @@ const socials = [
 ];
 
 const Footer = () => (
-  <footer className="relative py-10 bg-white overflow-hidden">
+  <footer className="relative py-10 bg-background overflow-hidden">
     <div className="absolute top-0 left-0 right-0 h-px"
       style={{ background: "linear-gradient(90deg, transparent, hsl(250 84% 60% / 0.3), hsl(196 100% 47% / 0.3), hsl(344 85% 60% / 0.25), transparent)" }} />
 
@@ -28,7 +28,7 @@ const Footer = () => (
           <a key={i} href={s.href} target="_blank" rel="noopener noreferrer"
             aria-label={s.label}
             className="w-9 h-9 rounded-full border flex items-center justify-center text-muted-foreground transition-all duration-300 hover:scale-110"
-            style={{ borderColor: "hsl(220 20% 90%)" }}
+            style={{ borderColor: "hsl(var(--border))" }}
             onMouseEnter={e => {
               (e.currentTarget as HTMLElement).style.color = s.color;
               (e.currentTarget as HTMLElement).style.borderColor = s.border;
@@ -36,7 +36,7 @@ const Footer = () => (
             }}
             onMouseLeave={e => {
               (e.currentTarget as HTMLElement).style.color = "";
-              (e.currentTarget as HTMLElement).style.borderColor = "hsl(220 20% 90%)";
+              (e.currentTarget as HTMLElement).style.borderColor = "hsl(var(--border))";
               (e.currentTarget as HTMLElement).style.background = "";
             }}>
             {s.icon}
@@ -48,14 +48,14 @@ const Footer = () => (
       <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         aria-label="Back to top"
         className="w-9 h-9 rounded-full border flex items-center justify-center text-muted-foreground transition-all duration-300 hover:scale-110 hover:text-white"
-        style={{ borderColor: "hsl(220 20% 90%)" }}
+        style={{ borderColor: "hsl(var(--border))" }}
         onMouseEnter={e => {
           (e.currentTarget as HTMLElement).style.background = "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))";
           (e.currentTarget as HTMLElement).style.borderColor = "transparent";
         }}
         onMouseLeave={e => {
           (e.currentTarget as HTMLElement).style.background = "";
-          (e.currentTarget as HTMLElement).style.borderColor = "hsl(220 20% 90%)";
+          (e.currentTarget as HTMLElement).style.borderColor = "hsl(var(--border))";
         }}>
         <ArrowUp size={16} />
       </button>

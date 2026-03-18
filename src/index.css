@@ -36,6 +36,9 @@
 
     --radius: 1rem;
 
+    --hero-tint: 215 100% 97%;
+    --grid-color: 215 100% 90%;
+
     /* Custom palette */
     --violet: 250 84% 60%;
     --cyan: 196 100% 47%;
@@ -55,6 +58,40 @@
 
     --font-heading: 'Plus Jakarta Sans', sans-serif;
     --font-body: 'Inter', sans-serif;
+  }
+
+  .dark {
+    --hero-tint: 215 100% 8%;
+    --grid-color: 215 100% 20%;
+
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+    --popover: 224 71% 4%;
+    --popover-foreground: 215 20.2% 65.1%;
+    --primary: 250 84% 60%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 222.2 47.4% 11.2%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 223 47% 11%;
+    --muted-foreground: 215.4 16.3% 56.9%;
+    --accent: 250 84% 60%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 359 51% 48%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+    --ring: 250 84% 60%;
+
+    --sidebar-background: 224 71% 4%;
+    --sidebar-foreground: 213 31% 91%;
+    --sidebar-primary: 250 84% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 47% 11%;
+    --sidebar-accent-foreground: 213 31% 91%;
+    --sidebar-border: 216 34% 17%;
+    --sidebar-ring: 250 84% 60%;
   }
 }
 
@@ -133,9 +170,9 @@
     background-image: linear-gradient(135deg, hsl(var(--indigo)), hsl(var(--violet)));
   }
 
-  /* Glass on white */
+  /* Glass */
   .glass {
-    background: rgba(255, 255, 255, 0.85);
+    background: hsl(var(--background) / 0.85);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid hsl(var(--border));
@@ -170,7 +207,7 @@
 
   /* Section stripe */
   .section-stripe {
-    background: linear-gradient(180deg, #fff 0%, hsl(220 20% 97%) 100%);
+    background: linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--muted)/0.3) 100%);
   }
 
   .bg-grid {
@@ -181,8 +218,8 @@
   .bg-graph-paper {
     background-size: 40px 40px;
     background-image: 
-      linear-gradient(to right, hsl(215 100% 90%) 1px, transparent 1px),
-      linear-gradient(to bottom, hsl(215 100% 90%) 1px, transparent 1px);
+      linear-gradient(to right, hsl(var(--grid-color)) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--grid-color)) 1px, transparent 1px);
   }
 
   /* Marquee */
@@ -204,12 +241,12 @@
 
   .marquee-wrapper::before {
     left: 0;
-    background: linear-gradient(90deg, white, transparent);
+    background: linear-gradient(90deg, hsl(var(--background)), transparent);
   }
 
   .marquee-wrapper::after {
     right: 0;
-    background: linear-gradient(-90deg, white, transparent);
+    background: linear-gradient(-90deg, hsl(var(--background)), transparent);
   }
 
   .marquee-track {

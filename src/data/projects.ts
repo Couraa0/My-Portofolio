@@ -1,7 +1,7 @@
 export interface Project {
   id: number;
   title: string;
-  category: "Professional" | "Personal";
+  category: "Professional" | "Personal" | "IOT";
   description: string;
   role?: string;
   tech: string[];
@@ -64,16 +64,28 @@ export const projects: Project[] = [
   },
   {
     id: 5,
-    title: "E-Commerce Perfume Lab",
+    title: "E-Commerce Dimsum",
+    category: "Professional",
+    description: "Platform e-commerce dimsum dengan katalog produk, pemesanan online, dan tampilan modern responsif.",
+    role: "IT Project Manager",
+    tech: ["React", "Vite", "Tailwind CSS", "Node.js", "Express.js", "MongoDB"],
+    liveUrl: "https://dimsum-ratu.vercel.app/",
+    featured: true,
+    color: "rose",
+    image: "/Dimsum.png",
+  },
+  {
+    id: 6,
+    title: "E-Commerce Parfum",
     category: "Personal",
     description: "Platform jual beli parfum dengan pencarian berbasis notes aroma, rekomendasi racikan, dan sistem transaksi online terintegrasi.",
     tech: ["React", "Vite", "Tailwind CSS", "Nest.js", "PostgreSQL", "AI Chatbot"],
-    githubUrl: "https://github.com/Couraa0/Perfume-Lab",
+    liveUrl: "https://perfume-lab.vercel.app/",
     color: "amber",
     image: "/Perfume.png",
   },
   {
-    id: 6,
+    id: 7,
     title: "Ark Sentient",
     category: "Personal",
     description: "Aplikasi AI untuk manajemen peternakan — diagnosis penyakit, smart feeding, marketplace ternak terintegrasi Midtrans",
@@ -83,7 +95,7 @@ export const projects: Project[] = [
     image: "/Ark-Sentient.png",
   },
   {
-    id: 7,
+    id: 8,
     title: "Bookkost",
     category: "Personal",
     description: "Website pencarian dan pemesanan kamar kost secara online dengan fitur detail properti dan proses reservasi yang mudah dan cepat.",
@@ -93,7 +105,7 @@ export const projects: Project[] = [
     image: "/Bookkost.png",
   },
   {
-    id: 8,
+    id: 9,
     title: "Sistem Absensi & Rekap",
     category: "Personal",
     description: "Sistem absensi berbasis web dengan pencatatan kehadiran dan rekap otomatis untuk mempermudah monitoring.",
@@ -103,7 +115,7 @@ export const projects: Project[] = [
     image: "/Absen.png",
   },
   {
-    id: 9,
+    id: 10,
     title: "Sistem Informasi Akademik",
     category: "Personal",
     description: "Website pengelolaan data akademik meliputi mahasiswa, nilai, dan jadwal perkuliahan dalam satu sistem terpusat.",
@@ -113,7 +125,7 @@ export const projects: Project[] = [
     image: "/Siska.png",
   },
   {
-    id: 10,
+    id: 11,
     title: "Sistem Parkir GUI",
     category: "Personal",
     description: "Aplikasi desktop untuk manajemen parkir kendaraan dengan pencatatan waktu masuk, perhitungan tarif, dan cetak struk otomatis.",
@@ -123,7 +135,7 @@ export const projects: Project[] = [
     image: "/Parkir.png",
   },
   {
-    id: 11,
+    id: 12,
     title: "DuaDompet – Fintech Hybrid",
     category: "Personal",
     description: "Perencanaan aplikasi e-wallet hybrid yang mengintegrasikan dompet fiat dan kripto dalam satu platform aman dan edukatif.",
@@ -133,4 +145,31 @@ export const projects: Project[] = [
     color: "amber",
     image: "/Duadompet.png",
   },
+  {
+    id: 13,
+    title: "Smart Temperature Monitor",
+    category: "IOT",
+    description: "Alat deteksi suhu real-time berbasis sensor dengan pembacaan LCD/LED, terintegrasi ke platform web untuk pantauan jarak jauh.",
+    tech: ["Arduino", "Sensor", "C++"],
+    color: "cyan",
+    image: "/Arduino.png",
+  },
+  {
+    id: 14,
+    title: "Ultrasonic Distance Meter",
+    category: "IOT",
+    description: "Pengukur jarak ultrasonik presisi tinggi dengan layar LCD/LED, mendukung integrasi ke platform web untuk pemantauan ekstensif.",
+    tech: ["Arduino", "Ultrasonic", "C++"],
+    color: "violet",
+    image: "/Arduino1.jpg",
+  },
+  {
+    id: 15,
+    title: "Line Follower Robot",
+    category: "IOT",
+    description: "Robot Arduino pengikut garis otomatis dengan pergerakan presisi. Didukung integrasi IoT web untuk pemantauan secara langsung.",
+    tech: ["Arduino", "Sensors", "C++"],
+    color: "emerald",
+    image: "/Arduino2.jpg",
+  }
 ];

@@ -125,7 +125,7 @@ const Contact = () => {
   const isBusy = status === "sending" || status === "cooldown";
 
   return (
-    <section id="contact" className="py-16 sm:py-24 bg-white relative overflow-hidden">
+    <section id="contact" className="py-16 sm:py-24 bg-background relative overflow-hidden">
 
       {/* Floating Doodles - Positioned near Title */}
       <motion.div
@@ -172,15 +172,15 @@ const Contact = () => {
               <div className="space-y-3">
                 {contactInfo.map((item, i) => (
                   <div key={i}
-                    className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl bg-white border transition-all duration-300"
-                    style={{ borderColor: "hsl(220 20% 90%)" }}
+                    className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl bg-background border transition-all duration-300"
+                    style={{ borderColor: "hsl(var(--border))" }}
                     onMouseEnter={e => {
                       (e.currentTarget as HTMLElement).style.borderColor = item.border;
                       (e.currentTarget as HTMLElement).style.boxShadow = `0 4px 20px ${item.bg}`;
                       (e.currentTarget as HTMLElement).style.transform = "translateX(4px)";
                     }}
                     onMouseLeave={e => {
-                      (e.currentTarget as HTMLElement).style.borderColor = "hsl(220 20% 90%)";
+                      (e.currentTarget as HTMLElement).style.borderColor = "hsl(var(--border))";
                       (e.currentTarget as HTMLElement).style.boxShadow = "";
                       (e.currentTarget as HTMLElement).style.transform = "";
                     }}>
@@ -244,14 +244,14 @@ const Contact = () => {
                     value={form[field]}
                     onChange={(e) => setForm({ ...form, [field]: e.target.value })}
                     disabled={isBusy}
-                    className="w-full rounded-xl border px-4 py-3 sm:py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-200 bg-white disabled:opacity-50 disabled:cursor-not-allowed"
-                    style={{ borderColor: "hsl(220 20% 90%)", fontSize: "16px" }}
+                    className="w-full rounded-xl border px-4 py-3 sm:py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-200 bg-background disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ borderColor: "hsl(var(--border))", fontSize: "16px" }}
                     onFocus={e => {
                       (e.currentTarget as HTMLElement).style.borderColor = "hsl(158 80% 42% / 0.5)";
                       (e.currentTarget as HTMLElement).style.boxShadow = "0 0 0 3px hsl(158 80% 42% / 0.1)";
                     }}
                     onBlur={e => {
-                      (e.currentTarget as HTMLElement).style.borderColor = "hsl(220 20% 90%)";
+                      (e.currentTarget as HTMLElement).style.borderColor = "hsl(var(--border))";
                       (e.currentTarget as HTMLElement).style.boxShadow = "";
                     }}
                   />
@@ -264,14 +264,14 @@ const Contact = () => {
                   value={form.message}
                   onChange={(e) => setForm({ ...form, message: e.target.value })}
                   disabled={isBusy}
-                  className="w-full rounded-xl border px-4 py-3 sm:py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-200 resize-none bg-white disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ borderColor: "hsl(220 20% 90%)", fontSize: "16px" }}
+                  className="w-full rounded-xl border px-4 py-3 sm:py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-200 resize-none bg-background disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ borderColor: "hsl(var(--border))", fontSize: "16px" }}
                   onFocus={e => {
                     (e.currentTarget as HTMLElement).style.borderColor = "hsl(158 80% 42% / 0.5)";
                     (e.currentTarget as HTMLElement).style.boxShadow = "0 0 0 3px hsl(158 80% 42% / 0.1)";
                   }}
                   onBlur={e => {
-                    (e.currentTarget as HTMLElement).style.borderColor = "hsl(220 20% 90%)";
+                    (e.currentTarget as HTMLElement).style.borderColor = "hsl(var(--border))";
                     (e.currentTarget as HTMLElement).style.boxShadow = "";
                   }}
                 />

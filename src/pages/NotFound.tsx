@@ -33,7 +33,7 @@ const NotFound = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
       {/* ── Background decorations ── */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Graph Paper Grid */}

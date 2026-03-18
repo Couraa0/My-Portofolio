@@ -4,7 +4,7 @@ import { ExternalLink, Github, Star, FileText, X, Maximize2, Briefcase } from "l
 import AnimatedSection from "./AnimatedSection";
 import { projects, type Project } from "@/data/projects";
 
-type Filter = "All" | "Professional" | "Personal";
+type Filter = "All" | "Professional" | "Personal" | "IOT";
 
 const cardPalette = [
   { from: "hsl(250 84% 60%)", to: "hsl(196 100% 47%)", fromLight: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.2)", tag: "hsl(250 84% 50%)" },
@@ -34,7 +34,7 @@ const Projects = () => {
   const closeModal = useCallback(() => setSelectedImage(null), []);
 
   return (
-    <section id="projects" className="py-28 bg-white relative overflow-hidden">
+    <section id="projects" className="py-28 bg-background relative overflow-hidden">
 
       <motion.div
         animate={{ scale: [1, 1.15, 1], rotate: [0, 15, 0] }}
@@ -68,7 +68,7 @@ const Projects = () => {
         {/* Filter tabs */}
         <AnimatedSection delay={0.1}>
           <div className="flex justify-center flex-wrap gap-1.5 sm:gap-2 mb-10 sm:mb-14">
-            {(["Professional", "Personal", "All"] as Filter[]).map((f) => (
+            {(["Professional", "Personal", "IOT", "All"] as Filter[]).map((f) => (
               <button key={f} onClick={() => setFilter(f)}
                 className="rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-[11px] sm:text-sm font-semibold transition-all duration-300 hover:scale-105"
                 style={filter === f ? {
@@ -76,8 +76,8 @@ const Projects = () => {
                   color: "white",
                   boxShadow: "0 4px 16px hsl(250 84% 60% / 0.3)"
                 } : {
-                  background: "hsl(220 20% 96%)",
-                  border: "1px solid hsl(220 20% 90%)",
+                  background: "hsl(var(--muted))",
+                  border: "1px solid hsl(var(--border))",
                   color: "hsl(215 16% 48%)"
                 }}>
                 {f}
@@ -119,7 +119,7 @@ const Projects = () => {
             >
               <button
                 onClick={closeModal}
-                className="absolute -top-12 right-0 text-white/70 hover:text-white transition-colors bg-white/10 p-2 rounded-full backdrop-blur-md"
+                className="absolute -top-12 right-0 text-white/70 hover:text-white transition-colors bg-background/10 p-2 rounded-full backdrop-blur-md"
               >
                 <X size={24} />
               </button>
@@ -146,14 +146,14 @@ const ProjectCard = ({ project, index, palette, onImageClick }: {
     initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.4, delay: index * 0.07 }}
     whileHover={{ y: -6 }}
-    className="rounded-2xl bg-white overflow-hidden group border"
-    style={{ borderColor: palette.border, boxShadow: `0 2px 12px hsl(220 20% 70% / 0.12)`, transition: "box-shadow 0.3s, border-color 0.3s" }}
+    className="rounded-2xl bg-background overflow-hidden group border"
+    style={{ borderColor: palette.border, boxShadow: `0 2px 12px hsl(var(--foreground) / 0.12)`, transition: "box-shadow 0.3s, border-color 0.3s" }}
     onMouseEnter={e => (e.currentTarget as HTMLElement).style.boxShadow = `0 12px 40px ${palette.from}20`}
-    onMouseLeave={e => (e.currentTarget as HTMLElement).style.boxShadow = `0 2px 12px hsl(220 20% 70% / 0.12)`}>
+    onMouseLeave={e => (e.currentTarget as HTMLElement).style.boxShadow = `0 2px 12px hsl(var(--foreground) / 0.12)`}>
 
     {/* Header (Image or Gradient) */}
     <div className="aspect-video relative overflow-hidden"
-      style={{ background: project.image ? "none" : `linear-gradient(135deg, ${palette.fromLight}, hsl(220 20% 97%))` }}>
+      style={{ background: project.image ? "none" : `linear-gradient(135deg, ${palette.fromLight}, hsl(var(--muted)))` }}>
 
       {project.image ? (
         <div className="relative w-full h-full cursor-zoom-in" onClick={() => onImageClick(project.image!)}>
@@ -164,7 +164,7 @@ const ProjectCard = ({ project, index, palette, onImageClick }: {
             style={{ imageRendering: "auto", transform: "perspective(1px) translateZ(0)", backfaceVisibility: "hidden" }}
           />
           <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-            <div className="bg-white/20 backdrop-blur-md p-3 rounded-full border border-white/30 text-white scale-75 group-hover:scale-100 transition-transform">
+            <div className="bg-background/20 backdrop-blur-md p-3 rounded-full border border-white/30 text-white scale-75 group-hover:scale-100 transition-transform">
               <Maximize2 size={20} />
             </div>
           </div>

@@ -36,7 +36,7 @@ const stats = [
 ];
 
 const About = () => (
-  <section id="about" className="py-28 bg-white relative overflow-hidden">
+  <section id="about" className="py-28 bg-background relative overflow-hidden">
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-px"
       style={{ background: "linear-gradient(90deg, transparent, hsl(250 84% 60% / 0.2), transparent)" }} />
     {/* Floating Doodles - Positioned near Title */}
@@ -87,8 +87,8 @@ const About = () => (
               <div className="absolute -inset-1 rounded-[2rem] opacity-40 blur-sm"
                 style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%), hsl(344 85% 60%))" }} />
 
-              <div className="relative rounded-[1.75rem] overflow-hidden bg-white"
-                style={{ width: 240, height: 300, boxShadow: "0 20px 48px hsl(250 84% 60% / 0.15), 0 4px 16px hsl(220 20% 70% / 0.15)" }}>
+              <div className="relative rounded-[1.75rem] overflow-hidden bg-background"
+                style={{ width: 240, height: 300, boxShadow: "0 20px 48px hsl(250 84% 60% / 0.15), 0 4px 16px hsl(var(--foreground) / 0.15)" }}>
                 {/* Colour accent bar top */}
                 <div className="absolute top-0 left-0 right-0 h-1 rounded-t-[1.75rem] z-10"
                   style={{ background: "linear-gradient(90deg, hsl(250 84% 60%), hsl(196 100% 47%), hsl(344 85% 60%))" }} />
@@ -102,15 +102,14 @@ const About = () => (
                 />
                 {/* Bottom gradient fade */}
                 <div className="absolute bottom-0 left-0 right-0 h-16"
-                  style={{ background: "linear-gradient(to top, hsl(220 20% 97%) 30%, transparent)" }} />
+                  style={{ background: "linear-gradient(to top, hsl(var(--background)) 30%, transparent)" }} />
               </div>
             </div>
 
             {/* Mini stats */}
             <div className="flex gap-3 w-full justify-center">
               {stats.map((s) => (
-                <div key={s.label} className="flex-1 rounded-2xl p-3 text-center bg-white border"
-                  style={{ borderColor: "hsl(220 20% 91%)", boxShadow: "0 2px 10px hsl(220 20% 80% / 0.1)" }}>
+                <div key={s.label} className="flex-1 rounded-2xl p-3 text-center bg-card border shadow-sm">
                   <p className="font-heading font-extrabold text-base bg-clip-text text-transparent"
                     style={{ backgroundImage: `linear-gradient(135deg, ${s.from}, ${s.to})` }}>
                     {s.value}
@@ -190,7 +189,7 @@ const About = () => (
                 initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }} transition={{ delay: i * 0.1 }}
                 whileHover={{ x: -4 }}
-                className="flex gap-4 items-start rounded-2xl p-4 bg-white border transition-all duration-300"
+                className="flex gap-4 items-start rounded-2xl p-4 bg-background border transition-all duration-300"
                 style={{ borderColor: item.border, boxShadow: `0 2px 12px ${item.iconBg}` }}
                 onMouseEnter={e => (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 24px ${item.iconBg}`}
                 onMouseLeave={e => (e.currentTarget as HTMLElement).style.boxShadow = `0 2px 12px ${item.iconBg}`}>

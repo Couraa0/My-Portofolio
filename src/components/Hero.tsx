@@ -9,16 +9,16 @@ const fadeUp: Variants = {
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-20 pb-10 sm:pb-0 bg-white">
+    <section className="relative min-h-screen flex items-center overflow-hidden pt-20 pb-10 sm:pb-0 bg-background">
       {/* Decorative background elements */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden bg-white">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden bg-background">
         {/* Graph Paper Grid */}
         <div className="absolute inset-0 opacity-[0.8] bg-graph-paper pointer-events-none"
           style={{ maskImage: "linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)", WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)" }} />
 
         {/* Soft Background Tint */}
         <div className="hidden md:block absolute inset-0"
-          style={{ background: "radial-gradient(circle at center, transparent 30%, hsl(215 100% 97% / 0.5) 100%)" }} />
+          style={{ background: "radial-gradient(circle at center, transparent 30%, hsl(var(--hero-tint) / 0.7) 100%)" }} />
 
         {/* Decorative blobs */}
         <div className="hidden md:block absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full opacity-[0.2] blur-[100px]"
@@ -78,11 +78,11 @@ const Hero = () => {
           <motion.div variants={fadeUp}>
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3">
               {[
-                { label: "IT Project + Product Manager", bg: "hsl(250 84% 60% / 0.12)", border: "hsl(250 84% 60% / 0.25)", color: "hsl(250 84% 45%)", solidBg: "hsl(247 60% 97%)" },
-                { label: "Software Developer Enthusiast", bg: "hsl(196 100% 47% / 0.12)", border: "hsl(196 100% 47% / 0.25)", color: "hsl(196 100% 36%)", solidBg: "hsl(196 50% 96%)" },
+                { label: "IT Project + Product Manager", bg: "hsl(250 84% 60% / 0.12)", border: "hsl(250 84% 60% / 0.25)", color: "hsl(250 84% 60%)" },
+                { label: "Software Developer Enthusiast", bg: "hsl(196 100% 47% / 0.12)", border: "hsl(196 100% 47% / 0.25)", color: "hsl(196 100% 47%)" },
               ].map((r, i) => (
                 <span key={i} className="rounded-full px-2.5 py-1 sm:px-3 sm:py-1.5 text-[10px] sm:text-xs font-semibold"
-                  style={{ background: r.solidBg, border: `1px solid ${r.border}`, color: r.color }}>
+                  style={{ background: r.bg, border: `1px solid ${r.border}`, color: r.color }}>
                   {r.label}
                 </span>
               ))}
@@ -105,16 +105,8 @@ const Hero = () => {
             </button>
             <div className="relative inline-flex items-center">
               <a href="#contact"
-                className="rounded-full border px-5 py-3 sm:px-7 sm:py-3.5 text-[13px] sm:text-sm font-semibold transition-all duration-300 hover:scale-105"
-                style={{ borderColor: "hsl(220 20% 88%)", color: "hsl(222 47% 20%)" }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "hsl(250 84% 60% / 0.4)";
-                  (e.currentTarget as HTMLElement).style.color = "hsl(250 84% 50%)";
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "hsl(220 20% 88%)";
-                  (e.currentTarget as HTMLElement).style.color = "hsl(222 47% 20%)";
-                }}>
+                className="rounded-full border px-5 py-3 sm:px-7 sm:py-3.5 text-[13px] sm:text-sm font-semibold transition-all duration-300 hover:scale-105 border-border text-foreground hover:border-primary hover:text-primary"
+                >
                 Contact Me
               </a>
 
@@ -139,7 +131,7 @@ const Hero = () => {
               <a key={i} href={s.href} target="_blank" rel="noopener noreferrer"
                 aria-label={s.label}
                 className="w-10 h-10 rounded-full border flex items-center justify-center text-muted-foreground transition-all duration-300 hover:scale-110"
-                style={{ borderColor: "hsl(220 20% 88%)" }}
+                style={{ borderColor: "hsl(var(--border))" }}
                 onMouseEnter={e => {
                   (e.currentTarget as HTMLElement).style.color = s.color;
                   (e.currentTarget as HTMLElement).style.borderColor = `${s.color}55`;
@@ -147,7 +139,7 @@ const Hero = () => {
                 }}
                 onMouseLeave={e => {
                   (e.currentTarget as HTMLElement).style.color = "";
-                  (e.currentTarget as HTMLElement).style.borderColor = "hsl(220 20% 88%)";
+                  (e.currentTarget as HTMLElement).style.borderColor = "hsl(var(--border))";
                   (e.currentTarget as HTMLElement).style.background = "";
                 }}>
                 {s.icon}
@@ -170,11 +162,8 @@ const Hero = () => {
               style={{ background: "radial-gradient(ellipse at 50% 40%, hsl(250 84% 60% / 0.12), transparent 70%)", filter: "blur(24px)" }} />
 
             <div
-              className="relative rounded-[2.5rem]"
+              className="relative rounded-[2.5rem] bg-card border-border border shadow-lg"
               style={{
-                background: "linear-gradient(160deg, hsl(220 30% 98%) 0%, white 60%)",
-                border: "1px solid hsl(220 20% 90%)",
-                boxShadow: "0 24px 72px hsl(250 84% 60% / 0.13), 0 6px 24px hsl(220 20% 70% / 0.18)",
                 overflow: "visible",   /* KEY: lets photo overflow at top */
                 /* card height for the "base" area */
                 minHeight: 420,
@@ -211,7 +200,7 @@ const Hero = () => {
               <div className="relative z-20 pt-80 pb-6 px-6 text-center">
                 {/* subtle gradient background behind text for legibility */}
                 <div className="absolute bottom-0 left-0 right-0 h-36 rounded-b-[2.5rem]"
-                  style={{ background: "linear-gradient(to top, white 70%, transparent)" }} />
+                  style={{ background: "linear-gradient(to top, hsl(var(--card)) 70%, transparent)" }} />
                 <div className="relative z-10">
                   <p className="font-heading font-bold text-foreground text-lg leading-tight">Muhammad Rakha S.</p>
                   <p className="text-xs text-muted-foreground mt-1">IT Project + Product Manager · Software Developer Enthusiast</p>
@@ -219,7 +208,7 @@ const Hero = () => {
                     style={{ background: "hsl(158 80% 42% / 0.09)", border: "1px solid hsl(158 80% 42% / 0.22)" }}>
                     <span className="w-2 h-2 rounded-full flex-shrink-0"
                       style={{ background: "hsl(158 80% 42%)", animation: "pulse 2s cubic-bezier(0.4,0,0.6,1) infinite" }} />
-                    <span className="text-[11px] font-semibold" style={{ color: "hsl(158 80% 30%)" }}>Open to work</span>
+                    <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-500">Open to work</span>
                   </div>
                 </div>
               </div>
@@ -231,7 +220,7 @@ const Hero = () => {
             <motion.div
               animate={{ y: [0, -12, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute z-30 rounded-2xl px-4 py-2.5 flex items-center gap-3 bg-white/90 backdrop-blur-md border border-violet-500/20 shadow-lg shadow-violet-500/10"
+              className="absolute z-30 rounded-2xl px-4 py-2.5 flex items-center gap-3 bg-background/90 backdrop-blur-md border border-violet-500/20 shadow-lg shadow-violet-500/10"
               style={{ top: 20, right: -24 }}>
               <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-violet-500/10 text-violet-600">
                 <Sparkles size={18} />
@@ -246,7 +235,7 @@ const Hero = () => {
             <motion.div
               animate={{ y: [0, 12, 0] }}
               transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute z-30 rounded-2xl px-4 py-2.5 flex items-center gap-3 bg-white/90 backdrop-blur-md border border-rose-500/20 shadow-lg shadow-rose-500/10"
+              className="absolute z-30 rounded-2xl px-4 py-2.5 flex items-center gap-3 bg-background/90 backdrop-blur-md border border-rose-500/20 shadow-lg shadow-rose-500/10"
               style={{ bottom: 180, left: -32 }}>
               <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-rose-500/10 text-rose-600">
                 <Github size={18} />
@@ -261,7 +250,7 @@ const Hero = () => {
             <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute z-30 rounded-2xl px-4 py-2.5 flex items-center gap-3 bg-white/90 backdrop-blur-md border border-emerald-500/20 shadow-lg shadow-emerald-500/10"
+              className="absolute z-30 rounded-2xl px-4 py-2.5 flex items-center gap-3 bg-background/90 backdrop-blur-md border border-emerald-500/20 shadow-lg shadow-emerald-500/10"
               style={{ top: 140, right: -40 }}>
               <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-emerald-500/10 text-emerald-600">
                 <Briefcase size={18} />

@@ -48,7 +48,7 @@ const toolIcons = [
 /* ── Sub-components ───────────────────────────────── */
 
 const MarqueeItem = ({ item }: { item: typeof programmingIcons[0] }) => (
-  <div className="flex flex-col items-center justify-center gap-3 mx-4 px-6 py-5 rounded-2xl bg-white border border-border group transition-all duration-300 w-28 h-28 flex-shrink-0"
+  <div className="flex flex-col items-center justify-center gap-3 mx-4 px-6 py-5 rounded-2xl bg-background border border-border group transition-all duration-300 w-28 h-28 flex-shrink-0"
     style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}
     onMouseEnter={e => {
       e.currentTarget.style.transform = "translateY(-5px)";
@@ -110,7 +110,7 @@ const MarqueeSection = ({ title, items, direction = "left", speed = "25s" }: { t
 
 const Skills = () => {
   return (
-    <section id="skills" className="py-28 bg-white relative overflow-hidden">
+    <section id="skills" className="py-28 bg-background relative overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-px z-20"
         style={{ background: "linear-gradient(90deg, transparent, hsl(250 84% 60% / 0.2), transparent)" }} />
       {/* Background decoration */}
@@ -166,7 +166,7 @@ const Skills = () => {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
                   whileHover={{ y: -5, scale: 1.02 }}
-                  className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-border transition-all duration-300 hover:shadow-xl hover:shadow-violet-500/5 hover:border-violet-500/30"
+                  className="flex items-center gap-4 p-5 rounded-2xl bg-background border border-border transition-all duration-300 hover:shadow-xl hover:shadow-violet-500/5 hover:border-violet-500/30"
                 >
                   <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center text-2xl flex-shrink-0">
                     {s.icon}

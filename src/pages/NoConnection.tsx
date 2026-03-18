@@ -33,7 +33,7 @@ const NoConnection = () => {
     }, []);
 
     return (
-        <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white">
+        <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
             {/* ── Background decorations ── */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
                 <div
@@ -139,7 +139,7 @@ const NoConnection = () => {
                             style={{ background: "hsl(344 85% 60%)" }}
                         >
                             <span
-                                className="w-2 h-2 rounded-full bg-white"
+                                className="w-2 h-2 rounded-full bg-background"
                                 style={{ animation: "pulse 2s infinite" }}
                             />
                         </span>

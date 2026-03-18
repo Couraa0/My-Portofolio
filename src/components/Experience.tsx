@@ -23,12 +23,12 @@ const Experience = () => {
   const ActiveIcon = roleIcons[(activeId - 1) % roleIcons.length];
 
   return (
-    <section id="experience" className="py-28 relative overflow-hidden bg-white">
+    <section id="experience" className="py-28 relative overflow-hidden bg-background">
       {/* Decorative top/bottom lines */}
       <div className="absolute top-0 left-0 right-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, hsl(220 20% 86%), transparent)" }} />
+        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--border)), transparent)" }} />
       <div className="absolute bottom-0 left-0 right-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, hsl(220 20% 86%), transparent)" }} />
+        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--border)), transparent)" }} />
 
       {/* Floating Doodles - Positioned near Title */}
       <motion.div
@@ -78,8 +78,8 @@ const Experience = () => {
                   whileHover={{ x: 5 }}
                   className="w-full text-left rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden border"
                   style={{
-                    background: isActive ? "white" : "transparent",
-                    borderColor: isActive ? cp.border : "hsl(220 20% 90%)",
+                    background: isActive ? "hsl(var(--card))" : "transparent",
+                    borderColor: isActive ? cp.border : "hsl(var(--border))",
                     boxShadow: isActive ? `0 10px 30px ${cp.glow}` : "none",
                   }}
                 >
@@ -88,7 +88,7 @@ const Experience = () => {
                   )}
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={{ background: isActive ? cp.tagBg : "hsl(220 20% 93%)" }}>
+                      style={{ background: isActive ? cp.tagBg : "hsl(var(--secondary))" }}>
                       <Icon size={18} style={{ color: isActive ? cp.icon : "hsl(215 16% 55%)" }} />
                     </div>
                     <div className="min-w-0">
@@ -111,7 +111,7 @@ const Experience = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
-              className="rounded-[2.5rem] bg-white p-10 border border-border shadow-2xl shadow-violet-500/5"
+              className="rounded-[2.5rem] bg-background p-10 border border-border shadow-2xl shadow-violet-500/5"
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
                 <div className="space-y-2">
@@ -132,7 +132,7 @@ const Experience = () => {
                     </div>
                   </div>
                 </div>
-                <div className="w-24 h-24 rounded-3xl flex items-center justify-center flex-shrink-0 bg-white shadow-xl shadow-black/5 border border-border p-2 overflow-hidden">
+                <div className="w-24 h-24 rounded-3xl flex items-center justify-center flex-shrink-0 bg-background shadow-xl shadow-black/5 border border-border p-2 overflow-hidden">
                   {active.logo ? (
                     <img src={active.logo} alt={active.company} className="w-full h-full object-contain" />
                   ) : (
@@ -154,7 +154,7 @@ const Experience = () => {
 
               <div className="flex flex-wrap gap-2">
                 {active.tools?.map((tool) => (
-                  <span key={tool} className="px-4 py-2 rounded-xl text-xs font-bold border border-border bg-secondary/50 text-foreground/80 hover:bg-white hover:shadow-md transition-all cursor-default">
+                  <span key={tool} className="px-4 py-2 rounded-xl text-xs font-bold border border-border bg-secondary/50 text-foreground/80 hover:bg-background hover:shadow-md transition-all cursor-default">
                     {tool}
                   </span>
                 ))}
@@ -170,7 +170,7 @@ const Experience = () => {
             const Icon = roleIcons[i % roleIcons.length];
             const isOpen = expandedId === exp.id;
             return (
-              <div key={exp.id} className="rounded-3xl bg-white border shadow-sm"
+              <div key={exp.id} className="rounded-3xl bg-background border shadow-sm"
                 style={{
                   borderColor: isOpen ? cp.border : "hsl(var(--border))",
                   boxShadow: isOpen ? `0 12px 30px ${cp.glow}` : "none",
@@ -182,7 +182,7 @@ const Experience = () => {
                   onClick={() => setExpandedId(isOpen ? null : exp.id)}
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 bg-white shadow-sm border border-border p-1 overflow-hidden">
+                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 bg-background shadow-sm border border-border p-1 overflow-hidden">
                       {exp.logo ? (
                         <img src={exp.logo} alt={exp.company} className="w-full h-full object-contain" />
                       ) : (

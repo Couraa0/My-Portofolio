@@ -43,12 +43,12 @@ const Counter = ({ target, suffix, decimals = 0, from, to }: {
 };
 
 const Stats = () => (
-  <section className="py-20 relative overflow-hidden" style={{ background: "hsl(220 20% 97%)" }}>
+  <section className="py-20 relative overflow-hidden bg-muted">
     <div className="absolute inset-0 opacity-[0.3] bg-grid pointer-events-none" />
     <div className="absolute top-0 left-0 right-0 h-px"
-      style={{ background: "linear-gradient(90deg, transparent, hsl(220 20% 88%), transparent)" }} />
+      style={{ background: "linear-gradient(90deg, transparent, hsl(var(--border)), transparent)" }} />
     <div className="absolute bottom-0 left-0 right-0 h-px"
-      style={{ background: "linear-gradient(90deg, transparent, hsl(220 20% 88%), transparent)" }} />
+      style={{ background: "linear-gradient(90deg, transparent, hsl(var(--border)), transparent)" }} />
 
     <div className="container mx-auto px-6 relative z-10">
       <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
@@ -58,10 +58,10 @@ const Stats = () => (
           <motion.div key={s.label}
             whileHover={{ y: -4, scale: 1.02 }}
             transition={{ duration: 0.2 }}
-            className="text-center space-y-2 p-6 rounded-2xl bg-white cursor-default"
-            style={{ border: `1px solid ${s.border}`, boxShadow: `0 4px 16px hsl(220 20% 70% / 0.1)` }}
+            className="text-center space-y-2 p-6 rounded-2xl bg-background cursor-default"
+            style={{ border: `1px solid ${s.border}`, boxShadow: `0 4px 16px hsl(var(--foreground) / 0.1)` }}
             onMouseEnter={e => (e.currentTarget as HTMLElement).style.boxShadow = `0 12px 32px ${s.shadow}`}
-            onMouseLeave={e => (e.currentTarget as HTMLElement).style.boxShadow = `0 4px 16px hsl(220 20% 70% / 0.1)`}>
+            onMouseLeave={e => (e.currentTarget as HTMLElement).style.boxShadow = `0 4px 16px hsl(var(--foreground) / 0.1)`}>
             <Counter target={s.value} suffix={s.suffix} decimals={s.decimals} from={s.from} to={s.to} />
             <p className="text-sm text-muted-foreground">{s.label}</p>
           </motion.div>

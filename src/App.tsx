@@ -9,30 +9,33 @@ import NetworkDetector from "@/components/NetworkDetector";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 // import ServerError from "./pages/ServerError";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const queryClient = new QueryClient();
 
 const App = () => (
-  <ErrorBoundary>
-    <NetworkDetector>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              {/* Preview route — hapus setelah selesai testing */}
-              {/* <Route path="/server-error" element={<ServerError />} /> */}
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-          <Analytics />
-        </TooltipProvider>
-      </QueryClientProvider>
-    </NetworkDetector>
-  </ErrorBoundary>
+  <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+    <ErrorBoundary>
+      <NetworkDetector>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                {/* Preview route — hapus setelah selesai testing */}
+                {/* <Route path="/server-error" element={<ServerError />} /> */}
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+            <Analytics />
+          </TooltipProvider>
+        </QueryClientProvider>
+      </NetworkDetector>
+    </ErrorBoundary>
+  </ThemeProvider>
 );
 
 export default App;
