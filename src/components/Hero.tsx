@@ -103,7 +103,7 @@ const Hero = () => {
               {t("View My Projects")}
             </button>
             <div className="relative inline-flex items-center gap-4">
-              <a href="https://drive.google.com/file/d/1JHdnHLOJfDU3Wf3jK1hrfgMrzbeGfQdT/view?usp=drive_link" 
+              <a href="https://drive.google.com/file/d/1JHdnHLOJfDU3Wf3jK1hrfgMrzbeGfQdT/view?usp=drive_link"
                 target="_blank" rel="noopener noreferrer"
                 className="rounded-full border px-5 py-3 sm:px-7 sm:py-3.5 text-[13px] sm:text-sm font-semibold transition-all duration-300 hover:scale-105 border-border text-foreground hover:bg-secondary/80 flex items-center gap-2"
               >
@@ -248,7 +248,7 @@ const Hero = () => {
               </div>
               <div className="text-left">
                 <p className="font-heading text-lg font-bold leading-none text-foreground">10+</p>
-                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">{t("Projects Completed")}</p>
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">Projects</p>
               </div>
             </motion.div>
 
@@ -263,7 +263,7 @@ const Hero = () => {
               </div>
               <div className="text-left">
                 <p className="font-heading text-lg font-bold leading-none text-foreground">3+</p>
-                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">{t("Years Experience")}</p>
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">Yrs Exp</p>
               </div>
             </motion.div>
           </div>
