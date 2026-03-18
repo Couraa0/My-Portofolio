@@ -29,6 +29,7 @@ const Projects = () => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<Filter>("Professional");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const filtered = filter === "All" ? projects : projects.filter((p) => p.category === filter);
 
@@ -103,7 +104,41 @@ const Projects = () => {
         project={selectedProject} 
         isOpen={!!selectedProject} 
         onClose={() => setSelectedProject(null)} 
+        onImageClick={(img) => setSelectedImage(img)}
       />
+
+      {/* Fullscreen Image Lightbox */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedImage(null)}
+            className="fixed inset-0 z-[120] flex items-center justify-center bg-black/95 backdrop-blur-xl p-4 cursor-zoom-out"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative max-w-6xl w-full max-h-[90vh] flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setSelectedImage(null)}
+                className="absolute -top-12 right-0 text-white hover:scale-110 transition-transform p-2 bg-white/10 rounded-full"
+              >
+                <X size={28} />
+              </button>
+              <img
+                src={selectedImage}
+                alt="Fullscreen project view"
+                className="w-full h-full object-contain rounded-lg shadow-2xl border border-white/10"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
@@ -142,7 +177,12 @@ const ProjectCard = ({ project, index, palette, onDetailClick }: {
       whileHover={{ y: -6 }}
       onClick={onDetailClick}
       className="rounded-2xl bg-background overflow-hidden group border cursor-pointer h-full flex flex-col"
-      style={{ borderColor: palette.border, boxShadow: `0 2px 12px hsl(var(--foreground) / 0.08)`, transition: "box-shadow 0.3s, border-color 0.3s" }}
+      style={{ 
+        borderColor: palette.border, 
+        boxShadow: `0 2px 12px hsl(var(--foreground) / 0.08)`, 
+        transition: "all 0.3s",
+        ["--hover-color" as any]: palette.tag
+      }}
       onMouseEnter={e => (e.currentTarget as HTMLElement).style.boxShadow = `0 12px 40px ${palette.from}15`}
       onMouseLeave={e => (e.currentTarget as HTMLElement).style.boxShadow = `0 2px 12px hsl(var(--foreground) / 0.08)`}>
 
@@ -199,9 +239,9 @@ const ProjectCard = ({ project, index, palette, onDetailClick }: {
           </button>
         </div>
 
-        <h3 className="font-heading font-bold text-foreground text-sm flex items-center justify-between group-hover:text-primary transition-colors">
+        <h3 className="font-heading font-bold text-foreground text-sm flex items-center justify-between group-hover:text-[var(--hover-color)] transition-colors">
           {project.title}
-          <ChevronRight size={14} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+          <ChevronRight size={14} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[var(--hover-color)]" />
         </h3>
         <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed flex-1">{t(project.description)}</p>
 
@@ -222,7 +262,12 @@ const ProjectCard = ({ project, index, palette, onDetailClick }: {
 
 /* ── Project Detail Modal ────────────────────────────── */
 
-const ProjectDetailModal = ({ project, isOpen, onClose }: { project: Project | null, isOpen: boolean, onClose: () => void }) => {
+const ProjectDetailModal = ({ project, isOpen, onClose, onImageClick }: { 
+  project: Project | null, 
+  isOpen: boolean, 
+  onClose: () => void,
+  onImageClick: (img: string) => void 
+}) => {
   const { t } = useTranslation();
   if (!project) return null;
 
@@ -254,15 +299,27 @@ const ProjectDetailModal = ({ project, isOpen, onClose }: { project: Project | n
               <div className="grid md:grid-cols-2">
                 {/* Visual Left */}
                 <div className="p-6 md:p-8 flex flex-col justify-center bg-muted/30">
-                  <div className="rounded-2xl overflow-hidden border border-border shadow-xl aspect-video bg-background group relative">
+                  <div 
+                    className={`rounded-2xl overflow-hidden border border-border shadow-xl aspect-video bg-background group relative ${project.image ? 'cursor-zoom-in' : ''}`}
+                    onClick={() => project.image && onImageClick(project.image)}
+                  >
                     {project.image ? (
-                       <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                       <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                     ) : (
                       <div className="flex items-center justify-center h-full text-4xl font-black opacity-10" style={{ color: palette.from }}>
                         {project.title.substring(0, 2).toUpperCase()}
                       </div>
                     )}
-                    <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
+                    
+                    {project.image && (
+                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                        <div className="bg-white/20 backdrop-blur-md p-2 rounded-full border border-white/30 text-white">
+                          <Maximize2 size={18} />
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent pointer-events-none">
                        <span className="text-[10px] font-bold text-white/90 uppercase tracking-widest">{t(project.category)}</span>
                     </div>
                   </div>
