@@ -131,8 +131,7 @@ const Footer = () => {
         {/* Bottom bar */}
         <div className="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4" style={{ borderTop: "1px solid hsl(var(--border))" }}>
           <p className="text-xs text-muted-foreground flex items-center gap-1.5">
-            © {new Date().getFullYear()} Muhammad Rakha Syamputra. {t("Made with")}
-            <Heart size={12} className="text-rose-500 inline" fill="currentColor" />
+            © {new Date().getFullYear()} Muhammad Rakha Syamputra.
           </p>
           <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             aria-label="Back to top"
