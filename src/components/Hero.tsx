@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
 import { Github, Linkedin, ArrowDown, Sparkles, Briefcase, Instagram, MessageCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -8,10 +9,36 @@ const fadeUp: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.25, 0.4, 0.25, 1] as const } },
 };
 
+const typingRoles = ["IT Project Manager", "Product Manager", "Software Developer", "Tech Leader"];
+
 const Hero = () => {
   const { t } = useTranslation();
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const currentRole = typingRoles[roleIndex];
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (!isDeleting && charIndex < currentRole.length) {
+      timeout = setTimeout(() => setCharIndex(charIndex + 1), 80);
+    } else if (!isDeleting && charIndex === currentRole.length) {
+      timeout = setTimeout(() => setIsDeleting(true), 2000);
+    } else if (isDeleting && charIndex > 0) {
+      timeout = setTimeout(() => setCharIndex(charIndex - 1), 40);
+    } else if (isDeleting && charIndex === 0) {
+      setIsDeleting(false);
+      setRoleIndex((roleIndex + 1) % typingRoles.length);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [charIndex, isDeleting, roleIndex]);
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden pt-20 pb-10 sm:pb-0 bg-background">
+      {/* Mesh gradient overlay */}
+      <div className="absolute inset-0 mesh-gradient pointer-events-none" />
+
       {/* Decorative background elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden bg-background">
         {/* Graph Paper Grid */}
@@ -79,15 +106,15 @@ const Hero = () => {
 
           <motion.div variants={fadeUp}>
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3">
-              {[
-                { label: "IT Project + Product Manager", bg: "hsl(250 84% 60% / 0.12)", border: "hsl(250 84% 60% / 0.25)", color: "hsl(250 84% 60%)" },
-                { label: "Software Developer Enthusiast", bg: "hsl(196 100% 47% / 0.12)", border: "hsl(196 100% 47% / 0.25)", color: "hsl(196 100% 47%)" },
-              ].map((r, i) => (
-                <span key={i} className="rounded-full px-2.5 py-1 sm:px-3 sm:py-1.5 text-[10px] sm:text-xs font-semibold"
-                  style={{ background: r.bg, border: `1px solid ${r.border}`, color: r.color }}>
-                  {r.label}
+              {/* Typing animation role */}
+              <div className="rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs font-semibold inline-flex items-center gap-2"
+                style={{ background: "hsl(250 84% 60% / 0.12)", border: "1px solid hsl(250 84% 60% / 0.25)", color: "hsl(250 84% 60%)" }}>
+                <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
+                <span className="min-w-[140px]">
+                  {typingRoles[roleIndex].substring(0, charIndex)}
+                  <span className="inline-block w-[2px] h-[14px] bg-current ml-0.5 align-middle" style={{ animation: "blink 1s step-end infinite" }} />
                 </span>
-              ))}
+              </div>
             </div>
           </motion.div>
 

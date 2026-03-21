@@ -8,10 +8,14 @@ import Stats from "@/components/Stats";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import Guestbook from "@/components/Guestbook";
+import ScrollProgress from "@/components/ScrollProgress";
+import CursorSpotlight from "@/components/CursorSpotlight";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background bg-grid">
+    <div className="min-h-screen bg-background bg-grid noise-overlay">
+      <CursorSpotlight />
+      <ScrollProgress />
       <Navbar />
       <Hero />
       <About />
@@ -27,3 +31,4 @@ const Index = () => {
 };
 
 export default Index;
+
