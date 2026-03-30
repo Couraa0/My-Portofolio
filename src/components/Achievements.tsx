@@ -1,415 +1,321 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import AnimatedSection from "./AnimatedSection";
-import { Award, Trophy, Medal, Star, ExternalLink, X, ChevronRight, GraduationCap, ShieldCheck, Zap } from "lucide-react";
+import { useState, useMemo, useEffect, Fragment } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
+import AnimatedSection from "./AnimatedSection";
+import { Search, ExternalLink, QrCode, X, Loader2, ChevronLeft, ChevronRight, Award } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { getAchievements, type Achievement as DBAchievement } from "@/lib/supabase";
 
-type Achievement = {
-  id: number;
+// Local type that matches the Supabase DB fields mapped to camelCase
+interface Achievement {
+  id: string;
   title: string;
   issuer: string;
-  date: string;
-  category: "award" | "certificate" | "honor";
-  description: string;
+  issueDate: string;
+  credentialId?: string;
   credentialUrl?: string;
-  image?: string;
-  icon: "trophy" | "award" | "medal" | "star" | "shield" | "zap" | "grad";
-  color: string;
-};
+  images: string[];
+  type: string;
+  category: string;
+}
 
-const achievements: Achievement[] = [
-  {
-    id: 1,
-    title: "Achievement EDUFAIR Title",
-    issuer: "HIMASI UNSIKA",
-    date: "2024",
-    category: "award",
-    description: "Achievement EDUFAIR Desc",
-    icon: "trophy",
-    color: "hsl(37 100% 50%)",
-  },
-  {
-    id: 2,
-    title: "Achievement PM Cert Title",
-    issuer: "Dicoding Academy",
-    date: "2024",
-    category: "certificate",
-    description: "Achievement PM Cert Desc",
-    credentialUrl: "#",
-    icon: "award",
-    color: "hsl(250 84% 60%)",
-  },
-  {
-    id: 3,
-    title: "Achievement GPA Honor Title",
-    issuer: "Universitas Singaperbangsa Karawang",
-    date: "2023 – Present",
-    category: "honor",
-    description: "Achievement GPA Honor Desc",
-    icon: "grad",
-    color: "hsl(158 80% 42%)",
-  },
-  {
-    id: 4,
-    title: "Achievement Agile Cert Title",
-    issuer: "Coursera / Google",
-    date: "2024",
-    category: "certificate",
-    description: "Achievement Agile Cert Desc",
-    credentialUrl: "#",
-    icon: "shield",
-    color: "hsl(196 100% 47%)",
-  },
-  {
-    id: 5,
-    title: "Achievement Tixchain Title",
-    issuer: "Tixchain.id",
-    date: "2023",
-    category: "award",
-    description: "Achievement Tixchain Desc",
-    icon: "zap",
-    color: "hsl(344 85% 60%)",
-  },
-  {
-    id: 6,
-    title: "Achievement Web Dev Cert Title",
-    issuer: "Dicoding Academy",
-    date: "2024",
-    category: "certificate",
-    description: "Achievement Web Dev Cert Desc",
-    credentialUrl: "#",
-    icon: "star",
-    color: "hsl(37 100% 50%)",
-  },
-];
+function adaptAchievement(a: DBAchievement): Achievement {
+  return {
+    id: a.id!,
+    title: a.title,
+    issuer: a.issuer,
+    issueDate: a.issue_date,
+    credentialId: a.credential_id,
+    credentialUrl: a.credential_url,
+    images: a.images || [],
+    type: a.type,
+    category: a.category,
+  };
+}
 
-const iconMap = {
-  trophy: Trophy,
-  award: Award,
-  medal: Medal,
-  star: Star,
-  shield: ShieldCheck,
-  zap: Zap,
-  grad: GraduationCap,
-};
-
-const categoryStyles: Record<Achievement["category"], { label: string; bg: string; border: string; color: string }> = {
-  award: { label: "Award", bg: "hsl(37 100% 50% / 0.08)", border: "hsl(37 100% 50% / 0.2)", color: "hsl(37 100% 40%)" },
-  certificate: { label: "Certificate", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.2)", color: "hsl(250 84% 50%)" },
-  honor: { label: "Honor", bg: "hsl(158 80% 42% / 0.08)", border: "hsl(158 80% 42% / 0.2)", color: "hsl(158 80% 35%)" },
-};
-
-type Filter = "all" | "award" | "certificate" | "honor";
-
-const Achievements = () => {
+export default function Achievements() {
   const { t } = useTranslation();
-  const [filter, setFilter] = useState<Filter>("all");
-  const [selected, setSelected] = useState<Achievement | null>(null);
+  const [search, setSearch] = useState("");
+  const [selectedAchievement, setSelectedAchievement] = useState<Achievement | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [achievementsData, setAchievementsData] = useState<Achievement[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filtered = filter === "all" ? achievements : achievements.filter((a) => a.category === filter);
+  useEffect(() => {
+    getAchievements()
+      .then((data) => setAchievementsData(data.map(adaptAchievement)))
+      .catch((e) => setError(e.message))
+      .finally(() => setLoading(false));
+  }, []);
 
-  const filters: { key: Filter; label: string; icon: React.ReactNode }[] = [
-    { key: "all", label: t("All"), icon: <Star size={14} /> },
-    { key: "award", label: t("Awards"), icon: <Trophy size={14} /> },
-    { key: "certificate", label: t("Certificates"), icon: <Award size={14} /> },
-    { key: "honor", label: t("Honors"), icon: <Medal size={14} /> },
-  ];
+  const filteredData = useMemo(() => {
+    return achievementsData.filter((item) => {
+      return item.title.toLowerCase().includes(search.toLowerCase()) || 
+             item.issuer.toLowerCase().includes(search.toLowerCase());
+    });
+  }, [search, achievementsData]);
+
 
   return (
-    <section className="py-28 bg-background relative overflow-hidden">
-      {/* Decorative elements */}
-      <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-px"
-        style={{ background: "linear-gradient(90deg, transparent, hsl(37 100% 50% / 0.25), transparent)" }}
-      />
-
-      {/* Background blobs */}
-      <div
-        className="absolute top-20 left-0 w-[500px] h-[500px] rounded-full pointer-events-none opacity-[0.03] blur-[100px]"
-        style={{ background: "radial-gradient(circle, hsl(37 100% 50%), transparent 70%)" }}
-      />
-      <div
-        className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full pointer-events-none opacity-[0.03] blur-[100px]"
-        style={{ background: "radial-gradient(circle, hsl(250 84% 60%), transparent 70%)" }}
-      />
-
-      {/* Floating doodles */}
-      <motion.div
-        animate={{ y: [0, -12, 0], rotate: [0, 10, 0] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        className="hidden md:block absolute top-28 left-[12%] opacity-[0.35] text-amber-500 z-0"
-      >
-        <Trophy size={42} />
-      </motion.div>
-      <motion.div
-        animate={{ y: [0, 10, 0], rotate: [-5, 5, -5] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        className="hidden md:block absolute top-28 right-[12%] opacity-[0.35] text-violet-500 z-0"
-      >
-        <Award size={40} />
-      </motion.div>
-
-      <div className="container mx-auto px-6 relative z-10">
+    <section className="py-24 bg-background relative z-10 min-h-screen">
+      <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
         <AnimatedSection>
-          <div className="text-center mb-12">
-            <span
-              className="inline-block rounded-full px-3 py-1 sm:px-4 sm:py-1.5 text-[10px] sm:text-xs font-semibold mb-4"
-              style={{
-                background: "hsl(37 100% 50% / 0.08)",
-                border: "1px solid hsl(37 100% 50% / 0.25)",
-                color: "hsl(37 100% 40%)",
-              }}
-            >
-              {t("Achievements Badge")}
-            </span>
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-foreground">
-              {t("Achievements Title Part1")}{" "}
-              <span className="text-gradient-rose">{t("Achievements Title Part2")}</span>
+          <div className="mb-10 pb-6 border-b border-border/60">
+            <h2 className="font-heading text-2xl md:text-3xl font-bold flex items-center gap-3 mb-3 text-foreground">
+              <Award size={28} className="text-primary" />
+              Pencapaian
             </h2>
-            <p className="text-muted-foreground mt-3 text-sm max-w-md mx-auto">
-              {t("Achievements Subtitle")}
+            <p className="text-muted-foreground text-sm max-w-2xl">
+              Koleksi sertifikat dan lencana yang telah saya raih sepanjang perjalanan profesional dan akademik saya.
             </p>
           </div>
         </AnimatedSection>
 
-        {/* Filter tabs */}
+        {/* Search */}
         <AnimatedSection delay={0.1}>
-          <div className="flex justify-center flex-wrap gap-2 mb-12">
-            {filters.map((f) => (
-              <button
-                key={f.key}
-                onClick={() => setFilter(f.key)}
-                className="rounded-full px-4 py-2 sm:px-5 sm:py-2.5 text-[11px] sm:text-xs font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2"
-                style={
-                  filter === f.key
-                    ? {
-                        background: "linear-gradient(135deg, hsl(37 100% 50%), hsl(344 85% 60%))",
-                        color: "white",
-                        boxShadow: "0 4px 16px hsl(37 100% 50% / 0.3)",
-                      }
-                    : {
-                        background: "hsl(var(--muted))",
-                        border: "1px solid hsl(var(--border))",
-                        color: "hsl(215 16% 48%)",
-                      }
-                }
-              >
-                {f.icon} {f.label}
-              </button>
-            ))}
+          <div className="mb-6">
+            <div className="relative w-full">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+              <input
+                type="text"
+                placeholder="Search achievements..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 bg-card border border-border/50 rounded-lg outline-none focus:ring-2 focus:ring-primary/50 text-sm h-11"
+              />
+            </div>
+          </div>
+          <div className="mb-8 text-sm text-muted-foreground font-medium">
+            Total: {filteredData.length}
           </div>
         </AnimatedSection>
 
-        {/* Cards Grid */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={filter}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto"
-          >
-            {filtered.map((item, i) => {
-              const Icon = iconMap[item.icon];
-              const cat = categoryStyles[item.category];
-              return (
-                <motion.div
+        {/* Loading Skeleton */}
+        {loading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="bg-card border border-border/50 rounded-2xl overflow-hidden animate-pulse flex flex-col">
+                <div className="aspect-[4/3] bg-muted" />
+                <div className="p-5 space-y-2">
+                  <div className="h-3 bg-muted rounded w-1/2" />
+                  <div className="h-4 bg-muted rounded w-full" />
+                  <div className="h-3 bg-muted rounded w-3/4" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Error */}
+        {error && !loading && (
+          <div className="flex items-center justify-center gap-3 py-16 text-muted-foreground">
+            <Loader2 size={20} className="animate-spin" />
+            <span className="text-sm">Gagal memuat data: {error}</span>
+          </div>
+        )}
+
+        {/* Grid */}
+        <AnimatedSection delay={0.2}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredData.map((item) => (
+               <div 
                   key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.07, duration: 0.4 }}
-                  whileHover={{ y: -8, scale: 1.02 }}
-                  onClick={() => setSelected(item)}
-                  className="group relative rounded-2xl bg-background border overflow-hidden cursor-pointer h-full flex flex-col"
-                  style={{
-                    borderColor: `${item.color}33`,
-                    boxShadow: `0 2px 16px ${item.color}08`,
+                  className="bg-card border border-border/50 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group flex flex-col h-full hover:-translate-y-1"
+                  onClick={() => {
+                    setSelectedAchievement(item);
+                    setCurrentImageIndex(0);
                   }}
-                  onMouseEnter={(e) =>
-                    ((e.currentTarget as HTMLElement).style.boxShadow = `0 16px 48px ${item.color}15`)
-                  }
-                  onMouseLeave={(e) =>
-                    ((e.currentTarget as HTMLElement).style.boxShadow = `0 2px 16px ${item.color}08`)
-                  }
-                >
-                  {/* Top accent bar */}
-                  <div
-                    className="h-1 w-full"
-                    style={{ background: `linear-gradient(90deg, ${item.color}, ${item.color}44)` }}
-                  />
-
-                  {/* Hover glow */}
-                  <div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
-                    style={{
-                      background: `radial-gradient(circle at 50% 0%, ${item.color}08, transparent 70%)`,
-                    }}
-                  />
-
-                  <div className="p-6 flex flex-col flex-1">
-                    {/* Top row: Icon + Category */}
-                    <div className="flex items-start justify-between mb-4">
-                      <div
-                        className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                        style={{ background: `${item.color}12`, color: item.color }}
-                      >
-                        <Icon size={22} />
+               >
+                  <div className="aspect-[4/3] relative overflow-hidden bg-white/5 border-b border-border/50 shrink-0">
+                    {item.images && item.images.length > 0 ? (
+                      <img 
+                        src={item.images[0]} 
+                        alt={item.title} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-muted">
+                        <span className="text-xs text-muted-foreground">No Image</span>
                       </div>
-                      <span
-                        className="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider"
-                        style={{ background: cat.bg, color: cat.color, border: `1px solid ${cat.border}` }}
-                      >
-                        {t(cat.label)}
+                    )}
+                  </div>
+                  <div className="p-5 flex flex-col grow">
+                    <p className="text-[10px] font-mono text-muted-foreground mb-2 truncate bg-muted/40 w-fit px-2 py-0.5 rounded">
+                      {item.credentialId || "CREDENTIAL ID HIDDEN"}
+                    </p>
+                    <h3 className="font-heading font-bold text-lg mb-1.5 text-foreground group-hover:text-amber-500 transition-colors line-clamp-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-1">
+                      {item.issuer}
+                    </p>
+                    <div className="flex gap-2 mb-4 flex-wrap mt-auto pt-2">
+                      <span className="text-[10px] items-center flex uppercase font-bold tracking-wider px-2 py-1 rounded-full bg-secondary text-secondary-foreground border border-border/50">
+                        {item.type}
+                      </span>
+                      <span className="text-[10px] items-center flex uppercase font-bold tracking-wider px-2 py-1 rounded-full bg-secondary text-secondary-foreground border border-border/50">
+                        {item.category}
                       </span>
                     </div>
-
-                    {/* Title */}
-                    <h3 className="font-heading font-bold text-foreground text-[15px] leading-snug mb-1.5 group-hover:text-[var(--hover-c)] transition-colors"
-                      style={{ ["--hover-c" as string]: item.color }}>
-                      {t(item.title)}
-                    </h3>
-
-                    {/* Issuer + Date */}
-                    <p className="text-xs text-muted-foreground mb-3">
-                      {item.issuer} · <span className="font-semibold">{item.date}</span>
-                    </p>
-
-                    {/* Description preview */}
-                    <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2 flex-1">
-                      {t(item.description)}
-                    </p>
-
-                    {/* Bottom: View detail */}
-                    <div className="flex items-center justify-between mt-4 pt-4" style={{ borderTop: `1px solid hsl(var(--border))` }}>
-                      <span className="text-[11px] font-semibold text-muted-foreground group-hover:text-foreground transition-colors flex items-center gap-1">
-                        {t("View Details")}
-                        <ChevronRight size={12} className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-                      </span>
-                      {item.credentialUrl && (
-                        <a
-                          href={item.credentialUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="text-[10px] font-semibold flex items-center gap-1 px-2 py-1 rounded-md hover:bg-muted transition-colors"
-                          style={{ color: item.color }}
-                        >
-                          <ExternalLink size={10} /> {t("Credential")}
-                        </a>
-                      )}
+                    <div className="flex justify-between items-center text-[10px] text-muted-foreground uppercase tracking-wide border-t border-border/40 pt-3">
+                      <span>Issued on {item.issueDate}</span>
+                      <ExternalLink size={14} className="opacity-50 group-hover:opacity-100 transition-opacity" />
                     </div>
                   </div>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </AnimatePresence>
+               </div>
+            ))}
+          </div>
+          {filteredData.length === 0 && (
+            <div className="text-center py-24 text-muted-foreground">
+              <p>Tidak ada pencapaian yang sesuai dengan filter pencarian.</p>
+            </div>
+          )}
+        </AnimatedSection>
       </div>
 
       {/* Detail Modal */}
-      <AnimatePresence>
-        {selected && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelected(null)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-md"
-            />
+      {createPortal(
+        <AnimatePresence>
+          {selectedAchievement && (
+           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 xl:p-8">
+             <motion.div
+               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               exit={{ opacity: 0 }}
+               onClick={() => setSelectedAchievement(null)}
+               className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+             />
 
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="relative w-full max-w-lg bg-background rounded-3xl overflow-hidden shadow-2xl border border-border"
-            >
-              {/* Close */}
-              <button
-                onClick={() => setSelected(null)}
-                className="absolute top-4 right-4 z-50 p-2 rounded-full bg-muted hover:bg-muted/80 text-foreground transition-colors"
-              >
-                <X size={18} />
-              </button>
+             <motion.div
+               initial={{ scale: 0.95, opacity: 0, y: 20 }}
+               animate={{ scale: 1, opacity: 1, y: 0 }}
+               exit={{ scale: 0.95, opacity: 0, y: 20 }}
+               className="relative w-full max-w-5xl bg-background rounded-2xl overflow-hidden shadow-2xl border border-border flex flex-col md:flex-row h-auto max-h-[90vh]"
+             >
+                <button
+                  onClick={() => setSelectedAchievement(null)}
+                  className="absolute top-4 right-4 z-[110] p-2 rounded-full bg-black/20 hover:bg-black/40 text-white transition-colors backdrop-blur-md"
+                >
+                  <X size={18} />
+                </button>
 
-              {/* Header gradient */}
-              <div
-                className="h-2 w-full"
-                style={{
-                  background: `linear-gradient(90deg, ${selected.color}, ${selected.color}66, transparent)`,
-                }}
-              />
+                {/* Left Side: Cert Images Carousel */}
+                <div className="md:w-[60%] bg-muted/30 p-4 shrink-0 md:p-8 flex items-center justify-center border-b md:border-b-0 md:border-r border-border/40 min-h-[220px] md:min-h-[300px] relative group">
+                   {selectedAchievement.images && selectedAchievement.images.length > 0 ? (
+                     <div className="relative w-full h-full flex flex-col items-center justify-center">
+                       <img 
+                         src={selectedAchievement.images[currentImageIndex]} 
+                         alt={`${selectedAchievement.title} - Image ${currentImageIndex + 1}`} 
+                         className="max-w-full max-h-[40vh] md:max-h-[70vh] object-contain rounded shadow-lg border border-border/20 bg-white transition-opacity duration-300" 
+                       />
+                       
+                       {/* Carousel Controls */}
+                       {selectedAchievement.images.length > 1 && (
+                         <>
+                           <button 
+                             onClick={(e) => {
+                               e.stopPropagation();
+                               setCurrentImageIndex((prev) => prev === 0 ? selectedAchievement.images.length - 1 : prev - 1);
+                             }}
+                             className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                           >
+                             <ChevronLeft size={24} />
+                           </button>
+                           
+                           <button 
+                             onClick={(e) => {
+                               e.stopPropagation();
+                               setCurrentImageIndex((prev) => (prev + 1) % selectedAchievement.images.length);
+                             }}
+                             className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                           >
+                             <ChevronRight size={24} />
+                           </button>
 
-              <div className="p-8">
-                {/* Icon + Category */}
-                <div className="flex items-center gap-4 mb-6">
-                  <div
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center"
-                    style={{ background: `${selected.color}12`, color: selected.color }}
-                  >
-                    {(() => {
-                      const IconComp = iconMap[selected.icon];
-                      return <IconComp size={28} />;
-                    })()}
-                  </div>
-                  <div>
-                    <span
-                      className="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider"
-                      style={{
-                        background: categoryStyles[selected.category].bg,
-                        color: categoryStyles[selected.category].color,
-                        border: `1px solid ${categoryStyles[selected.category].border}`,
-                      }}
-                    >
-                      {t(categoryStyles[selected.category].label)}
-                    </span>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      {selected.issuer} · {selected.date}
-                    </p>
-                  </div>
+                           {/* Dots indicators */}
+                           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 bg-black/30 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                             {selectedAchievement.images.map((_, idx) => (
+                               <button
+                                 key={idx}
+                                 onClick={(e) => {
+                                   e.stopPropagation();
+                                   setCurrentImageIndex(idx);
+                                 }}
+                                 className={`w-2 h-2 rounded-full transition-all ${currentImageIndex === idx ? "bg-white scale-125" : "bg-white/50 hover:bg-white/80"}`}
+                               />
+                             ))}
+                           </div>
+                         </>
+                       )}
+                     </div>
+                   ) : (
+                     <div className="w-full h-full flex flex-col items-center justify-center opacity-50">
+                       <span>Tidak ada gambar ditemukan.</span>
+                     </div>
+                   )}
                 </div>
+                
+                {/* Right Side: details */}
+                <div className="md:w-[40%] p-6 md:p-8 flex flex-col bg-card overflow-y-auto flex-1">
+                   <h3 className="text-xl md:text-2xl font-bold leading-snug mb-2 text-foreground pr-8">
+                     {selectedAchievement.title}
+                   </h3>
+                   <p className="text-sm font-medium text-muted-foreground mb-8">
+                     {selectedAchievement.issuer}
+                   </p>
+                   
+                   <div className="space-y-6 flex-1">
+                      {selectedAchievement.credentialId && (
+                        <div>
+                           <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1 font-semibold">Credential ID</p>
+                           <p className="text-sm font-mono bg-muted w-fit max-w-full break-all px-2 py-1 rounded border border-border/50 text-foreground">
+                             {selectedAchievement.credentialId}
+                           </p>
+                        </div>
+                      )}
 
-                {/* Title */}
-                <h3 className="font-heading text-xl font-bold text-foreground mb-4">
-                  {t(selected.title)}
-                </h3>
+                      <div>
+                         <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1 font-semibold">Type</p>
+                         <p className="text-sm font-medium text-foreground">{selectedAchievement.type}</p>
+                      </div>
+                      
+                      <div>
+                         <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1 font-semibold">Category</p>
+                         <p className="text-sm font-medium text-foreground">{selectedAchievement.category}</p>
+                      </div>
 
-                {/* Description */}
-                <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-                  {t(selected.description)}
-                </p>
+                      <div>
+                         <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1 font-semibold">Issue Date</p>
+                         <p className="text-sm font-medium text-foreground">{selectedAchievement.issueDate}</p>
+                      </div>
+                   </div>
 
-                {/* Actions */}
-                <div className="flex flex-wrap gap-3">
-                  {selected.credentialUrl && (
-                    <a
-                      href={selected.credentialUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-105 active:scale-95"
-                      style={{
-                        background: `linear-gradient(135deg, ${selected.color}, ${selected.color}bb)`,
-                        boxShadow: `0 4px 16px ${selected.color}30`,
-                      }}
-                    >
-                      <ExternalLink size={14} /> {t("View Credential")}
-                    </a>
-                  )}
-                  <button
-                    onClick={() => setSelected(null)}
-                    className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-muted border border-border text-foreground hover:bg-muted/80 transition-all"
-                  >
-                    {t("Close")}
-                  </button>
+                   <div className="pt-8 mt-4 border-t border-border/40">
+                      <a 
+                        href={selectedAchievement.credentialUrl !== "#" ? selectedAchievement.credentialUrl : undefined}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={`flex items-center justify-center gap-2 w-full py-3 rounded-full text-sm font-bold transition-all
+                          ${selectedAchievement.credentialUrl !== "#" ? "bg-amber-400 hover:bg-amber-500 text-amber-950 shadow hover:shadow-md" : "bg-muted text-muted-foreground cursor-not-allowed"}
+                        `}
+                      >
+                        {selectedAchievement.credentialUrl !== "#" ? (
+                           <>
+                              <QrCode size={16} /> Credential URL
+                           </>
+                        ) : (
+                          "Credential URL Unavailable"
+                        )}
+                      </a>
+                   </div>
                 </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+             </motion.div>
+           </div>
+         )}
+       </AnimatePresence>,
+       document.body
+     )}
     </section>
   );
-};
-
-export default Achievements;
+}

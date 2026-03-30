@@ -137,7 +137,7 @@ export const projects: Project[] = [
     role: "Fullstack Developer",
     tech: ["Java", "Java Swing", "iText PDF", "MySQL"],
     githubUrl: "https://github.com/Couraa0/GUI-Parkir",
-    color: "indigo",
+    color: "violet",
     image: "/Parkir.png",
   },
   {

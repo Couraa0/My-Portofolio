@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Github, Linkedin, Mail, ArrowUp, Instagram, MessageCircle, Heart, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 const socials = [
   { href: "https://www.linkedin.com/in/rakha05/", icon: <Linkedin size={16} />, label: "LinkedIn", color: "hsl(196 100% 36%)", bg: "hsl(196 100% 47% / 0.08)", border: "hsl(196 100% 47% / 0.2)" },
@@ -12,11 +13,12 @@ const socials = [
 ];
 
 const quickLinks = [
-  { label: "About", href: "#about" },
-  { label: "Experience", href: "#experience" },
-  { label: "Projects", href: "#projects" },
-  { label: "Skills", href: "#skills" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", to: "/" },
+  { label: "About", to: "/about" },
+  { label: "Experience", to: "/experience" },
+  { label: "Projects", to: "/projects" },
+  { label: "Achievements", to: "/achievements" },
+  { label: "Contact", to: "/contact" },
 ];
 
 const Footer = () => {
@@ -40,13 +42,8 @@ const Footer = () => {
     }
   };
 
-  const scrollTo = (id: string) => {
-    const el = document.querySelector(id);
-    el?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
-    <footer className="relative bg-background overflow-hidden">
+    <footer className="relative bg-background border-t border-border overflow-hidden">
       {/* Animated top gradient line */}
       <div className="h-px w-full" style={{
         background: "linear-gradient(90deg, transparent, hsl(250 84% 60% / 0.4), hsl(196 100% 47% / 0.4), hsl(344 85% 60% / 0.3), transparent)"
@@ -58,13 +55,15 @@ const Footer = () => {
 
           {/* Brand / About */}
           <div className="flex flex-col items-center md:items-start gap-4">
-            <span 
-              onClick={handleBrandClick}
-              className="font-heading font-bold text-2xl text-gradient cursor-pointer select-none"
-              title="Click me!"
-            >
-              Rakha.
-            </span>
+            <Link to="/">
+              <span 
+                onClick={handleBrandClick}
+                className="font-heading font-bold text-2xl text-gradient cursor-pointer select-none"
+                title="Click me!"
+              >
+                Rakha.
+              </span>
+            </Link>
             <p className="text-sm text-muted-foreground max-w-xs text-center md:text-left leading-relaxed">
               {t("Footer Description")}
             </p>
@@ -82,13 +81,13 @@ const Footer = () => {
             <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{t("Quick Links")}</p>
             <div className="flex flex-wrap justify-center gap-2">
               {quickLinks.map((link) => (
-                <button
+                <Link
                   key={link.label}
-                  onClick={() => scrollTo(link.href)}
+                  to={link.to}
                   className="rounded-full px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-all duration-200 border border-transparent hover:border-border"
                 >
                   {t(link.label)}
-                </button>
+                </Link>
               ))}
             </div>
           </div>
@@ -133,20 +132,6 @@ const Footer = () => {
           <p className="text-xs text-muted-foreground flex items-center gap-1.5">
             © {new Date().getFullYear()} Muhammad Rakha Syamputra.
           </p>
-          <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            aria-label="Back to top"
-            className="w-9 h-9 rounded-full border flex items-center justify-center text-muted-foreground transition-all duration-300 hover:scale-110 hover:text-white"
-            style={{ borderColor: "hsl(var(--border))" }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.background = "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))";
-              (e.currentTarget as HTMLElement).style.borderColor = "transparent";
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.background = "";
-              (e.currentTarget as HTMLElement).style.borderColor = "hsl(var(--border))";
-            }}>
-            <ArrowUp size={16} />
-          </button>
         </div>
       </div>
     </footer>

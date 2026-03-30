@@ -40,7 +40,7 @@ const About = () => {
   ];
 
   return (
-  <section id="about" className="py-28 bg-background relative overflow-hidden">
+  <section id="about" className="py-24 bg-background relative overflow-hidden">
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-px"
       style={{ background: "linear-gradient(90deg, transparent, hsl(250 84% 60% / 0.2), transparent)" }} />
     {/* Floating Doodles - Positioned near Title */}

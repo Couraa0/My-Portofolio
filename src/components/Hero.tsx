@@ -35,12 +35,12 @@ const Hero = () => {
     return () => clearTimeout(timeout);
   }, [charIndex, isDeleting, roleIndex]);
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-20 pb-10 sm:pb-0 bg-background">
+    <section className="relative min-h-screen flex items-center overflow-hidden pt-20 pb-10 sm:pb-0 bg-background/70 backdrop-blur-sm">
       {/* Mesh gradient overlay */}
       <div className="absolute inset-0 mesh-gradient pointer-events-none" />
 
       {/* Decorative background elements */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden bg-background">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Graph Paper Grid */}
         <div className="absolute inset-0 opacity-[0.8] bg-graph-paper pointer-events-none"
           style={{ maskImage: "linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)", WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)" }} />
@@ -98,8 +98,8 @@ const Hero = () => {
 
           <motion.div variants={fadeUp}>
             <h1 className="font-heading text-4xl sm:text-5xl lg:text-[3.8rem] font-extrabold leading-[1.2] tracking-tight text-foreground">
-              {t("Hi, I'm")} {" "}
-              <span className="block mt-2">Muhammad Rakha</span>
+              {t("Hii👋🏻")} {" "}
+              <span className="block mt-2">I'm Muhammad Rakha</span>
               <span className="block text-gradient mt-2 pb-2">Syamputra</span>
             </h1>
           </motion.div>

@@ -97,3 +97,35 @@ export const experiences: Experience[] = [
     tools: ["Leadership", "Education", "Communication"],
   },
 ];
+
+export interface Education {
+  id: number;
+  degree: string;
+  school: string;
+  location: string;
+  period: string;
+  gpa: string;
+  logo?: string;
+  description?: string;
+}
+
+export const education: Education[] = [
+  {
+    id: 1,
+    degree: "Bachelor's degree in Information Systems",
+    school: "Singaperbangsa Karawang University (UNSIKA)",
+    location: "Karawang, Indonesia",
+    period: "2023 - 2027",
+    gpa: "3.97 / 4.00",
+    logo: "/Unsika.png",
+  },
+  {
+    id: 2,
+    degree: "Science / MIPA",
+    school: "SMA Negeri 1 Cibarusah",
+    location: "Cibarusah, Indonesia",
+    period: "2019 - 2022",
+    gpa: "90",
+    logo: "/Sman1.png",
+  }
+];

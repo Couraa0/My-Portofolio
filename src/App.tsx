@@ -6,10 +6,26 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Analytics } from "@vercel/analytics/react";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import NetworkDetector from "@/components/NetworkDetector";
+import Layout from "@/components/Layout";
 import Index from "./pages/Index";
+import AboutPage from "./pages/AboutPage";
+import ExperiencePage from "./pages/ExperiencePage";
+import ProjectsPage from "./pages/ProjectsPage";
+import ContactPage from "./pages/ContactPage";
+import AchievementPage from "./pages/AchievementPage";
 import NotFound from "./pages/NotFound";
-// import ServerError from "./pages/ServerError";
 import { ThemeProvider } from "@/components/theme-provider";
+
+// Admin imports
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminGuard from "./pages/admin/AdminGuard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminProjects from "./pages/admin/AdminProjects";
+import AdminAchievements from "./pages/admin/AdminAchievements";
+import AdminExperience from "./pages/admin/AdminExperience";
+import AdminEducation from "./pages/admin/AdminEducation";
+import "./pages/admin/admin.css";
 
 const queryClient = new QueryClient();
 
@@ -23,9 +39,32 @@ const App = () => (
             <Sonner />
             <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
               <Routes>
-                <Route path="/" element={<Index />} />
-                {/* Preview route — hapus setelah selesai testing */}
-                {/* <Route path="/server-error" element={<ServerError />} /> */}
+                <Route element={<Layout />}>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/experience" element={<ExperiencePage />} />
+                  <Route path="/projects" element={<ProjectsPage />} />
+                  <Route path="/achievements" element={<AchievementPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                </Route>
+
+                {/* Admin Routes */}
+                <Route path="/admin" element={<AdminLogin />} />
+                <Route
+                  path="/admin"
+                  element={
+                    <AdminGuard>
+                      <AdminLayout />
+                    </AdminGuard>
+                  }
+                >
+                  <Route path="dashboard" element={<AdminDashboard />} />
+                  <Route path="projects" element={<AdminProjects />} />
+                  <Route path="achievements" element={<AdminAchievements />} />
+                  <Route path="experience" element={<AdminExperience />} />
+                  <Route path="education" element={<AdminEducation />} />
+                </Route>
+
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

@@ -47,7 +47,7 @@ const Counter = ({ target, suffix, decimals = 0, from, to }: {
 const Stats = () => {
   const { t } = useTranslation();
   return (
-    <section className="py-24 relative overflow-hidden bg-muted/50">
+    <section className="py-24 relative overflow-hidden bg-background">
       {/* Animated mesh background */}
       <div className="absolute inset-0 mesh-gradient pointer-events-none" />
       <div className="absolute inset-0 opacity-[0.2] bg-grid pointer-events-none" />

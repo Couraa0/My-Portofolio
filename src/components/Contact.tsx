@@ -1,332 +1,248 @@
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import emailjs from "@emailjs/browser";
+import { useState } from "react";
+import { Mail, Instagram, Linkedin, Github, ExternalLink } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
-import { Mail, Phone, MapPin, Instagram, Linkedin, Send, CheckCircle2, AlertCircle, Clock } from "lucide-react";
-import {
-  EMAILJS_CONFIG,
-  MIN_FILL_MS,
-  getRateLimitSecondsLeft,
-  markSent,
-} from "@/lib/emailjs";
 import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import emailjs from "@emailjs/browser";
+import { EMAILJS_CONFIG, getRateLimitSecondsLeft, markSent } from "@/lib/emailjs";
+import { toast } from "sonner";
 
-const contactInfo = [
-  { icon: <Mail size={18} />, label: "muhammadrakhasyamputra@gmail.com", href: "mailto:muhammadrakhasyamputra@gmail.com", color: "hsl(250 84% 50%)", bg: "hsl(250 84% 60% / 0.08)", border: "hsl(250 84% 60% / 0.2)" },
-  { icon: <Phone size={18} />, label: "087871310560", href: "https://wa.me/6287871310560", color: "hsl(158 80% 35%)", bg: "hsl(158 80% 42% / 0.08)", border: "hsl(158 80% 42% / 0.2)" },
-  { icon: <MapPin size={18} />, label: "Jawa Barat, Indonesia", color: "hsl(37 100% 45%)", bg: "hsl(37 100% 50% / 0.08)", border: "hsl(37 100% 50% / 0.2)" },
-  { icon: <Instagram size={18} />, label: "@couraa0", href: "https://www.instagram.com/couraa0", color: "hsl(344 85% 50%)", bg: "hsl(344 85% 60% / 0.08)", border: "hsl(344 85% 60% / 0.2)" },
-  { icon: <Linkedin size={18} />, label: "linkedin.com/in/rakha05", href: "https://www.linkedin.com/in/rakha05/", color: "hsl(196 100% 36%)", bg: "hsl(196 100% 47% / 0.08)", border: "hsl(196 100% 47% / 0.2)" },
+const socialLinks = [
+  {
+    id: "gmail",
+    title: "Tetap Terhubung",
+    desc: "Hubungi saya melalui email untuk pertanyaan atau kolaborasi.",
+    url: "mailto:muhammadrakhasyamputra@gmail.com",
+    btnText: "Pergi ke Gmail",
+    icon: Mail,
+    bgColor: "bg-card border-red-500/20 hover:border-red-500/60 shadow-lg shadow-red-500/5",
+    textColor: "text-foreground",
+    iconColor: "text-red-500",
+    btnBg: "bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white",
+    watermark: "text-red-500/10",
+    colSpan: "col-span-1 md:col-span-2",
+  },
+  {
+    id: "instagram",
+    title: "Ikuti Perjalanan Saya",
+    desc: "Ikuti perjalanan kreatif saya.",
+    url: "https://www.instagram.com/couraa0",
+    btnText: "Pergi ke Instagram",
+    icon: Instagram,
+    bgColor: "bg-card border-fuchsia-500/20 hover:border-fuchsia-500/60 shadow-lg shadow-fuchsia-500/5",
+    textColor: "text-foreground",
+    iconColor: "text-fuchsia-500",
+    btnBg: "bg-fuchsia-500/10 text-fuchsia-500 hover:bg-fuchsia-500 hover:text-white",
+    watermark: "text-fuchsia-500/10",
+    colSpan: "col-span-1",
+  },
+  {
+    id: "linkedin",
+    title: "Mari Terhubung",
+    desc: "Terhubung dengan saya secara profesional.",
+    url: "https://www.linkedin.com/in/rakha05/",
+    btnText: "Pergi ke LinkedIn",
+    icon: Linkedin,
+    bgColor: "bg-card border-blue-500/20 hover:border-blue-500/60 shadow-lg shadow-blue-500/5",
+    textColor: "text-foreground",
+    iconColor: "text-blue-500",
+    btnBg: "bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white",
+    watermark: "text-blue-500/10",
+    colSpan: "col-span-1",
+  },
+  {
+    id: "tiktok",
+    title: "Bergabung dalam Keseruan",
+    desc: "Tonton konten yang menarik dan menyenangkan.",
+    url: "#",
+    btnText: "Pergi ke Tiktok",
+    icon: (props: any) => (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+      </svg>
+    ),
+    bgColor: "bg-card border-zinc-500/20 hover:border-zinc-500/60 shadow-lg shadow-zinc-500/5",
+    textColor: "text-foreground",
+    iconColor: "text-zinc-500 dark:text-zinc-400",
+    btnBg: "bg-zinc-500/10 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white",
+    watermark: "text-zinc-500/10 z-0",
+    colSpan: "col-span-1",
+  },
+  {
+    id: "github",
+    title: "Jelajahi Kode",
+    desc: "Jelajahi karya sumber terbuka saya.",
+    url: "https://github.com/Couraa0",
+    btnText: "Pergi ke Github",
+    icon: Github,
+    bgColor: "bg-card border-indigo-500/20 hover:border-indigo-500/60 shadow-lg shadow-indigo-500/5",
+    textColor: "text-foreground",
+    iconColor: "text-indigo-500 z-10",
+    btnBg: "bg-indigo-500/10 text-indigo-500 hover:bg-indigo-500 hover:text-white",
+    watermark: "text-indigo-500/10 z-0",
+    colSpan: "col-span-1",
+  },
 ];
-
-type Status = "idle" | "sending" | "success" | "error" | "cooldown";
 
 const Contact = () => {
   const { t } = useTranslation();
-  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
-  // 🍯 Honeypot: field hidden — jika diisi, request dari bot → diabaikan
-  const [honeypot, setHoneypot] = useState("");
-  const [status, setStatus] = useState<Status>("idle");
-  const [errorMsg, setErrorMsg] = useState("");
-  const [cooldownSec, setCooldownSec] = useState(0);
-  const formOpenedAt = useRef(Date.now());
-  const cooldownTimer = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  // Cek cooldown saat komponen pertama mount
-  useEffect(() => {
-    const sec = getRateLimitSecondsLeft();
-    if (sec > 0) startCooldownTimer(sec);
-    return () => { if (cooldownTimer.current) clearInterval(cooldownTimer.current); };
-  }, []);
-
-  const startCooldownTimer = (initialSec: number, preserveStatus = false) => {
-    if (!preserveStatus) setStatus("cooldown");
-    setCooldownSec(initialSec);
-    if (cooldownTimer.current) clearInterval(cooldownTimer.current);
-    cooldownTimer.current = setInterval(() => {
-      setCooldownSec((s) => {
-        if (s <= 1) {
-          clearInterval(cooldownTimer.current!);
-          setStatus("idle");
-          return 0;
-        }
-        return s - 1;
-      });
-    }, 1000);
-  };
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // 1️⃣ Validation check — pastikan semua field terisi
-    if (!form.name.trim() || !form.email.trim() || !form.subject.trim() || !form.message.trim()) {
-      setStatus("error");
-      setErrorMsg(t("Form error"));
-      return;
-    }
-
-    // 1.1️⃣ Email format validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(form.email.trim())) {
-      setStatus("error");
-      setErrorMsg(t("Email error"));
-      return;
-    }
-
-    // 2️⃣ Honeypot check — bot mengisi field tersembunyi
-    if (honeypot.trim() !== "") return;
-
-    // 3️⃣ Minimum time check — form diisi terlalu cepat → bot
-    if (Date.now() - formOpenedAt.current < MIN_FILL_MS) {
-      setStatus("error");
-      setErrorMsg(t("Form slow"));
-      return;
-    }
-
-    // 4️⃣ Rate limit check
-    const secLeft = getRateLimitSecondsLeft();
-    if (secLeft > 0) {
-      startCooldownTimer(secLeft);
+    
+    const waitSeconds = getRateLimitSecondsLeft();
+    if (waitSeconds > 0) {
+      toast.warning("Mohon tunggu sebentar", {
+        description: `Anda baru saja mengirim pesan. Tunggu ${waitSeconds} detik lagi.`,
+      });
       return;
     }
 
     setStatus("sending");
-    setErrorMsg("");
-
+    const loadingToast = toast.loading("Mengirim pesan Anda...");
+    
     try {
       await emailjs.send(
         EMAILJS_CONFIG.serviceId,
         EMAILJS_CONFIG.templateId,
         {
-          from_name: form.name.trim(),
-          from_email: form.email.trim(),
-          subject: form.subject.trim(),
-          message: form.message.trim(),
-          to_email: "muhammadrakhasyamputra@gmail.com",
+          from_name: form.name,
+          to_name: "Muhammad Rakha Syamputra",
+          user_name: form.name,
+          name: form.name,
+          from_email: form.email,
+          user_email: form.email,
+          email: form.email,
+          reply_to: form.email,
+          message: form.message,
         },
-        EMAILJS_CONFIG.publicKey
+        {
+          publicKey: EMAILJS_CONFIG.publicKey,
+        }
       );
-
+      
       markSent();
-      setForm({ name: "", email: "", subject: "", message: "" });
-      formOpenedAt.current = Date.now();
-
-      // Mulai timer cooldown dan tampilkan instruksi tunggu
-      const sec = getRateLimitSecondsLeft();
-      if (sec > 0) startCooldownTimer(sec);
-      else setStatus("idle");
-    } catch {
-      setStatus("error");
-      setErrorMsg(t("Form fail"));
+      setStatus("success");
+      setForm({ name: "", email: "", message: "" });
+      toast.dismiss(loadingToast);
+      toast.success("Terkirim!", {
+        description: "Pesan Anda telah berhasil dikirim ke email saya.",
+      });
+      setTimeout(() => setStatus("idle"), 3000);
+    } catch (error) {
+      console.error("Failed to send email:", error);
+      toast.dismiss(loadingToast);
+      toast.error("Gagal mengirim", {
+        description: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+      });
+      setStatus("idle");
     }
   };
 
-  const formatTime = (sec: number) =>
-    `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}`;
-
-  const isBusy = status === "sending" || status === "cooldown";
-
   return (
-    <section id="contact" className="py-16 sm:py-24 bg-background relative overflow-hidden">
-
-      {/* Floating Doodles - Positioned near Title */}
-      <motion.div
-        animate={{ y: [0, -10, 0], x: [0, 5, 0] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        className="hidden md:block absolute top-20 left-[15%] opacity-[0.4] text-purple-500 z-0">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="hsl(250 84% 60%)" fillOpacity={0.15} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect width="20" height="16" x="2" y="4" rx="2" />
-          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-        </svg>
-      </motion.div>
-
-      <motion.div
-        animate={{ rotate: [-5, 5, -5], scale: [1, 1.05, 1] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        className="hidden md:block absolute top-20 right-[15%] opacity-[0.4] text-orange-500 z-0">
-        <svg width="35" height="35" viewBox="0 0 24 24" fill="hsl(37 100% 50%)" fillOpacity={0.15} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-        </svg>
-      </motion.div>
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xl h-px"
-        style={{ background: "linear-gradient(90deg, transparent, hsl(250 84% 60% / 0.2), transparent)" }} />
-
-      <div className="container mx-auto px-4 sm:px-6 relative z-10">
+    <section id="contact" className="py-24 bg-background relative z-10">
+      <div className="container mx-auto px-6 max-w-4xl">
+        
+        {/* Header */}
         <AnimatedSection>
-          <div className="text-center mb-10 sm:mb-16">
-            <span className="inline-block rounded-full px-3 py-1 sm:px-4 sm:py-1.5 text-[10px] sm:text-xs font-semibold mb-4"
-              style={{ background: "hsl(250 84% 60% / 0.08)", border: "1px solid hsl(250 84% 60% / 0.2)", color: "hsl(250 84% 50%)" }}>
-              {t("Get In Touch")}
-            </span>
-            <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
-              {t("Let's Work Together").split(" ").slice(0, 2).join(" ")} <span className="text-gradient">{t("Let's Work Together").split(" ").slice(2).join(" ")}</span>
+          <div className="mb-10 pb-6 border-b border-border/60">
+            <h2 className="font-heading text-2xl md:text-3xl font-bold flex items-center gap-3 mb-3 text-foreground">
+              <Mail size={28} className="text-primary" />
+              {t("Contact") || "Kontak"}
             </h2>
-            <p className="text-muted-foreground mt-3 sm:mt-4 max-w-lg mx-auto text-sm sm:text-base px-4">
-              {t("Contact Description")}
+            <p className="text-muted-foreground text-sm max-w-2xl">
+              Mari saling terhubung.
             </p>
           </div>
         </AnimatedSection>
 
-        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 max-w-6xl mx-auto">
-          {/* ── Info ── */}
-          <div className="lg:col-span-5">
-            <AnimatedSection delay={0.1}>
-              <div className="space-y-3">
-                {contactInfo.map((item, i) => (
-                  <div key={i}
-                    className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl bg-background border transition-all duration-300"
-                    style={{ borderColor: "hsl(var(--border))" }}
-                    onMouseEnter={e => {
-                      (e.currentTarget as HTMLElement).style.borderColor = item.border;
-                      (e.currentTarget as HTMLElement).style.boxShadow = `0 4px 20px ${item.bg}`;
-                      (e.currentTarget as HTMLElement).style.transform = "translateX(4px)";
-                    }}
-                    onMouseLeave={e => {
-                      (e.currentTarget as HTMLElement).style.borderColor = "hsl(var(--border))";
-                      (e.currentTarget as HTMLElement).style.boxShadow = "";
-                      (e.currentTarget as HTMLElement).style.transform = "";
-                    }}>
-                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={{ background: item.bg, color: item.color }}>
-                      {item.icon}
+        {/* Social Link Cards */}
+        <AnimatedSection delay={0.1}>
+          <div className="mb-6">
+            <h3 className="font-semibold text-sm mb-4">Temukan saya di media sosial</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {socialLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <a
+                    key={link.id}
+                    href={link.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={`${link.colSpan} ${link.bgColor} p-6 rounded-2xl border ${link.textColor} relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between`}
+                    style={{ minHeight: "160px" }}
+                  >
+                    <div className="relative z-10">
+                      <div className="flex items-center gap-3 mb-2">
+                        <Icon className={`w-6 h-6 ${link.iconColor} z-10`} />
+                        <h4 className="font-bold text-lg">{link.title}</h4>
+                      </div>
+                      <p className="text-muted-foreground text-sm mb-6 max-w-[85%] line-clamp-2">
+                        {link.desc}
+                      </p>
+                      <button className={`${link.btnBg} text-xs font-bold py-2 px-4 rounded-lg transition-colors duration-300 flex items-center gap-1.5 w-fit z-10 relative`}>
+                        {link.btnText}
+                        <ExternalLink size={14} />
+                      </button>
                     </div>
-                    <div className="min-w-0 flex-1">
-                      {item.href ? (
-                        <a href={item.href} target="_blank" rel="noopener noreferrer"
-                          className="text-[13px] sm:text-sm text-muted-foreground hover:text-foreground transition-colors block break-words">
-                          {item.label}
-                        </a>
-                      ) : (
-                        <span className="text-[13px] sm:text-sm text-muted-foreground block break-words">{item.label}</span>
-                      )}
+                    
+                    {/* Background Icon Watermark */}
+                    <div className={`absolute -bottom-6 -right-6 ${link.watermark} group-hover:scale-110 group-hover:-rotate-12 transition-transform duration-500 z-0`}>
+                      <Icon size={140} strokeWidth={1.5} />
                     </div>
-                  </div>
-                ))}
-
-                <div className="rounded-2xl p-4 sm:p-6 mt-4 sm:mt-6"
-                  style={{
-                    background: "linear-gradient(135deg, hsl(250 84% 60% / 0.07), hsl(196 100% 47% / 0.05))",
-                    border: "1px solid hsl(250 84% 60% / 0.15)",
-                    boxShadow: "0 10px 30px -10px hsl(250 84% 60% / 0.1)"
-                  }}>
-                  <p className="text-sm font-bold text-foreground mb-2 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-                    {t("Open to Opportunities title")}
-                  </p>
-                  <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
-                    {t("Open to Opportunities desc")}
-                  </p>
-                </div>
-              </div>
-            </AnimatedSection>
+                  </a>
+                );
+              })}
+            </div>
           </div>
+        </AnimatedSection>
 
-          {/* ── Form ── */}
-          <div className="lg:col-span-7">
-            <AnimatedSection delay={0.2}>
-              <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-
-                {/* 🍯 Honeypot — hidden dari manusia, tapi bot akan mengisinya */}
-                <input
-                  type="text"
-                  name="website"
-                  value={honeypot}
-                  onChange={e => setHoneypot(e.target.value)}
-                  tabIndex={-1}
-                  autoComplete="off"
-                  style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", opacity: 0 }}
-                  aria-hidden="true"
-                />
-
-                {(["name", "email", "subject"] as const).map((field) => (
-                  <input key={field}
-                    type={field === "email" ? "email" : "text"}
-                    placeholder={field === "name" ? t("Name placeholder") : field === "email" ? t("Email placeholder") : t("Subject placeholder")}
-                    required
-                    value={form[field]}
-                    onChange={(e) => setForm({ ...form, [field]: e.target.value })}
-                    disabled={isBusy}
-                    className="w-full rounded-xl border px-4 py-3 sm:py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-200 bg-background disabled:opacity-50 disabled:cursor-not-allowed"
-                    style={{ borderColor: "hsl(var(--border))", fontSize: "16px" }}
-                    onFocus={e => {
-                      (e.currentTarget as HTMLElement).style.borderColor = "hsl(158 80% 42% / 0.5)";
-                      (e.currentTarget as HTMLElement).style.boxShadow = "0 0 0 3px hsl(158 80% 42% / 0.1)";
-                    }}
-                    onBlur={e => {
-                      (e.currentTarget as HTMLElement).style.borderColor = "hsl(var(--border))";
-                      (e.currentTarget as HTMLElement).style.boxShadow = "";
-                    }}
-                  />
-                ))}
-
-                <textarea
-                  placeholder={t("Message placeholder")}
+        {/* Contact Form */}
+        <AnimatedSection delay={0.2}>
+          <div className="mt-12">
+            <h3 className="font-semibold text-sm mb-4">Atau kirimkan saya pesan</h3>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Input
                   required
-                  rows={5}
-                  value={form.message}
-                  onChange={(e) => setForm({ ...form, message: e.target.value })}
-                  disabled={isBusy}
-                  className="w-full rounded-xl border px-4 py-3 sm:py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-200 resize-none bg-background disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ borderColor: "hsl(var(--border))", fontSize: "16px" }}
-                  onFocus={e => {
-                    (e.currentTarget as HTMLElement).style.borderColor = "hsl(158 80% 42% / 0.5)";
-                    (e.currentTarget as HTMLElement).style.boxShadow = "0 0 0 3px hsl(158 80% 42% / 0.1)";
-                  }}
-                  onBlur={e => {
-                    (e.currentTarget as HTMLElement).style.borderColor = "hsl(var(--border))";
-                    (e.currentTarget as HTMLElement).style.boxShadow = "";
-                  }}
+                  placeholder="Name"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="bg-card border-border/50 focus-visible:ring-1 focus-visible:ring-border h-12 rounded-xl"
                 />
-
-                {/* Status messages */}
-                <AnimatePresence mode="wait">
-                  {status === "error" && (
-                    <motion.div key="error"
-                      initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                      className="flex items-start gap-2 rounded-xl px-4 py-3 text-sm"
-                      style={{ background: "hsl(344 85% 60% / 0.08)", border: "1px solid hsl(344 85% 60% / 0.2)", color: "hsl(344 85% 40%)" }}>
-                      <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
-                      {errorMsg || "Terjadi kesalahan."}
-                    </motion.div>
-                  )}
-                  {status === "cooldown" && (
-                    <motion.div key="cooldown"
-                      initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                      className="space-y-2">
-                      <div className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm"
-                        style={{ background: "hsl(158 80% 42% / 0.08)", border: "1px solid hsl(158 80% 42% / 0.2)", color: "hsl(158 80% 30%)" }}>
-                        <CheckCircle2 size={16} className="flex-shrink-0" />
-                        {t("Message success")}
-                      </div>
-                      <div className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm"
-                        style={{ background: "hsl(37 100% 50% / 0.08)", border: "1px solid hsl(37 100% 50% / 0.2)", color: "hsl(37 100% 35%)" }}>
-                        <Clock size={16} className="flex-shrink-0" />
-                        {t("Wait cooldown", { time: formatTime(cooldownSec) })}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {/* Submit button */}
-                <button type="submit" disabled={isBusy}
-                  className="w-full rounded-xl px-6 py-3.5 sm:py-4 text-sm font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed active:scale-95"
-                  style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))", boxShadow: "0 4px 20px hsl(250 84% 60% / 0.3)" }}>
-                  {status === "sending" ? (
-                    <>
-                      <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
-                        className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full" />
-                      {t("Sending...")}
-                    </>
-                  ) : status === "cooldown" ? (
-                    <><Clock size={16} /> {t("Wait")} {formatTime(cooldownSec)}</>
-                  ) : (
-                    <><Send size={16} /> {t("Send Message")}</>
-                  )}
-                </button>
-              </form>
-            </AnimatedSection>
+                <Input
+                  required
+                  type="email"
+                  placeholder="Email"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  className="bg-card border-border/50 focus-visible:ring-1 focus-visible:ring-border h-12 rounded-xl"
+                />
+              </div>
+              <Textarea
+                required
+                placeholder="Message"
+                value={form.message}
+                onChange={(e) => setForm({ ...form, message: e.target.value })}
+                className="bg-card border-border/50 focus-visible:ring-1 focus-visible:ring-border min-h-[120px] rounded-xl resize-none"
+              />
+              <Button
+                type="submit"
+                disabled={status === "sending" || status === "success"}
+                className={`w-full h-12 rounded-xl text-white font-semibold transition-colors disabled:opacity-70 ${
+                  status === "success" ? "bg-emerald-500 hover:bg-emerald-600" : "bg-primary hover:bg-primary/90"
+                }`}
+              >
+                {status === "sending" ? "Mengirim..." : status === "success" ? "Berhasil Terkirim!" : "Kirim Email"}
+              </Button>
+            </form>
           </div>
-        </div>
+        </AnimatedSection>
+
       </div>
     </section>
   );

@@ -183,7 +183,9 @@ const resources = {
       "Quick Links": "Quick Links",
       "Connect": "Connect",
       "View Resume": "View Resume",
-      "Made with": "Made with"
+      "Made with": "Made with",
+      "Home": "Home",
+      "Back to Home": "Back to Home"
     }
   },
   id: {
@@ -362,7 +364,9 @@ const resources = {
       "Quick Links": "Tautan Cepat",
       "Connect": "Terhubung",
       "View Resume": "Lihat Resume",
-      "Made with": "Dibuat dengan"
+      "Made with": "Dibuat dengan",
+      "Home": "Beranda",
+      "Back to Home": "Kembali ke Beranda"
     }
   }
 };

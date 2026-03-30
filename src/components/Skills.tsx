@@ -113,7 +113,7 @@ const Skills = () => {
   const { t } = useTranslation();
 
   return (
-    <section id="skills" className="py-28 bg-background relative overflow-hidden">
+    <section id="skills" className="py-24 bg-background relative overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-px z-20"
         style={{ background: "linear-gradient(90deg, transparent, hsl(250 84% 60% / 0.2), transparent)" }} />
       {/* Background decoration */}
