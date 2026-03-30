@@ -3,9 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { Eye, EyeOff, Lock, Mail, Shield } from 'lucide-react';
 
-const ADMIN_EMAIL = 'muhammadrakhasyamputra@gmail.com';
-const ADMIN_PASSWORD = 'Rakha200505';
-
 export default function AdminLogin() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -19,31 +16,28 @@ export default function AdminLogin() {
     setError('');
     setLoading(true);
 
-    // Simple credential check (no Supabase Auth required)
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      // Store session in localStorage
-      localStorage.setItem('admin_authenticated', 'true');
-      localStorage.setItem('admin_email', email);
-      navigate('/admin/dashboard');
-    } else {
-      // Try Supabase Auth as fallback
-      try {
-        const { error: authError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (authError) {
+    try {
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (authError) {
+        if (authError.message === "Invalid login credentials" || authError.status === 400) {
           setError('Email atau password salah. Silakan coba lagi.');
         } else {
-          localStorage.setItem('admin_authenticated', 'true');
-          localStorage.setItem('admin_email', email);
-          navigate('/admin/dashboard');
+          setError(authError.message || 'Gagal masuk. Silakan coba lagi.');
         }
-      } catch {
-        setError('Email atau password salah. Silakan coba lagi.');
+      } else if (data.session) {
+        localStorage.setItem('admin_authenticated', 'true');
+        localStorage.setItem('admin_email', data.user?.email || email);
+        navigate('/admin/dashboard');
       }
+    } catch {
+      setError('Terjadi kesalahan tidak terduga. Silakan coba lagi.');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -131,7 +125,7 @@ export default function AdminLogin() {
           </form>
 
           <p className="login-footer">
-            © 2026 Muhammad Rakha Syam Putra
+            © 2026 Muhammad Rakha Syamputra
           </p>
         </div>
       </div>
