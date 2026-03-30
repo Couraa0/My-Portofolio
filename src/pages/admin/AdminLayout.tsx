@@ -12,6 +12,7 @@ import {
   ChevronRight,
   User,
   GraduationCap,
+  MessageSquare,
 } from 'lucide-react';
 
 const navItems = [
@@ -20,6 +21,7 @@ const navItems = [
   { to: '/admin/achievements', icon: Trophy, label: 'Achievements' },
   { to: '/admin/experience', icon: Briefcase, label: 'Experience' },
   { to: '/admin/education', icon: GraduationCap, label: 'Education' },
+  { to: '/admin/guestbook', icon: MessageSquare, label: 'Guestbook' },
 ];
 
 export default function AdminLayout() {

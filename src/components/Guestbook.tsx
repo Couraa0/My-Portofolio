@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, User, Calendar, MessageSquare, Heart, X } from "lucide-react";
+import { Send, User, Calendar, MessageSquare, Heart, X, Check, BadgeCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 
@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-type Message = { id: string; name: string; text: string; created_at: string; reactions: number };
+type Message = { id: string; name: string; text: string; created_at: string; reactions: number; reply?: string };
 
 export default function GuestbookPopup() {
   const { t } = useTranslation();
@@ -201,6 +201,22 @@ export default function GuestbookPopup() {
                       </span>
                     </div>
                     <p className="text-sm text-foreground/90 ml-8 mb-2 whitespace-pre-wrap">{m.text}</p>
+                    
+                    {/* Admin Reply */}
+                    {m.reply && (
+                      <div className="ml-8 mt-2 p-3 rounded-xl bg-blue-500/5 border border-blue-500/20 text-xs shadow-inner shadow-blue-500/5">
+                        <div className="flex items-center gap-1.5 mb-1.5 text-blue-500 font-bold">
+                          <div className="w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center -ml-0.5">
+                            <User size={10} strokeWidth={3} />
+                          </div>
+                          <span className="text-[11px] uppercase tracking-wider">Rakha</span>
+                          <BadgeCheck size={14} className="fill-blue-500 text-white" />
+                        </div>
+                        <p className="text-muted-foreground leading-relaxed pl-1">
+                          {m.reply}
+                        </p>
+                      </div>
+                    )}
                     
                     {/* Reaction Button */}
                     <div className="flex justify-end mt-1">

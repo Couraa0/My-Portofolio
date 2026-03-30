@@ -25,6 +25,7 @@ import AdminProjects from "./pages/admin/AdminProjects";
 import AdminAchievements from "./pages/admin/AdminAchievements";
 import AdminExperience from "./pages/admin/AdminExperience";
 import AdminEducation from "./pages/admin/AdminEducation";
+import AdminGuestbook from "./pages/admin/AdminGuestbook";
 import "./pages/admin/admin.css";
 
 const queryClient = new QueryClient();
@@ -63,6 +64,7 @@ const App = () => (
                   <Route path="achievements" element={<AdminAchievements />} />
                   <Route path="experience" element={<AdminExperience />} />
                   <Route path="education" element={<AdminEducation />} />
+                  <Route path="guestbook" element={<AdminGuestbook />} />
                 </Route>
 
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
