@@ -99,7 +99,7 @@ const Hero = () => {
           <motion.div variants={fadeUp}>
             <h1 className="font-heading text-4xl sm:text-5xl lg:text-[3.8rem] font-extrabold leading-[1.2] tracking-tight text-foreground">
               {t("Hii👋🏻")} {" "}
-              <span className="block mt-2">I'm Muhammad Rakha</span>
+              <span className="block mt-2">{t("I'm Muhammad Rakha")}</span>
               <span className="block text-gradient mt-2 pb-2">Syamputra</span>
             </h1>
           </motion.div>
@@ -241,7 +241,7 @@ const Hero = () => {
                     style={{ background: "hsl(158 80% 42% / 0.09)", border: "1px solid hsl(158 80% 42% / 0.22)" }}>
                     <span className="w-2 h-2 rounded-full flex-shrink-0"
                       style={{ background: "hsl(158 80% 42%)", animation: "pulse 2s cubic-bezier(0.4,0,0.6,1) infinite" }} />
-                    <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-500">Open to work</span>
+                    <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-500">{t("Open to work")}</span>
                   </div>
                 </div>
               </div>
@@ -275,7 +275,7 @@ const Hero = () => {
               </div>
               <div className="text-left">
                 <p className="font-heading text-lg font-bold leading-none text-foreground">10+</p>
-                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">Projects</p>
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">{t("Projects")}</p>
               </div>
             </motion.div>
 
@@ -290,7 +290,7 @@ const Hero = () => {
               </div>
               <div className="text-left">
                 <p className="font-heading text-lg font-bold leading-none text-foreground">3+</p>
-                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">Yrs Exp</p>
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">{t("Yrs Exp")}</p>
               </div>
             </motion.div>
           </div>

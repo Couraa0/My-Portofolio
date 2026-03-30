@@ -64,10 +64,10 @@ export default function Achievements() {
           <div className="mb-10 pb-6 border-b border-border/60">
             <h2 className="font-heading text-2xl md:text-3xl font-bold flex items-center gap-3 mb-3 text-foreground">
               <Award size={28} className="text-primary" />
-              Pencapaian
+              {t("Achievements Title Part2") || "Achievements"}
             </h2>
             <p className="text-muted-foreground text-sm max-w-2xl">
-              Koleksi sertifikat dan lencana yang telah saya raih sepanjang perjalanan profesional dan akademik saya.
+              {t("Achievements Subtitle")}
             </p>
           </div>
         </AnimatedSection>
@@ -111,7 +111,7 @@ export default function Achievements() {
         {error && !loading && (
           <div className="flex items-center justify-center gap-3 py-16 text-muted-foreground">
             <Loader2 size={20} className="animate-spin" />
-            <span className="text-sm">Gagal memuat data: {error}</span>
+            <span className="text-sm">{t("Failed to load data") || "Failed to load data"}: {error}</span>
           </div>
         )}
 
@@ -136,7 +136,7 @@ export default function Achievements() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-muted">
-                        <span className="text-xs text-muted-foreground">No Image</span>
+                        <span className="text-xs text-muted-foreground">{t("No Image") || "No Image"}</span>
                       </div>
                     )}
                   </div>
@@ -159,7 +159,7 @@ export default function Achievements() {
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-[10px] text-muted-foreground uppercase tracking-wide border-t border-border/40 pt-3">
-                      <span>Issued on {item.issueDate}</span>
+                      <span>{t("Issued on") || "Issued on"} {item.issueDate}</span>
                       <ExternalLink size={14} className="opacity-50 group-hover:opacity-100 transition-opacity" />
                     </div>
                   </div>
@@ -168,7 +168,7 @@ export default function Achievements() {
           </div>
           {filteredData.length === 0 && (
             <div className="text-center py-24 text-muted-foreground">
-              <p>Tidak ada pencapaian yang sesuai dengan filter pencarian.</p>
+              <p>{t("No results found") || "No achievements found matching your search."}</p>
             </div>
           )}
         </AnimatedSection>
@@ -251,7 +251,7 @@ export default function Achievements() {
                      </div>
                    ) : (
                      <div className="w-full h-full flex flex-col items-center justify-center opacity-50">
-                       <span>Tidak ada gambar ditemukan.</span>
+                       <span>{t("No image found.") || "No image found."}</span>
                      </div>
                    )}
                 </div>
@@ -302,10 +302,10 @@ export default function Achievements() {
                       >
                         {selectedAchievement.credentialUrl !== "#" ? (
                            <>
-                              <QrCode size={16} /> Credential URL
+                               <QrCode size={16} /> {t("View Credential") || "View Credential"}
                            </>
                         ) : (
-                          "Credential URL Unavailable"
+                          t("Credential URL Unavailable") || "Credential URL Unavailable"
                         )}
                       </a>
                    </div>

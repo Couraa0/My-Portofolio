@@ -93,10 +93,10 @@ const Experience = () => {
               <div>
                 <h2 className="font-heading text-2xl md:text-3xl font-bold flex items-center gap-3 mb-3 text-foreground">
                   <Briefcase size={28} className="text-primary" />
-                  {t("Experience") || "Karier"}
+                  {t("Experience")}
                 </h2>
                 <p className="text-muted-foreground text-sm max-w-2xl">
-                  Perjalanan profesional saya. Geser untuk melihat selengkapnya.
+                  {t("Experience Subtitle")}
                 </p>
               </div>
             </div>
@@ -107,14 +107,14 @@ const Experience = () => {
         {loading && (
           <div className="flex items-center justify-center gap-3 py-24 text-muted-foreground">
             <Loader2 size={24} className="animate-spin text-primary" />
-            <span className="text-sm">Memuat data...</span>
+            <span className="text-sm">{t("Loading data...")}</span>
           </div>
         )}
 
         {/* Error */}
         {error && !loading && (
           <div className="flex items-center justify-center py-16 text-muted-foreground">
-            <span className="text-sm">Gagal memuat data: {error}</span>
+            <span className="text-sm">{t("Failed to load data")}: {error}</span>
           </div>
         )}
 
@@ -164,7 +164,7 @@ const Experience = () => {
                         <div className="grid md:grid-cols-3 gap-8 pt-6 border-t border-border/50 flex-1">
                           <div className="md:col-span-2 space-y-4">
                             <h4 className="text-sm font-bold text-foreground">
-                              Deskripsi &amp; Tanggung Jawab
+                              {t("Experience Description Header")}
                             </h4>
                             <ul className="space-y-3">
                               {exp.description?.map((desc, i) => (
@@ -178,7 +178,7 @@ const Experience = () => {
 
                           {exp.tools && exp.tools.length > 0 && (
                             <div>
-                              <h4 className="text-sm font-bold text-foreground mb-4">Keterampilan</h4>
+                              <h4 className="text-sm font-bold text-foreground mb-4">{t("Experience Skills Header")}</h4>
                               <div className="flex flex-wrap gap-2">
                                 {exp.tools.map((tool) => (
                                   <span
@@ -209,10 +209,10 @@ const Experience = () => {
               <div className="mb-10 pt-6">
                 <h2 className="font-heading text-2xl md:text-3xl font-bold flex items-center gap-3 mb-3 text-foreground">
                   <GraduationCap size={28} className="text-primary" />
-                  {t("Education") || "Pendidikan"}
+                  {t("Education")}
                 </h2>
                 <p className="text-muted-foreground text-sm max-w-2xl">
-                  Perjalanan pendidikan saya.
+                  {t("Education Subtitle")}
                 </p>
               </div>
             </AnimatedSection>

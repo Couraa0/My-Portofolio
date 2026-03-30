@@ -6,20 +6,20 @@ import { useTranslation } from "react-i18next";
 const cards = [
   {
     icon: <GraduationCap size={20} />,
-    title: "S1 Sistem Informasi, UNSIKA",
-    sub: "2023 – Sekarang · IPK 3,97",
+    title: "S1 Sistem Informasi Title",
+    sub: "S1 Sistem Informasi Sub",
     iconBg: "hsl(250 84% 60% / 0.1)", iconColor: "hsl(250 84% 50%)", border: "hsl(250 84% 60% / 0.18)",
   },
   {
     icon: <Rocket size={20} />,
-    title: "Co-Founder Tixchain.id",
-    sub: "2023 – Sekarang",
+    title: "Co-Founder Tixchain Title",
+    sub: "Co-Founder Tixchain Sub",
     iconBg: "hsl(344 85% 60% / 0.1)", iconColor: "hsl(344 85% 50%)", border: "hsl(344 85% 60% / 0.18)",
   },
   {
     icon: <Briefcase size={20} />,
-    title: "IT Project Manager Intern @ Citiasia Internasional",
-    sub: "2025",
+    title: "IT PM Intern Title",
+    sub: "IT PM Intern Sub",
     iconBg: "hsl(158 80% 42% / 0.1)", iconColor: "hsl(158 80% 35%)", border: "hsl(158 80% 42% / 0.18)",
   },
 ];

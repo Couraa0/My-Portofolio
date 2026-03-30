@@ -102,10 +102,10 @@ const Projects = () => {
           <div className="mb-10 pb-6 border-b border-border/60">
             <h2 className="font-heading text-2xl md:text-3xl font-bold flex items-center gap-3 mb-3 text-foreground">
               <FolderKanban size={28} className="text-primary" />
-              {t("Projects") || "Proyek"}
+              {t("Projects")}
             </h2>
             <p className="text-muted-foreground text-sm max-w-2xl">
-              Etalase proyek pribadi maupun profesional yang telah saya bangun atau kontribusikan.
+              {t("Projects Header Desc")}
             </p>
           </div>
         </AnimatedSection>
@@ -113,7 +113,7 @@ const Projects = () => {
         {/* Filter */}
         <AnimatedSection delay={0.1}>
           <div className="flex flex-wrap items-center gap-3 mb-10">
-            <span className="text-sm font-semibold text-muted-foreground mr-2">KATEGORI</span>
+            <span className="text-sm font-semibold text-muted-foreground mr-2">{t("CATEGORY")}</span>
             {(["All", "Professional", "Personal", "IOT"] as Filter[]).map((f) => (
               <button
                 key={f}
@@ -124,7 +124,7 @@ const Projects = () => {
                     : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 }`}
               >
-                {t(f) || f}
+                {t(f)}
               </button>
             ))}
           </div>
@@ -150,7 +150,7 @@ const Projects = () => {
         {error && !loading && (
           <div className="flex items-center justify-center gap-3 py-16 text-muted-foreground">
             <Loader2 size={20} className="animate-spin" />
-            <span className="text-sm">Gagal memuat data: {error}</span>
+            <span className="text-sm">{t("Failed to load data")}: {error}</span>
           </div>
         )}
 
@@ -193,8 +193,8 @@ const Projects = () => {
                   {selectedProject.title}
                 </h1>
                 <div className="flex items-center gap-4 pt-6 border-t border-border/60">
-                  <span className="text-sm text-muted-foreground">Peran: <strong className="text-foreground">{selectedProject.role || "Developer"}</strong></span>
-                  <span className="text-sm text-muted-foreground">Kategori: <strong className="text-foreground">{selectedProject.category}</strong></span>
+                  <span className="text-sm text-muted-foreground">{t("Role:")} <strong className="text-foreground">{selectedProject.role || "Developer"}</strong></span>
+                  <span className="text-sm text-muted-foreground">{t("Category:")} <strong className="text-foreground">{t(selectedProject.category)}</strong></span>
                 </div>
               </div>
 
@@ -211,7 +211,7 @@ const Projects = () => {
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/50">
                     <FolderKanban size={64} className="mb-4" />
-                    <span>Tidak ada gambar pratinjau</span>
+                    <span>{t("No preview image")}</span>
                   </div>
                 )}
               </div>
@@ -237,7 +237,7 @@ const Projects = () => {
 
                   {selectedProject.projectOutput && selectedProject.projectOutput.length > 0 && (
                     <section>
-                      <h3 className="text-xl font-bold mb-4">Key Features</h3>
+                      <h3 className="text-xl font-bold mb-4">{t("Key Features")}</h3>
                       <ul className="grid gap-3">
                         {selectedProject.projectOutput.map((output, idx) => (
                           <li key={idx} className="flex items-start text-sm text-muted-foreground">
@@ -264,7 +264,7 @@ const Projects = () => {
                   </section>
                   
                   <section>
-                    <h3 className="text-lg font-bold mb-4">Links</h3>
+                    <h3 className="text-lg font-bold mb-4">{t("Links")}</h3>
                     <div className="flex flex-col gap-3">
                       {selectedProject.liveUrl && (
                         <a 
@@ -273,7 +273,7 @@ const Projects = () => {
                           rel="noreferrer"
                           className="flex items-center justify-between p-3 rounded-lg bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition-colors"
                         >
-                          {selectedProject.liveUrlLabel || "Live Demo"}
+                          {selectedProject.liveUrlLabel || t("Live Demo")}
                           <ExternalLink size={16} />
                         </a>
                       )}
@@ -284,12 +284,12 @@ const Projects = () => {
                           rel="noreferrer"
                           className="flex items-center justify-between p-3 rounded-lg bg-muted text-foreground font-semibold hover:bg-muted/80 transition-colors"
                         >
-                          Source Code
+                          {t("Source Code")}
                           <Github size={16} />
                         </a>
                       )}
                       {!selectedProject.liveUrl && !selectedProject.githubUrl && (
-                        <p className="text-sm text-muted-foreground italic">Privat / Internal</p>
+                        <p className="text-sm text-muted-foreground italic">{t("Private / Internal")}</p>
                       )}
                     </div>
                   </section>
@@ -303,7 +303,7 @@ const Projects = () => {
                   className="flex items-center justify-center gap-2 bg-muted text-foreground hover:bg-muted/80 font-semibold py-3 px-8 rounded-xl transition-colors"
                 >
                   <ChevronLeft size={20} />
-                  Kembali ke Proyek
+                  {t("Back to Projects")}
                 </button>
               </div>
             </div>

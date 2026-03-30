@@ -6,7 +6,7 @@ import {
   Mail,
   ArrowRight,
   ChevronRight,
-  Wrench,
+  Trophy,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import AnimatedSection from "@/components/AnimatedSection";
@@ -17,8 +17,7 @@ const sectionCards = [
     key: "experience",
     icon: Briefcase,
     title: "Experience",
-    desc: "My professional journey — roles, companies, and impact I've made.",
-    descId: "Perjalanan profesional saya — peran, perusahaan, dan dampak yang telah saya buat.",
+    descKey: "Experience Card Desc",
     to: "/experience",
     from: "hsl(196 100% 47%)",
     to2: "hsl(158 80% 42%)",
@@ -32,8 +31,7 @@ const sectionCards = [
     key: "projects",
     icon: FolderKanban,
     title: "Projects",
-    desc: "Explore my portfolio of professional and personal projects.",
-    descId: "Jelajahi portofolio proyek profesional dan personal saya.",
+    descKey: "Projects Card Desc",
     to: "/projects",
     from: "hsl(344 85% 60%)",
     to2: "hsl(37 100% 50%)",
@@ -44,26 +42,24 @@ const sectionCards = [
     highlights: ["Smart Village", "AI For All", "Tixchain"],
   },
   {
-    key: "skills",
-    icon: Wrench,
-    title: "Skills",
-    desc: "Technologies, frameworks, and soft skills I bring to the table.",
-    descId: "Teknologi, framework, dan soft skill yang saya kuasai.",
-    to: "/skills",
+    key: "achievements",
+    icon: Trophy,
+    title: "Achievements",
+    descKey: "Achievements Card Desc",
+    to: "/achievements",
     from: "hsl(250 84% 60%)",
     to2: "hsl(196 100% 47%)",
     bg: "hsl(250 84% 60% / 0.06)",
     border: "hsl(250 84% 60% / 0.2)",
     iconBg: "hsl(250 84% 60% / 0.12)",
     iconColor: "hsl(250 84% 55%)",
-    highlights: ["React", "Node.js", "Project Mgmt"],
+    highlights: ["Awards", "Certificates", "Competitions"],
   },
   {
     key: "contact",
     icon: Mail,
     title: "Contact",
-    desc: "Let's collaborate! Reach out through my contact form.",
-    descId: "Mari berkolaborasi! Hubungi saya melalui formulir kontak.",
+    descKey: "Contact Subtitle",
     to: "/contact",
     from: "hsl(158 80% 42%)",
     to2: "hsl(196 100% 47%)",
@@ -76,8 +72,7 @@ const sectionCards = [
 ];
 
 const SectionPreview = () => {
-  const { t, i18n } = useTranslation();
-  const isId = i18n.language === "id";
+  const { t } = useTranslation();
 
   return (
     <section className="py-24 bg-background relative overflow-hidden">
@@ -100,18 +95,16 @@ const SectionPreview = () => {
                 color: "hsl(250 84% 50%)",
               }}
             >
-              {isId ? "Jelajahi" : "Explore"}
+              {t("Explore")}
             </span>
             <h2 className="font-heading text-3xl sm:text-4xl font-bold text-foreground">
-              {isId ? "Apa yang" : "What I"}{" "}
+              {t("What I")}{" "}
               <span className="text-gradient">
-                {isId ? "Saya Tawarkan" : "Offer"}
+                {t("Offer")}
               </span>
             </h2>
             <p className="text-muted-foreground mt-3 text-sm max-w-md mx-auto">
-              {isId
-                ? "Klik kartu di bawah untuk melihat detail setiap bagian."
-                : "Click a card below to dive deeper into each section."}
+              {t("Section Preview Subtitle")}
             </p>
           </div>
         </AnimatedSection>
@@ -176,7 +169,7 @@ const SectionPreview = () => {
 
                     {/* Description */}
                     <p className="text-sm text-muted-foreground leading-relaxed flex-1 mb-4">
-                      {isId ? card.descId : card.desc}
+                      {t(card.descKey)}
                     </p>
 
                     {/* Highlights */}
@@ -201,7 +194,7 @@ const SectionPreview = () => {
                       className="mt-4 flex items-center gap-1.5 text-sm font-semibold group-hover:gap-2.5 transition-all"
                       style={{ color: card.iconColor }}
                     >
-                      {isId ? "Selengkapnya" : "Explore More"}
+                      {t("View Details")}
                       <ArrowRight
                         size={14}
                         className="group-hover:translate-x-1 transition-transform"
