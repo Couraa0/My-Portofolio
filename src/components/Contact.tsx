@@ -10,7 +10,7 @@ import { EMAILJS_CONFIG, getRateLimitSecondsLeft, markSent } from "@/lib/emailjs
 import { toast } from "sonner";
 const Contact = () => {
   const { t } = useTranslation();
-  
+
   const socialLinks = [
     {
       id: "linkedin",
@@ -75,7 +75,7 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const waitSeconds = getRateLimitSecondsLeft();
     if (waitSeconds > 0) {
       toast.warning(t("Wait") || "Mohon tunggu sebentar", {
@@ -86,7 +86,7 @@ const Contact = () => {
 
     setStatus("sending");
     const loadingToast = toast.loading(t("Sending...") || "Mengirim pesan Anda...");
-    
+
     try {
       await emailjs.send(
         EMAILJS_CONFIG.serviceId,
@@ -106,7 +106,7 @@ const Contact = () => {
           publicKey: EMAILJS_CONFIG.publicKey,
         }
       );
-      
+
       markSent();
       setStatus("success");
       setForm({ name: "", email: "", message: "" });
@@ -128,7 +128,7 @@ const Contact = () => {
   return (
     <section id="contact" className="py-24 bg-background relative z-10">
       <div className="container mx-auto px-6 max-w-6xl">
-        
+
         {/* Header */}
         <AnimatedSection>
           <div className="mb-10 pb-6 border-b border-border/60">
@@ -171,7 +171,7 @@ const Contact = () => {
                         <ExternalLink size={14} />
                       </button>
                     </div>
-                    
+
                     {/* Background Icon Watermark */}
                     <div className={`absolute -bottom-6 -right-6 ${link.watermark} group-hover:scale-110 group-hover:-rotate-12 transition-transform duration-500 z-0`}>
                       <Icon size={140} strokeWidth={1.5} />
@@ -215,11 +215,10 @@ const Contact = () => {
               <Button
                 type="submit"
                 disabled={status === "sending" || status === "success"}
-                className={`w-full h-12 rounded-xl text-white font-semibold transition-colors disabled:opacity-70 ${
-                  status === "success" ? "bg-emerald-500 hover:bg-emerald-600" : "bg-primary hover:bg-primary/90"
-                }`}
+                className={`w-full h-12 rounded-xl text-white font-semibold transition-colors disabled:opacity-70 ${status === "success" ? "bg-emerald-500 hover:bg-emerald-600" : "bg-primary hover:bg-primary/90"
+                  }`}
               >
-                {status === "sending" ? t("Sending...") : status === "success" ? t("Message sent!") : t("Send Email Btn")}
+                {status === "sending" ? t("Sending...") : status === "success" ? t("Message sent!") : t("Send Message")}
               </Button>
             </form>
           </div>

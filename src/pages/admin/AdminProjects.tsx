@@ -48,6 +48,26 @@ export default function AdminProjects() {
     setLoading(true);
     try {
       const data = await getProjects();
+      
+      // Custom Sort: 
+      // 1. Category: Professional > Personal > IOT
+      // 2. Featured: Featured comes first within each category
+      const categoryPriority: Record<string, number> = {
+        'Professional': 1,
+        'Personal': 2,
+        'IOT': 3
+      };
+      
+      data.sort((a, b) => {
+        const aPriority = categoryPriority[a.category] || 99;
+        const bPriority = categoryPriority[b.category] || 99;
+        if (aPriority !== bPriority) return aPriority - bPriority;
+        
+        if (a.featured && !b.featured) return -1;
+        if (!a.featured && b.featured) return 1;
+        return 0;
+      });
+
       setProjects(data);
     } catch (e: unknown) {
       setError((e as Error).message);

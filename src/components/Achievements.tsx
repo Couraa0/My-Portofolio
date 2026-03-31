@@ -41,6 +41,7 @@ export default function Achievements() {
   const [achievementsData, setAchievementsData] = useState<Achievement[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedType, setSelectedType] = useState<string>("All");
 
   useEffect(() => {
     getAchievements()
@@ -49,12 +50,26 @@ export default function Achievements() {
       .finally(() => setLoading(false));
   }, []);
 
+  const types = useMemo(() => {
+    const allTypes = achievementsData.map((item) => item.type);
+    return ["All", ...Array.from(new Set(allTypes))];
+  }, [achievementsData]);
+
   const filteredData = useMemo(() => {
     return achievementsData.filter((item) => {
-      return item.title.toLowerCase().includes(search.toLowerCase()) || 
-             item.issuer.toLowerCase().includes(search.toLowerCase());
+      const matchesSearch = item.title.toLowerCase().includes(search.toLowerCase()) || 
+                           item.issuer.toLowerCase().includes(search.toLowerCase());
+      const matchesType = selectedType === "All" || item.type === selectedType;
+      return matchesSearch && matchesType;
+    }).sort((a, b) => {
+      // Sort by type (alphabetical)
+      if (a.type < b.type) return -1;
+      if (a.type > b.type) return 1;
+      
+      // Then by date (newest first)
+      return new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime();
     });
-  }, [search, achievementsData]);
+  }, [search, achievementsData, selectedType]);
 
 
   return (
@@ -72,9 +87,9 @@ export default function Achievements() {
           </div>
         </AnimatedSection>
 
-        {/* Search */}
+        {/* Search & Filters */}
         <AnimatedSection delay={0.1}>
-          <div className="mb-6">
+          <div className="space-y-6 mb-10">
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
               <input
@@ -85,9 +100,29 @@ export default function Achievements() {
                 className="w-full pl-9 pr-4 py-2 bg-card border border-border/50 rounded-lg outline-none focus:ring-2 focus:ring-primary/50 text-sm h-11"
               />
             </div>
+
+            {/* Type Filters */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase mr-2">FILTER BY TYPE:</span>
+              {types.map((type) => (
+                <button
+                  key={type}
+                  onClick={() => setSelectedType(type)}
+                  className={`px-4 py-1.5 rounded-full text-[11px] font-bold transition-all duration-300 border ${
+                    selectedType === type
+                      ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20 scale-105"
+                      : "bg-card text-muted-foreground border-border/50 hover:bg-muted"
+                  }`}
+                >
+                  {type.toUpperCase()}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="mb-8 text-sm text-muted-foreground font-medium">
-            Total: {filteredData.length}
+
+          <div className="mb-8 text-sm text-muted-foreground font-medium flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+            Showing {filteredData.length} achievements
           </div>
         </AnimatedSection>
 

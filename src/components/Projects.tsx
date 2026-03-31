@@ -67,11 +67,26 @@ const Projects = () => {
     getProjects()
       .then((data) => {
         const mapped = data.map(adaptProject);
-        // Sort: featured projects come first
+        // Custom Sort: 
+        // 1. Category: Professional > Personal > IOT
+        // 2. Featured: Featured comes first within each category
+        const categoryPriority: Record<string, number> = {
+          'Professional': 1,
+          'Personal': 2,
+          'IOT': 3
+        };
+
         mapped.sort((a, b) => {
+          // Sort by category priority
+          const aPriority = categoryPriority[a.category] || 99;
+          const bPriority = categoryPriority[b.category] || 99;
+          if (aPriority !== bPriority) return aPriority - bPriority;
+          
+          // Then by featured status
           if (a.featured && !b.featured) return -1;
           if (!a.featured && b.featured) return 1;
-          return 0; // maintain database original order for ties
+          
+          return 0; // maintain original order for ties
         });
         setProjects(mapped);
       })
