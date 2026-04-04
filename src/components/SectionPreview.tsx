@@ -25,7 +25,7 @@ const sectionCards = [
     border: "hsl(196 100% 47% / 0.2)",
     iconBg: "hsl(196 100% 47% / 0.12)",
     iconColor: "hsl(196 100% 40%)",
-    highlights: ["Citiasia Intl.", "Tixchain.id", "HIMSIKA"],
+    highlights: ["Citiasia Inc", "Tixchain.id", "HIMSIKA"],
   },
   {
     key: "projects",
@@ -53,7 +53,7 @@ const sectionCards = [
     border: "hsl(250 84% 60% / 0.2)",
     iconBg: "hsl(250 84% 60% / 0.12)",
     iconColor: "hsl(250 84% 55%)",
-    highlights: ["Awards", "Certificates", "Competitions"],
+    highlights: ["Awards", "Certificates", "Course"],
   },
   {
     key: "contact",
@@ -67,7 +67,7 @@ const sectionCards = [
     border: "hsl(158 80% 42% / 0.2)",
     iconBg: "hsl(158 80% 42% / 0.12)",
     iconColor: "hsl(158 80% 38%)",
-    highlights: ["Email", "WhatsApp", "LinkedIn"],
+    highlights: ["Email", "LinkedIn", "Github"],
   },
 ];
 
