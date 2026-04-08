@@ -17,6 +17,7 @@ interface Achievement {
   images: string[];
   type: string;
   category: string;
+  createdAt?: string;
 }
 
 function adaptAchievement(a: DBAchievement): Achievement {
@@ -30,6 +31,7 @@ function adaptAchievement(a: DBAchievement): Achievement {
     images: a.images || [],
     type: a.type,
     category: a.category,
+    createdAt: a.created_at,
   };
 }
 
@@ -52,7 +54,26 @@ export default function Achievements() {
 
   const types = useMemo(() => {
     const allTypes = achievementsData.map((item) => item.type);
-    return ["All", ...Array.from(new Set(allTypes))];
+    const uniqueTypes = Array.from(new Set(allTypes));
+    
+    const typeOrder: Record<string, number> = {
+      "award": 1,
+      "professional": 2,
+      "profesional": 2,
+      "certification": 3,
+      "course": 4
+    };
+    
+    uniqueTypes.sort((a, b) => {
+      const orderA = typeOrder[a.toLowerCase()] || 99;
+      const orderB = typeOrder[b.toLowerCase()] || 99;
+      if (orderA === orderB) {
+        return a.localeCompare(b);
+      }
+      return orderA - orderB;
+    });
+
+    return ["All", ...uniqueTypes];
   }, [achievementsData]);
 
   const filteredData = useMemo(() => {
@@ -62,12 +83,34 @@ export default function Achievements() {
       const matchesType = selectedType === "All" || item.type === selectedType;
       return matchesSearch && matchesType;
     }).sort((a, b) => {
-      // Sort by type (alphabetical)
-      if (a.type < b.type) return -1;
-      if (a.type > b.type) return 1;
+      // Sort by custom order checking both type and category
+      const customOrder: Record<string, number> = {
+        "award": 1,
+        "professional": 2,
+        "profesional": 2,
+        "certification": 3,
+        "course": 4
+      };
       
-      // Then by date (newest first)
-      return new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime();
+      const getOrder = (item: typeof a) => {
+        const typeOrder = customOrder[item.type?.toLowerCase() || ""];
+        if (typeOrder) return typeOrder;
+        const catOrder = customOrder[item.category?.toLowerCase() || ""];
+        if (catOrder) return catOrder;
+        return 99;
+      };
+
+      const orderA = getOrder(a);
+      const orderB = getOrder(b);
+
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+      
+      // Then by upload date (newest first), fallback to issue date
+      const timeA = a.createdAt ? new Date(a.createdAt).getTime() : new Date(a.issueDate).getTime();
+      const timeB = b.createdAt ? new Date(b.createdAt).getTime() : new Date(b.issueDate).getTime();
+      return timeB - timeA;
     });
   }, [search, achievementsData, selectedType]);
 

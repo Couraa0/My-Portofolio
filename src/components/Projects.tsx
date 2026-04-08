@@ -127,7 +127,7 @@ const Projects = () => {
 
         {/* Filter */}
         <AnimatedSection delay={0.1}>
-          <div className="flex flex-wrap items-center gap-3 mb-10">
+          <div className="flex flex-wrap items-center gap-3 mb-6">
             <span className="text-sm font-semibold text-muted-foreground mr-2">{t("CATEGORY")}</span>
             {(["All", "Professional", "Personal", "IOT"] as Filter[]).map((f) => (
               <button
@@ -142,6 +142,11 @@ const Projects = () => {
                 {t(f)}
               </button>
             ))}
+          </div>
+
+          <div className="mb-8 text-sm text-muted-foreground font-medium flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+            Showing {filtered.length} {t("projects") || "projects"}
           </div>
         </AnimatedSection>
 
