@@ -155,21 +155,22 @@ const Contact = () => {
                     href={link.url}
                     target="_blank"
                     rel="noreferrer"
+                    aria-label={`Visit my ${link.title}`}
                     className={`${link.colSpan} ${link.bgColor} p-6 rounded-2xl border ${link.textColor} relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between`}
                     style={{ minHeight: "160px" }}
                   >
                     <div className="relative z-10">
                       <div className="flex items-center gap-3 mb-2">
-                        <Icon className={`w-6 h-6 ${link.iconColor} z-10`} />
+                        <Icon className={`w-6 h-6 ${link.iconColor} z-10`} aria-hidden="true" />
                         <h4 className="font-bold text-lg">{link.title}</h4>
                       </div>
                       <p className="text-muted-foreground text-sm mb-6 max-w-[85%] line-clamp-2">
                         {link.desc}
                       </p>
-                      <button className={`${link.btnBg} text-xs font-bold py-2 px-4 rounded-lg transition-colors duration-300 flex items-center gap-1.5 w-fit z-10 relative`}>
+                      <span className={`${link.btnBg} text-xs font-bold py-2 px-4 rounded-lg transition-colors duration-300 flex items-center gap-1.5 w-fit z-10 relative`}>
                         {link.btnText}
-                        <ExternalLink size={14} />
-                      </button>
+                        <ExternalLink size={14} aria-hidden="true" />
+                      </span>
                     </div>
 
                     {/* Background Icon Watermark */}
@@ -191,6 +192,9 @@ const Contact = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Input
                   required
+                  id="user_name"
+                  name="user_name"
+                  aria-label={t("Name placeholder") || "Name"}
                   placeholder={t("Name placeholder") || "Name"}
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -198,7 +202,10 @@ const Contact = () => {
                 />
                 <Input
                   required
+                  id="user_email"
+                  name="user_email"
                   type="email"
+                  aria-label={t("Email placeholder") || "Email"}
                   placeholder={t("Email placeholder") || "Email"}
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -207,6 +214,9 @@ const Contact = () => {
               </div>
               <Textarea
                 required
+                id="message"
+                name="message"
+                aria-label={t("Message placeholder") || "Message"}
                 placeholder={t("Message placeholder") || "Message"}
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
