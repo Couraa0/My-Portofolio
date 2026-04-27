@@ -7,10 +7,11 @@ import {
   Linkedin,
   Briefcase,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
-import Skills from "@/components/Skills";
-import SectionPreview from "@/components/SectionPreview";
+
+const Skills = lazy(() => import("@/components/Skills"));
+const SectionPreview = lazy(() => import("@/components/SectionPreview"));
 import AnimatedSection from "@/components/AnimatedSection";
 
 const container: Variants = {
@@ -35,17 +36,13 @@ const typingRoles = [
 
 
 
-const Index = () => {
-  const { t, i18n } = useTranslation();
-  const context = useOutletContext<{ layoutMode: string }>();
-  const layoutMode = context?.layoutMode || "navbar";
-  const isId = i18n.language === "id";
+const TypingRoles = ({ roles }: { roles: string[] }) => {
   const [roleIndex, setRoleIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    const currentRole = typingRoles[roleIndex];
+    const currentRole = roles[roleIndex];
     let timeout: ReturnType<typeof setTimeout>;
     if (!isDeleting && charIndex < currentRole.length) {
       timeout = setTimeout(() => setCharIndex(charIndex + 1), 80);
@@ -55,10 +52,29 @@ const Index = () => {
       timeout = setTimeout(() => setCharIndex(charIndex - 1), 40);
     } else if (isDeleting && charIndex === 0) {
       setIsDeleting(false);
-      setRoleIndex((roleIndex + 1) % typingRoles.length);
+      setRoleIndex((roleIndex + 1) % roles.length);
     }
     return () => clearTimeout(timeout);
-  }, [charIndex, isDeleting, roleIndex]);
+  }, [charIndex, isDeleting, roleIndex, roles]);
+
+  return (
+    <>
+      {roles[roleIndex].substring(0, charIndex)}
+      <span
+        className="inline-block w-[2px] h-[14px] bg-current ml-0.5 align-middle"
+        style={{
+          animation: "blink 1s step-end infinite",
+        }}
+      />
+    </>
+  );
+};
+
+const Index = () => {
+  const { t, i18n } = useTranslation();
+  const context = useOutletContext<{ layoutMode: string }>();
+  const layoutMode = context?.layoutMode || "navbar";
+  const isId = i18n.language === "id";
 
   return (
     <>
@@ -101,27 +117,15 @@ const Index = () => {
           />
 
           {/* Floating Doodles */}
-          <motion.div
-            animate={{ y: [0, -10, 0], rotate: [0, 10, 0] }}
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className={`hidden md:block absolute opacity-[0.4] text-rose-500 filter drop-shadow-sm z-0 ${layoutMode === "sidebar" ? "top-[15%] right-[10%] xl:right-[15%]" : "top-[15%] left-[40%]"}`}
+          <div
+            className={`hidden md:block absolute opacity-[0.4] text-rose-500 filter drop-shadow-sm z-0 animate-float-slow ${layoutMode === "sidebar" ? "top-[15%] right-[10%] xl:right-[15%]" : "top-[15%] left-[40%]"}`}
           >
             <svg width="45" height="45" viewBox="0 0 24 24" fill="hsl(344 85% 60%)">
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
             </svg>
-          </motion.div>
-          <motion.div
-            animate={{ y: [0, 20, 0], x: [0, 10, 0], rotate: [20, 30, 20] }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className={`hidden lg:block absolute opacity-[0.4] text-blue-500 z-0 ${layoutMode === "sidebar" ? "top-[60%] left-[8%] xl:left-[12%]" : "top-[45%] left-1/2 -translate-x-[280px]"}`}
+          </div>
+          <div
+            className={`hidden lg:block absolute opacity-[0.4] text-blue-500 z-0 animate-float ${layoutMode === "sidebar" ? "top-[60%] left-[8%] xl:left-[12%]" : "top-[45%] left-1/2 -translate-x-[280px]"}`}
           >
             <svg width="65" height="65" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
@@ -130,7 +134,7 @@ const Index = () => {
               <path d="M12 15v5c1.97 1.45 5 2 5 2s-.8-3.38-3-5" />
               <circle cx="12" cy="12" r="2" fill="currentColor" />
             </svg>
-          </motion.div>
+          </div>
         </div>
 
         <div className={`container mx-auto px-4 sm:px-6 grid ${layoutMode === "navbar" ? "lg:grid-cols-2" : "grid-cols-1 md:-mt-20"} gap-8 lg:gap-16 items-center relative z-10`}>
@@ -174,13 +178,7 @@ const Index = () => {
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
                   <span className="min-w-[140px]">
-                    {typingRoles[roleIndex].substring(0, charIndex)}
-                    <span
-                      className="inline-block w-[2px] h-[14px] bg-current ml-0.5 align-middle"
-                      style={{
-                        animation: "blink 1s step-end infinite",
-                      }}
-                    />
+                    <TypingRoles roles={typingRoles} />
                   </span>
                 </div>
               </div>
@@ -216,7 +214,7 @@ const Index = () => {
                   href="https://drive.google.com/file/d/1JHdnHLOJfDU3Wf3jK1hrfgMrzbeGfQdT/view?usp=drive_link"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full border px-5 py-3 sm:px-7 sm:py-3.5 text-[13px] sm:text-sm font-semibold transition-all duration-300 hover:scale-105 border-border text-foreground hover:bg-secondary/80 flex items-center gap-2"
+                  className="rounded-full border px-5 py-3 sm:px-7 sm:py-3.5 text-[13px] sm:text-sm font-semibold transition-all duration-300 hover:scale-105 bg-background/50 backdrop-blur-md border-border text-foreground hover:text-rose-500 hover:border-rose-500 hover:bg-rose-500/10 hover:shadow-rose flex items-center gap-2"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -227,7 +225,7 @@ const Index = () => {
                 </a>
                 <Link
                   to="/contact"
-                  className="rounded-full border px-5 py-3 sm:px-7 sm:py-3.5 text-[13px] sm:text-sm font-semibold transition-all duration-300 hover:scale-105 border-border text-foreground hover:border-primary hover:text-primary"
+                  className="rounded-full border px-5 py-3 sm:px-7 sm:py-3.5 text-[13px] sm:text-sm font-semibold transition-all duration-300 hover:scale-105 bg-background/50 backdrop-blur-md border-border text-foreground hover:text-violet-600 hover:border-violet-600 hover:bg-violet-600/10 hover:shadow-violet"
                 >
                   {t("Contact Me")}
                 </Link>
@@ -320,11 +318,7 @@ const Index = () => {
                   <img
                     src="/Rakha-Formal-NoBg.png"
                     alt="Muhammad Rakha Syamputra"
-                    className="w-full h-full object-contain object-bottom select-none"
-                    style={{
-                      filter:
-                        "drop-shadow(0 20px 40px hsl(250 84% 60% / 0.18)) drop-shadow(0 4px 12px hsl(220 20% 50% / 0.1)) contrast(1.02)",
-                    }}
+                    className="w-full h-full object-contain object-bottom select-none drop-shadow-2xl contrast-[1.02]"
                     draggable={false}
                   />
                 </div>
@@ -367,14 +361,8 @@ const Index = () => {
               </div>
 
               {/* Floating badges */}
-              <motion.div
-                animate={{ y: [0, -12, 0] }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="absolute z-30 rounded-2xl px-4 py-2.5 flex items-center gap-3 bg-background/90 backdrop-blur-md border border-violet-500/20 shadow-lg shadow-violet-500/10"
+              <div
+                className="absolute z-30 rounded-2xl px-4 py-2.5 flex items-center gap-3 bg-background/90 backdrop-blur-md border border-violet-500/20 shadow-lg shadow-violet-500/10 animate-float-slow"
                 style={{ top: 20, right: -24 }}
               >
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-violet-500/10 text-violet-600">
@@ -388,16 +376,10 @@ const Index = () => {
                     {t("GPA")}
                   </p>
                 </div>
-              </motion.div>
+              </div>
 
-              <motion.div
-                animate={{ y: [0, 12, 0] }}
-                transition={{
-                  duration: 4.5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="absolute z-30 rounded-2xl px-4 py-2.5 flex items-center gap-3 bg-background/90 backdrop-blur-md border border-rose-500/20 shadow-lg shadow-rose-500/10"
+              <div
+                className="absolute z-30 rounded-2xl px-4 py-2.5 flex items-center gap-3 bg-background/90 backdrop-blur-md border border-rose-500/20 shadow-lg shadow-rose-500/10 animate-float"
                 style={{ bottom: 180, left: -32 }}
               >
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-rose-500/10 text-rose-600">
@@ -405,22 +387,16 @@ const Index = () => {
                 </div>
                 <div className="text-left">
                   <p className="font-heading text-lg font-bold leading-none text-foreground">
-                    10+
+                    15+
                   </p>
                   <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">
                     Projects
                   </p>
                 </div>
-              </motion.div>
+              </div>
 
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{
-                  duration: 5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="absolute z-30 rounded-2xl px-4 py-2.5 flex items-center gap-3 bg-background/90 backdrop-blur-md border border-emerald-500/20 shadow-lg shadow-emerald-500/10"
+              <div
+                className="absolute z-30 rounded-2xl px-4 py-2.5 flex items-center gap-3 bg-background/90 backdrop-blur-md border border-emerald-500/20 shadow-lg shadow-emerald-500/10 animate-float-slow"
                 style={{ top: 140, right: -40 }}
               >
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-emerald-500/10 text-emerald-600">
@@ -434,7 +410,7 @@ const Index = () => {
                     Yrs Exp
                   </p>
                 </div>
-              </motion.div>
+              </div>
             </div>
           </motion.div>
         </div>
@@ -459,10 +435,14 @@ const Index = () => {
       </section>
 
       {/* ═══════════════ SKILLS (inline) ═══════════════ */}
-      <Skills />
+      <Suspense fallback={<div className="h-40" />}>
+        <Skills />
+      </Suspense>
 
       {/* ═══════════════ WHAT I OFFER ═══════════════ */}
-      <SectionPreview />
+      <Suspense fallback={<div className="h-40" />}>
+        <SectionPreview />
+      </Suspense>
     </>
   );
 };

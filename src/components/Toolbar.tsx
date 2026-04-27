@@ -8,28 +8,53 @@ interface ToolbarProps {
   toggleAudio: () => void;
 }
 
+const USFlag = () => (
+  <svg viewBox="0 0 512 512" className="w-5 h-5 rounded-full object-cover">
+    <path fill="#bd3d44" d="M0 0h512v512H0z"/>
+    <path stroke="#fff" strokeWidth="40" d="M0 59h512M0 138h512M0 217h512M0 296h512M0 375h512M0 454h512"/>
+    <path fill="#192f5d" d="M0 0h256v256H0z"/>
+    <circle cx="64" cy="64" r="20" fill="#fff"/>
+    <circle cx="128" cy="64" r="20" fill="#fff"/>
+    <circle cx="192" cy="64" r="20" fill="#fff"/>
+    <circle cx="96" cy="128" r="20" fill="#fff"/>
+    <circle cx="160" cy="128" r="20" fill="#fff"/>
+    <circle cx="64" cy="192" r="20" fill="#fff"/>
+    <circle cx="128" cy="192" r="20" fill="#fff"/>
+    <circle cx="192" cy="192" r="20" fill="#fff"/>
+  </svg>
+);
+
+const IDFlag = () => (
+  <svg viewBox="0 0 512 512" className="w-5 h-5 rounded-full border border-border/20 object-cover">
+    <path fill="#fff" d="M0 0h512v512H0z"/>
+    <path fill="#e70011" d="M0 0h512v256H0z"/>
+  </svg>
+);
+
 export const Toolbar = ({ className = "", isPlaying, toggleAudio }: ToolbarProps) => {
   const { i18n } = useTranslation();
   const { theme, setTheme } = useTheme();
 
   return (
     <div className={`flex flex-wrap items-center gap-2 ${className}`}>
-      <div className="flex p-0.5 rounded-full border border-border bg-card shadow-sm h-10 w-[84px] shrink-0">
+      <div className="flex p-0.5 rounded-full border border-border bg-card shadow-sm h-10 w-[96px] shrink-0">
         <button
           onClick={() => i18n.changeLanguage('en')}
-          className={`h-full flex-1 flex items-center justify-center rounded-full transition-all text-xs font-bold ${
-            i18n.language?.startsWith('en') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+          className={`h-full flex-1 flex items-center justify-center rounded-full transition-all ${
+            i18n.language?.startsWith('en') ? 'bg-muted shadow-inner' : 'opacity-40 hover:opacity-100 hover:bg-muted/50'
           }`}
+          title="English"
         >
-          US
+          <USFlag />
         </button>
         <button
           onClick={() => i18n.changeLanguage('id')}
-          className={`h-full flex-1 flex items-center justify-center rounded-full transition-all text-xs font-bold ${
-            i18n.language?.startsWith('id') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+          className={`h-full flex-1 flex items-center justify-center rounded-full transition-all ${
+            i18n.language?.startsWith('id') ? 'bg-muted shadow-inner' : 'opacity-40 hover:opacity-100 hover:bg-muted/50'
           }`}
+          title="Bahasa Indonesia"
         >
-          ID
+          <IDFlag />
         </button>
       </div>
 

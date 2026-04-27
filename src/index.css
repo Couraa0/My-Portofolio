@@ -374,22 +374,8 @@
       radial-gradient(circle at 20% 80%, hsl(250 84% 60% / 0.08) 0%, transparent 50%),
       radial-gradient(circle at 80% 20%, hsl(196 100% 47% / 0.06) 0%, transparent 50%),
       radial-gradient(circle at 40% 40%, hsl(344 85% 60% / 0.04) 0%, transparent 50%);
-    animation: mesh-move 12s ease-in-out infinite alternate;
-  }
-
-  @keyframes mesh-move {
-    0% {
-      background:
-        radial-gradient(circle at 20% 80%, hsl(250 84% 60% / 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, hsl(196 100% 47% / 0.06) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, hsl(344 85% 60% / 0.04) 0%, transparent 50%);
-    }
-    100% {
-      background:
-        radial-gradient(circle at 80% 20%, hsl(250 84% 60% / 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 20% 80%, hsl(196 100% 47% / 0.06) 0%, transparent 50%),
-        radial-gradient(circle at 60% 60%, hsl(344 85% 60% / 0.04) 0%, transparent 50%);
-    }
+    /* Optimized: Removing complex background animation which causes constant repaints */
+    opacity: 0.8;
   }
 
   /* ── Text shimmer (for headings) ── */
