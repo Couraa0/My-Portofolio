@@ -4,15 +4,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ExternalLink, Github, FolderKanban, Star, ChevronLeft, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import AnimatedSection from "./AnimatedSection";
-import { getProjects, type Project as DBProject } from "@/lib/supabase";
-
-type Filter = "All" | "Professional" | "Personal" | "IOT";
+import { getProjects, getProjectCategories, type Project as DBProject, type ProjectCategory } from "@/lib/supabase";
 
 // Adapter: map DB snake_case fields → component camelCase
 interface Project {
   id: string;
   title: string;
-  category: "Professional" | "Personal" | "IOT";
+  category: string[];
   description: string;
   role?: string;
   tech: string[];
@@ -30,7 +28,7 @@ function adaptProject(p: DBProject): Project {
   return {
     id: p.id!,
     title: p.title,
-    category: p.category,
+    category: Array.isArray(p.category) ? p.category : (typeof p.category === 'string' ? [p.category] : []),
     description: p.description,
     role: p.role,
     tech: p.tech || [],
@@ -57,36 +55,54 @@ const colorMap: Record<string, { bg: string; text: string; border: string; hover
 
 const Projects = () => {
   const { t } = useTranslation();
-  const [filter, setFilter] = useState<Filter>("All");
+  const [filter, setFilter] = useState<string>("All");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [categories, setCategories] = useState<string[]>(["All"]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    getProjects()
-      .then((data) => {
-        const mapped = data.map(adaptProject);
+    Promise.all([getProjects(), getProjectCategories()])
+      .then(([projectsData, categoriesData]) => {
+        const mapped = projectsData.map(adaptProject);
+        
+        // Dynamic categories from DB
+        const customOrder = ["Website", "Mobile", "Business", "IOT"];
+        const catNames = categoriesData.map(c => c.name).sort((a, b) => {
+          const aIdx = customOrder.findIndex(cat => cat.toLowerCase() === a.toLowerCase());
+          const bIdx = customOrder.findIndex(cat => cat.toLowerCase() === b.toLowerCase());
+          const aPriority = aIdx !== -1 ? aIdx : 99;
+          const bPriority = bIdx !== -1 ? bIdx : 99;
+          if (aPriority !== bPriority) return aPriority - bPriority;
+          return a.localeCompare(b);
+        });
+        
+        setCategories(["All", ...catNames]);
+
         // Custom Sort: 
-        // 1. Category: Professional > Personal > IOT
-        // 2. Featured: Featured comes first within each category
-        const categoryPriority: Record<string, number> = {
-          'Professional': 1,
-          'Personal': 2,
-          'IOT': 3
-        };
+        // 1. Category matches index in custom sorted catNames
+        // 2. Featured comes first
+        const categoryPriority: Record<string, number> = {};
+        catNames.forEach((cat, index) => {
+          categoryPriority[cat] = index + 1;
+        });
 
         mapped.sort((a, b) => {
-          // Sort by category priority
-          const aPriority = categoryPriority[a.category] || 99;
-          const bPriority = categoryPriority[b.category] || 99;
+          // Sort by category priority using the first category or fallback
+          const aCat = a.category && a.category.length > 0 ? a.category[0] : '';
+          const bCat = b.category && b.category.length > 0 ? b.category[0] : '';
+
+          const aPriority = categoryPriority[aCat] || 99;
+          const bPriority = categoryPriority[bCat] || 99;
           if (aPriority !== bPriority) return aPriority - bPriority;
           
           // Then by featured status
           if (a.featured && !b.featured) return -1;
           if (!a.featured && b.featured) return 1;
           
-          return 0; // maintain original order for ties
+          // Finally, sort alphabetically by title
+          return a.title.localeCompare(b.title);
         });
         setProjects(mapped);
       })
@@ -108,7 +124,7 @@ const Projects = () => {
     };
   }, [selectedProject]);
 
-  const filtered = filter === "All" ? projects : projects.filter((p) => p.category === filter);
+  const filtered = filter === "All" ? projects : projects.filter((p) => (p.category || []).includes(filter));
 
   return (
     <section id="projects" className="py-24 bg-background relative z-10 min-h-screen">
@@ -129,7 +145,7 @@ const Projects = () => {
         <AnimatedSection delay={0.1}>
           <div className="flex flex-wrap items-center gap-3 mb-6">
             <span className="text-sm font-semibold text-muted-foreground mr-2">{t("CATEGORY")}</span>
-            {(["All", "Professional", "Personal", "IOT"] as Filter[]).map((f) => (
+            {categories.map((f) => (
               <button
                 key={f}
                 onClick={() => setFilter(f)}
@@ -214,7 +230,7 @@ const Projects = () => {
                 </h1>
                 <div className="flex items-center gap-4 pt-6 border-t border-border/60">
                   <span className="text-sm text-muted-foreground">{t("Role:")} <strong className="text-foreground">{selectedProject.role || "Developer"}</strong></span>
-                  <span className="text-sm text-muted-foreground">{t("Category:")} <strong className="text-foreground">{t(selectedProject.category)}</strong></span>
+                  <span className="text-sm text-muted-foreground">{t("Category:")} <strong className="text-foreground">{(Array.isArray(selectedProject.category) ? selectedProject.category : (typeof selectedProject.category === 'string' ? [selectedProject.category] : [])).map(cat => t(cat)).join(", ")}</strong></span>
                 </div>
               </div>
 

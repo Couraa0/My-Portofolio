@@ -14,7 +14,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 export interface Project {
   id?: string;
   title: string;
-  category: 'Professional' | 'Personal' | 'IOT';
+  category: string[];
   description: string;
   role?: string;
   tech: string[];
@@ -26,6 +26,12 @@ export interface Project {
   live_url_label?: string;
   additional_desc?: string;
   project_output?: string[];
+  created_at?: string;
+}
+
+export interface ProjectCategory {
+  id?: string;
+  name: string;
   created_at?: string;
 }
 
@@ -102,6 +108,43 @@ export const updateProject = async (id: string, project: Partial<Project>): Prom
 
 export const deleteProject = async (id: string): Promise<void> => {
   const { error } = await supabase.from('projects').delete().eq('id', id);
+  if (error) throw error;
+};
+
+// ===================== PROJECT CATEGORIES =====================
+
+export const getProjectCategories = async (): Promise<ProjectCategory[]> => {
+  const { data, error } = await supabase
+    .from('project_categories')
+    .select('*')
+    .order('created_at', { ascending: true });
+  if (error) throw error;
+  return data || [];
+};
+
+export const createProjectCategory = async (category: Omit<ProjectCategory, 'id' | 'created_at'>): Promise<ProjectCategory> => {
+  const { data, error } = await supabase
+    .from('project_categories')
+    .insert([category])
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
+
+export const updateProjectCategory = async (id: string, category: Partial<ProjectCategory>): Promise<ProjectCategory> => {
+  const { data, error } = await supabase
+    .from('project_categories')
+    .update(category)
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
+
+export const deleteProjectCategory = async (id: string): Promise<void> => {
+  const { error } = await supabase.from('project_categories').delete().eq('id', id);
   if (error) throw error;
 };
 

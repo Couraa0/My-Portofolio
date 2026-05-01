@@ -439,10 +439,13 @@ const Index = () => {
         <Skills />
       </Suspense>
 
+      {/* ═══════════════ HIGHLIGHT PROJECT (PREMIUM IMMERSIVE) ═══════════════ */}
+      
       {/* ═══════════════ WHAT I OFFER ═══════════════ */}
       <Suspense fallback={<div className="h-40" />}>
         <SectionPreview />
       </Suspense>
+
     </>
   );
 };

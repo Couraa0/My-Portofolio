@@ -17,6 +17,7 @@ import {
 
 const navItems = [
   { to: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/admin/categories', icon: FolderOpen, label: 'Categories' },
   { to: '/admin/projects', icon: FolderOpen, label: 'Projects' },
   { to: '/admin/achievements', icon: Trophy, label: 'Achievements' },
   { to: '/admin/experience', icon: Briefcase, label: 'Experience' },

@@ -153,7 +153,7 @@ const Experience = () => {
                                 {exp.period}
                               </span>
                               <span className="text-xs font-semibold bg-muted px-3 py-1.5 rounded-full flex items-center gap-1.5 text-foreground">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
                                 {exp.location}
                               </span>
                             </div>

@@ -26,6 +26,7 @@ import AdminAchievements from "./pages/admin/AdminAchievements";
 import AdminExperience from "./pages/admin/AdminExperience";
 import AdminEducation from "./pages/admin/AdminEducation";
 import AdminGuestbook from "./pages/admin/AdminGuestbook";
+import AdminCategories from "./pages/admin/AdminCategories";
 import "./pages/admin/admin.css";
 
 const queryClient = new QueryClient();
@@ -60,6 +61,7 @@ const App = () => (
                   }
                 >
                   <Route path="dashboard" element={<AdminDashboard />} />
+                  <Route path="categories" element={<AdminCategories />} />
                   <Route path="projects" element={<AdminProjects />} />
                   <Route path="achievements" element={<AdminAchievements />} />
                   <Route path="experience" element={<AdminExperience />} />

@@ -994,6 +994,9 @@
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.03em;
+  background: var(--a-surface2);
+  color: var(--a-text-sub);
+  border: 1px solid var(--a-border);
 }
 .badge-professional { background: var(--a-primary-light); color: var(--a-primary); border: 1px solid var(--a-primary-border); }
 .badge-personal     { background: var(--a-cyan-light);    color: var(--a-cyan);    border: 1px solid hsl(196 100% 47% / 0.2); }

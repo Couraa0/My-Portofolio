@@ -1,19 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Plus, Pencil, Trash2, X, Check, Upload, Loader2,
-  Search, ExternalLink, Github, Star
+  Search, ExternalLink, Github, Star, FolderOpen
 } from 'lucide-react';
 import {
   getProjects, createProject, updateProject, deleteProject,
-  uploadImage, Project
+  uploadImage, Project, getProjectCategories, ProjectCategory
 } from '@/lib/supabase';
 
-const CATEGORY_OPTIONS = ['Professional', 'Personal', 'IOT'] as const;
 const COLOR_OPTIONS = ['violet', 'rose', 'emerald', 'amber', 'cyan', 'indigo'] as const;
 
 const emptyForm: Omit<Project, 'id' | 'created_at'> = {
   title: '',
-  category: 'Professional',
+  category: [],
   description: '',
   role: '',
   tech: [],
@@ -29,6 +29,7 @@ const emptyForm: Omit<Project, 'id' | 'created_at'> = {
 
 export default function AdminProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [categories, setCategories] = useState<ProjectCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState('');
@@ -50,22 +51,29 @@ export default function AdminProjects() {
       const data = await getProjects();
       
       // Custom Sort: 
-      // 1. Category: Professional > Personal > IOT
+      // 1. Category: Website > Mobile > Business > IOT
       // 2. Featured: Featured comes first within each category
       const categoryPriority: Record<string, number> = {
-        'Professional': 1,
-        'Personal': 2,
-        'IOT': 3
+        'Website': 1,
+        'Mobile': 2,
+        'Business': 3,
+        'IOT': 4
       };
       
       data.sort((a, b) => {
-        const aPriority = categoryPriority[a.category] || 99;
-        const bPriority = categoryPriority[b.category] || 99;
+        // use the first category to determine priority, or 99
+        const aCat = a.category && a.category.length > 0 ? a.category[0] : '';
+        const bCat = b.category && b.category.length > 0 ? b.category[0] : '';
+
+        const aPriority = categoryPriority[aCat] || 99;
+        const bPriority = categoryPriority[bCat] || 99;
         if (aPriority !== bPriority) return aPriority - bPriority;
         
         if (a.featured && !b.featured) return -1;
         if (!a.featured && b.featured) return 1;
-        return 0;
+        
+        // Finally, sort alphabetically by title
+        return a.title.localeCompare(b.title);
       });
 
       setProjects(data);
@@ -76,7 +84,19 @@ export default function AdminProjects() {
     }
   };
 
-  useEffect(() => { fetchProjects(); }, []);
+  const fetchCategories = async () => {
+    try {
+      const cats = await getProjectCategories();
+      setCategories(cats);
+    } catch (e: unknown) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => { 
+    fetchProjects(); 
+    fetchCategories();
+  }, []);
 
   const openCreate = () => {
     setForm(emptyForm);
@@ -92,7 +112,7 @@ export default function AdminProjects() {
   const openEdit = (project: Project) => {
     setForm({
       title: project.title,
-      category: project.category,
+      category: Array.isArray(project.category) ? project.category : (typeof project.category === 'string' ? [project.category] : []),
       description: project.description,
       role: project.role || '',
       tech: project.tech || [],
@@ -186,7 +206,7 @@ export default function AdminProjects() {
   const filtered = projects.filter(
     (p) =>
       p.title.toLowerCase().includes(search.toLowerCase()) ||
-      p.category.toLowerCase().includes(search.toLowerCase())
+      (Array.isArray(p.category) ? p.category : (typeof p.category === 'string' ? [p.category] : [])).some(cat => cat.toLowerCase().includes(search.toLowerCase()))
   );
 
   return (
@@ -197,9 +217,14 @@ export default function AdminProjects() {
           <h2 className="section-heading">Projects</h2>
           <p className="section-desc">{projects.length} project tersimpan di database</p>
         </div>
-        <button id="add-project-btn" className="btn-primary" onClick={openCreate}>
-          <Plus size={18} /> Tambah Project
-        </button>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <Link to="/admin/categories" className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
+            <FolderOpen size={18} /> Kelola Kategori
+          </Link>
+          <button id="add-project-btn" className="btn-primary" onClick={openCreate}>
+            <Plus size={18} /> Tambah Project
+          </button>
+        </div>
       </div>
 
       {/* Search */}
@@ -252,9 +277,13 @@ export default function AdminProjects() {
                       <p className="table-secondary">{project.description.slice(0, 50)}...</p>
                     </td>
                     <td>
-                      <span className={`badge badge-${project.category.toLowerCase()}`}>
-                        {project.category}
-                      </span>
+                      <div className="tech-tags">
+                        {(Array.isArray(project.category) ? project.category : (typeof project.category === 'string' ? [project.category] : [])).map(cat => (
+                          <span key={cat} className={`badge badge-${cat.toLowerCase()}`}>
+                            {cat}
+                          </span>
+                        ))}
+                      </div>
                     </td>
                     <td className="table-secondary">{project.role}</td>
                     <td>
@@ -371,9 +400,32 @@ export default function AdminProjects() {
               <div className="form-grid-2">
                 <div className="form-group">
                   <label className="form-label">Category</label>
-                  <select className="form-select" value={form.category} onChange={(e) => setForm((f) => ({ ...f, category: e.target.value as typeof form.category }))}>
-                    {CATEGORY_OPTIONS.map((c) => <option key={c}>{c}</option>)}
-                  </select>
+                  <div className="tech-tags mt-1">
+                    {/* First, get a unique list of all categories to show: DB categories + any already selected categories that might have been deleted from DB */}
+                    {Array.from(new Set([...categories.map(c => c.name), ...form.category])).map((catName) => {
+                      const isSelected = form.category.includes(catName);
+                      const isNotInDB = !categories.find(c => c.name === catName);
+                      return (
+                        <button
+                          key={catName}
+                          type="button"
+                          onClick={() => {
+                            setForm(f => ({
+                              ...f,
+                              category: isSelected
+                                ? f.category.filter(cat => cat !== catName)
+                                : [...f.category, catName]
+                            }));
+                          }}
+                          className={`tech-tag ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'} ${isNotInDB ? 'border-dashed border-destructive' : ''}`}
+                          style={{ cursor: 'pointer' }}
+                          title={isNotInDB ? 'Kategori ini tidak ada di database. Hapus centang untuk menghilangkannya permanen.' : ''}
+                        >
+                          {catName} {isNotInDB && <span className="text-[10px] ml-1 opacity-70">(Legacy)</span>}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
                 <div className="form-group">
                   <label className="form-label">Color</label>

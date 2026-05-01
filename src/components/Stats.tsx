@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Code2, FolderKanban, GraduationCap, Timer } from "lucide-react";
 
 const stats = [
-  { value: 10, suffix: "+", label: "Projects Completed", from: "hsl(250 84% 60%)", to: "hsl(196 100% 47%)", shadow: "hsl(250 84% 60% / 0.2)", border: "hsl(250 84% 60% / 0.18)", bg: "hsl(250 84% 60% / 0.05)", icon: FolderKanban },
+  { value: 15, suffix: "+", label: "Projects Completed", from: "hsl(250 84% 60%)", to: "hsl(196 100% 47%)", shadow: "hsl(250 84% 60% / 0.2)", border: "hsl(250 84% 60% / 0.18)", bg: "hsl(250 84% 60% / 0.05)", icon: FolderKanban },
   { value: 15, suffix: "+", label: "Tech Stack used", from: "hsl(344 85% 60%)", to: "hsl(37 100% 50%)", shadow: "hsl(344 85% 60% / 0.2)", border: "hsl(344 85% 60% / 0.18)", bg: "hsl(344 85% 60% / 0.05)", icon: Code2 },
   { value: 3.97, suffix: "", label: "GPA", decimals: 2, from: "hsl(158 80% 42%)", to: "hsl(196 100% 47%)", shadow: "hsl(158 80% 42% / 0.2)", border: "hsl(158 80% 42% / 0.18)", bg: "hsl(158 80% 42% / 0.05)", icon: GraduationCap },
   { value: 3, suffix: "+", label: "Years Experience", from: "hsl(37 100% 50%)", to: "hsl(250 84% 60%)", shadow: "hsl(37 100% 50% / 0.2)", border: "hsl(37 100% 50% / 0.18)", bg: "hsl(37 100% 50% / 0.05)", icon: Timer },
