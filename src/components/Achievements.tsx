@@ -40,6 +40,7 @@ export default function Achievements() {
   const [search, setSearch] = useState("");
   const [selectedAchievement, setSelectedAchievement] = useState<Achievement | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [fullScreenImage, setFullScreenImage] = useState<string | null>(null);
   const [achievementsData, setAchievementsData] = useState<Achievement[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -174,7 +175,7 @@ export default function Achievements() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="bg-card border border-border/50 rounded-2xl overflow-hidden animate-pulse flex flex-col">
-                <div className="aspect-[4/3] bg-muted" />
+                <div className="aspect-video sm:aspect-[4/3] bg-muted" />
                 <div className="p-5 space-y-2">
                   <div className="h-3 bg-muted rounded w-1/2" />
                   <div className="h-4 bg-muted rounded w-full" />
@@ -194,18 +195,17 @@ export default function Achievements() {
         )}
 
         {/* Grid */}
-        <AnimatedSection delay={0.2}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredData.map((item) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredData.map((item, index) => (
+             <AnimatedSection key={item.id} delay={0.1 * (index % 4)} className="h-full">
                <div 
-                  key={item.id}
                   className="bg-card border border-border/50 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group flex flex-col h-full hover:-translate-y-1"
                   onClick={() => {
                     setSelectedAchievement(item);
                     setCurrentImageIndex(0);
                   }}
                >
-                  <div className="aspect-[4/3] relative overflow-hidden bg-white/5 border-b border-border/50 shrink-0">
+                  <div className="aspect-video sm:aspect-[4/3] relative overflow-hidden bg-white/5 border-b border-border/50 shrink-0">
                     {item.images && item.images.length > 0 ? (
                       <img 
                         src={item.images[0]} 
@@ -242,14 +242,16 @@ export default function Achievements() {
                     </div>
                   </div>
                </div>
-            ))}
-          </div>
-          {filteredData.length === 0 && (
+             </AnimatedSection>
+          ))}
+        </div>
+        {filteredData.length === 0 && (
+          <AnimatedSection delay={0.2}>
             <div className="text-center py-24 text-muted-foreground">
               <p>{t("No results found") || "No achievements found matching your search."}</p>
             </div>
-          )}
-        </AnimatedSection>
+          </AnimatedSection>
+        )}
       </div>
 
       {/* Detail Modal */}
@@ -285,7 +287,11 @@ export default function Achievements() {
                        <img 
                          src={selectedAchievement.images[currentImageIndex]} 
                          alt={`${selectedAchievement.title} - Image ${currentImageIndex + 1}`} 
-                         className="max-w-full max-h-[40vh] md:max-h-[70vh] object-contain rounded shadow-lg border border-border/20 bg-white transition-opacity duration-300" 
+                         className="max-w-full max-h-[40vh] md:max-h-[70vh] object-contain rounded shadow-lg border border-border/20 bg-white transition-all duration-300 cursor-pointer hover:scale-[1.02]" 
+                         onClick={(e) => {
+                           e.stopPropagation();
+                           setFullScreenImage(selectedAchievement.images[currentImageIndex]);
+                         }}
                        />
                        
                        {/* Carousel Controls */}
@@ -394,6 +400,44 @@ export default function Achievements() {
        </AnimatePresence>,
        document.body
      )}
+
+      {/* Full Screen Image Modal */}
+      {createPortal(
+        <AnimatePresence>
+          {fullScreenImage && (
+            <div className="fixed inset-0 z-[200] flex items-center justify-center p-2 sm:p-4" onClick={() => setFullScreenImage(null)}>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 bg-black/90 backdrop-blur-md"
+              />
+              <motion.img
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                src={fullScreenImage}
+                alt="Fullscreen"
+                className="relative z-10 max-w-[90vw] md:max-w-3xl max-h-[70vh] object-contain cursor-zoom-out rounded-xl shadow-2xl"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFullScreenImage(null);
+                }}
+              />
+              <button 
+                className="absolute top-4 right-4 z-[210] p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFullScreenImage(null);
+                }}
+              >
+                <X size={24} />
+              </button>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </section>
   );
 }

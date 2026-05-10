@@ -333,13 +333,22 @@ const Projects = () => {
               </div>
 
               {/* Bottom Back Button */}
-              <div className="mt-8 pt-8 border-t border-border/50 flex justify-center pb-12">
+              <div className="mt-12 pt-10 border-t border-border/30 flex justify-center pb-12 relative group/back">
+                {/* Subtle background glow */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-16 bg-primary/20 blur-[30px] rounded-full pointer-events-none opacity-0 group-hover/back:opacity-100 transition-opacity duration-500" />
+                
                 <button 
                   onClick={() => setSelectedProject(null)}
-                  className="flex items-center justify-center gap-2 bg-muted text-foreground hover:bg-muted/80 font-semibold py-3 px-8 rounded-xl transition-colors"
+                  className="group relative flex items-center justify-center gap-2 py-3.5 px-8 rounded-full overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/25 bg-card/80 backdrop-blur-md border border-border/80 hover:border-primary/50"
                 >
-                  <ChevronLeft size={20} />
-                  {t("Back to Projects")}
+                  {/* Hover Background Gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  {/* Content */}
+                  <div className="relative z-10 flex items-center gap-2 text-muted-foreground group-hover:text-primary transition-colors duration-300">
+                    <ChevronLeft size={18} className="group-hover:-translate-x-1.5 transition-transform duration-300" />
+                    <span className="tracking-widest uppercase text-xs font-bold">{t("Back to Projects")}</span>
+                  </div>
                 </button>
               </div>
             </div>
