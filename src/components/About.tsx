@@ -1,122 +1,129 @@
 import { motion } from "framer-motion";
 import AnimatedSection from "./AnimatedSection";
-import { GraduationCap, Briefcase, Rocket, Download } from "lucide-react";
+import { GraduationCap, Briefcase, Rocket, Download, Terminal, Settings, ShieldCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const cards = [
   {
-    icon: <GraduationCap size={20} />,
+    icon: <GraduationCap size={18} />,
     title: "S1 Sistem Informasi Title",
     sub: "S1 Sistem Informasi Sub",
-    iconBg: "hsl(250 84% 60% / 0.1)", iconColor: "hsl(250 84% 50%)", border: "hsl(250 84% 60% / 0.18)",
+    nodeId: "EDU_01",
+    iconBg: "hsl(215 100% 55% / 0.08)", iconColor: "hsl(215 100% 50%)", border: "border-blue-500/20 hover:border-blue-500/50 shadow-blue-500/5",
   },
   {
-    icon: <Rocket size={20} />,
+    icon: <Rocket size={18} />,
     title: "Co-Founder Tixchain Title",
     sub: "Co-Founder Tixchain Sub",
-    iconBg: "hsl(344 85% 60% / 0.1)", iconColor: "hsl(344 85% 50%)", border: "hsl(344 85% 60% / 0.18)",
+    nodeId: "FOUNDER_02",
+    iconBg: "hsl(158 80% 42% / 0.08)", iconColor: "hsl(158 80% 40%)", border: "border-emerald-500/20 hover:border-emerald-500/50 shadow-emerald-500/5",
   },
   {
-    icon: <Briefcase size={20} />,
+    icon: <Briefcase size={18} />,
     title: "IT PM Intern Title",
     sub: "IT PM Intern Sub",
-    iconBg: "hsl(158 80% 42% / 0.1)", iconColor: "hsl(158 80% 35%)", border: "hsl(158 80% 42% / 0.18)",
+    nodeId: "PM_03",
+    iconBg: "hsl(220 90% 56% / 0.08)", iconColor: "hsl(220 90% 50%)", border: "border-indigo-500/20 hover:border-indigo-500/50 shadow-indigo-500/5",
   },
 ];
 
 const bars = [
-  { label: "Project + Product Management", pct: 90, color: "hsl(250 84% 60%)", trail: "hsl(250 84% 60% / 0.12)" },
+  { label: "Project + Product Management", pct: 90, color: "hsl(215 100% 55%)", trail: "hsl(215 100% 55% / 0.12)" },
   { label: "Web Development", pct: 85, color: "hsl(196 100% 47%)", trail: "hsl(196 100% 47% / 0.12)" },
-  { label: "Team Leadership", pct: 92, color: "hsl(158 80% 42%)", trail: "hsl(158 80% 42% / 0.12)" },
+  { label: "Team Leadership", pct: 92, color: "hsl(220 90% 56%)", trail: "hsl(220 90% 56% / 0.12)" },
 ];
 
 const About = () => {
   const { t } = useTranslation();
 
   const stats = [
-    { value: "3.97", label: t("GPA"), from: "hsl(250 84% 60%)", to: "hsl(196 100% 47%)" },
-    { value: "15+", label: t("Projects"), from: "hsl(344 85% 58%)", to: "hsl(37 100% 50%)" },
-    { value: "3+", label: t("Yrs Exp"), from: "hsl(158 72% 38%)", to: "hsl(196 100% 47%)" },
+    { value: "3.97", label: t("GPA"), from: "hsl(215 100% 55%)", to: "hsl(196 100% 47%)" },
+    { value: "15+", label: t("Projects"), from: "hsl(220 90% 56%)", to: "hsl(196 100% 40%)" },
+    { value: "3+", label: t("Yrs Exp"), from: "hsl(215 100% 50%)", to: "hsl(220 90% 56%)" },
   ];
 
   return (
-    <section id="about" className="py-24 bg-background relative overflow-hidden">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-px"
-        style={{ background: "linear-gradient(90deg, transparent, hsl(250 84% 60% / 0.2), transparent)" }} />
-      {/* Floating Doodles - Positioned near Title */}
-      <motion.div
-        animate={{ y: [0, -10, 0] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        className="hidden md:block absolute top-28 left-[12%] opacity-[0.4] text-blue-500 z-0">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="hsl(196 100% 47%)" fillOpacity={0.15} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="m14 2 8 8" />
-          <path d="m6 10-4 4v4h4l4-4" />
-          <path d="M9 7c1 0 2 1 3 3" />
-        </svg>
-      </motion.div>
+    <section id="about" className="py-24 bg-background relative overflow-hidden text-left">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[700px] h-px"
+        style={{ background: "linear-gradient(90deg, transparent, hsl(215 100% 55% / 0.25), transparent)" }} />
+      
+      {/* Glow Orbs */}
+      <div className="absolute top-1/3 left-0 w-64 sm:w-96 h-64 sm:h-96 bg-blue-500/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-10 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none" />
 
-      <motion.div
-        animate={{ rotate: [-5, 5, -5] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        className="hidden md:block absolute top-28 right-[12%] opacity-[0.4] text-orange-500 z-0">
-        <svg width="45" height="45" viewBox="0 0 24 24" fill="hsl(37 100% 50%)" fillOpacity={0.15} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5" />
-          <path d="M9 18h6" />
-          <path d="M10 22h4" />
-        </svg>
-      </motion.div>
-
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <AnimatedSection>
-          <div className="text-center mb-20">
-            <span className="inline-block rounded-full px-3 py-1 sm:px-4 sm:py-1.5 text-[10px] sm:text-xs font-semibold mb-4"
-              style={{ background: "hsl(250 84% 60% / 0.08)", border: "1px solid hsl(250 84% 60% / 0.2)", color: "hsl(250 84% 50%)" }}>
+          <div className="text-center mb-16">
+            <span className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold mb-4 border"
+              style={{ background: "hsl(215 100% 55% / 0.08)", borderColor: "hsl(215 100% 55% / 0.2)", color: "hsl(215 100% 50%)" }}>
+              <Terminal size={12} className="text-sky-500" />
               {t("Who I Am")}
             </span>
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-foreground">
-              {t("About Me").split(" ")[0]} <span className="text-gradient">{t("About Me").split(" ")[1]}</span>
+            <h2 className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+              {t("About Me").split(" ")[0]} <span className="bg-gradient-to-r from-blue-700 to-indigo-700 bg-clip-text text-transparent">{t("About Me").split(" ")[1]}</span>
             </h2>
           </div>
         </AnimatedSection>
 
         {/* Main grid — 3 columns on lg: photo | text | cards */}
-        <div className="grid lg:grid-cols-[280px_1fr_280px] gap-10 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[290px_1fr_290px] gap-8 lg:gap-10 items-start max-w-6xl mx-auto">
 
-          {/* ── Photo column ── */}
+          {/* ── Photo column (Simulated Diagnostic Card) ── */}
           <AnimatedSection delay={0.05}>
-            <div className="flex flex-col items-center lg:sticky lg:top-32 gap-5">
+            <div className="flex flex-col items-center lg:sticky lg:top-32 gap-6 w-full">
+              
               {/* Photo frame */}
-              <div className="relative group">
-                {/* Curved Gradient Border */}
-                <div className="absolute -inset-[2px] rounded-[1.9rem] opacity-70 transition-opacity duration-500"
-                  style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%), hsl(344 85% 60%))" }} />
+              <div className="relative p-3.5 rounded-3xl border border-border bg-card shadow-sm w-full">
+                
+                {/* Tech brackets for HUD look */}
+                <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-blue-500 rounded-tl" />
+                <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-blue-500 rounded-tr" />
+                <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-blue-500 rounded-bl" />
+                <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-blue-500 rounded-br" />
 
-                <div className="relative rounded-[1.75rem] overflow-hidden bg-background"
-                  style={{ width: 240, height: 300, boxShadow: "0 20px 48px hsl(250 84% 60% / 0.15), 0 4px 16px hsl(var(--foreground) / 0.15)" }}>
+                <div className="relative rounded-2xl overflow-hidden bg-muted aspect-[4/5] w-full"
+                  style={{ boxShadow: "0 10px 30px hsl(215 100% 55% / 0.08)" }}>
 
                   {/* Photo */}
                   <img
                     src="/Rakha-Formal-NoBg.png"
                     alt="Muhammad Rakha Syamputra"
-                    className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 hover:scale-110"
+                    className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 hover:scale-105"
                     draggable={false}
                   />
 
                   {/* Bottom gradient fade */}
-                  <div className="absolute bottom-0 left-0 right-0 h-20 z-10"
-                    style={{ background: "linear-gradient(to top, hsl(var(--background)) 20%, transparent)" }} />
+                  <div className="absolute bottom-0 left-0 right-0 h-16 z-10"
+                    style={{ background: "linear-gradient(to top, hsl(var(--background)) 15%, transparent)" }} />
                 </div>
+
+                {/* Cyber Diagnostic Data Overlay */}
+                <div className="mt-4 pt-3.5 border-t border-border/60 text-left font-mono text-[9px] space-y-1.5 text-slate-500 dark:text-slate-400">
+                  <div className="flex justify-between items-center">
+                    <span className="flex items-center gap-1"><ShieldCheck size={10} className="text-emerald-500" /> SYSTEM_STATUS:</span>
+                    <span className="text-emerald-500 font-bold">ONLINE [NOMINAL]</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>BIO_SECTOR:</span>
+                    <span>WEST_JAVA_IDN</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>AUTHORIZED:</span>
+                    <span>LVL_4_DEV_PM</span>
+                  </div>
+                </div>
+
               </div>
 
               {/* Mini stats */}
-              <div className="flex gap-3 w-full justify-center">
+              <div className="flex gap-3.5 w-full justify-center">
                 {stats.map((s) => (
-                  <div key={s.label} className="flex-1 rounded-2xl p-3 text-center bg-card border shadow-sm">
-                    <p className="font-heading font-extrabold text-base bg-clip-text text-transparent"
+                  <div key={s.label} className="flex-1 rounded-2xl p-3 text-center bg-card border border-border shadow-sm hover:border-blue-500/20 transition-all">
+                    <p className="font-heading font-extrabold text-sm bg-clip-text text-transparent"
                       style={{ backgroundImage: `linear-gradient(135deg, ${s.from}, ${s.to})` }}>
                       {s.value}
                     </p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">{s.label}</p>
+                    <p className="text-[9px] font-mono text-muted-foreground mt-0.5 uppercase tracking-wide">{s.label}</p>
                   </div>
                 ))}
               </div>
@@ -126,38 +133,55 @@ const About = () => {
                 href="https://drive.google.com/file/d/1JHdnHLOJfDU3Wf3jK1hrfgMrzbeGfQdT/view?usp=drive_link"
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
-                className="flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-semibold text-white w-full justify-center"
-                style={{ background: "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))", boxShadow: "0 4px 16px hsl(250 84% 60% / 0.25)" }}>
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex items-center gap-2 rounded-full px-5 py-3 text-xs font-bold text-white w-full justify-center shadow-md shadow-blue-500/10 hover:shadow-lg hover:shadow-blue-500/20 transition-all"
+                style={{ background: "linear-gradient(135deg, hsl(215 100% 55%), hsl(196 100% 47%))" }}>
                 <Download size={13} /> {t("Download CV")}
               </motion.a>
             </div>
           </AnimatedSection>
 
-          {/* ── Text + bars column ── */}
+          {/* ── Text + bars column (Simulated Terminal Terminal Console) ── */}
           <AnimatedSection delay={0.15}>
-            <div className="space-y-5 text-muted-foreground leading-relaxed text-[15px]">
-              <p>
-                {t("About Paragraph 1")}
-              </p>
-              <p>
-                {t("About Paragraph 2")}
-              </p>
-              <p>
-                {t("About Paragraph 3")}
-              </p>
+            <div className="space-y-6">
+              
+              {/* Directory Bar */}
+              <div className="flex items-center justify-between font-mono text-[10px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/60 px-4 py-2.5 rounded-xl border border-border/50">
+                <span className="flex items-center gap-2"><Terminal size={12} className="text-blue-500" /> ~/profile/biography</span>
+                <span className="bg-blue-500/10 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded text-[8px] font-bold">utf-8</span>
+              </div>
+
+              {/* Console Output */}
+              <div className="font-mono text-xs bg-slate-50 dark:bg-slate-900/40 p-5 rounded-2xl border border-border/50 space-y-4 leading-relaxed text-slate-600 dark:text-slate-300">
+                <p>
+                  <span className="text-blue-500 font-bold mr-2">&gt; [LOG] bio_init.sh:</span> 
+                  {t("About Paragraph 1")}
+                </p>
+                <p>
+                  <span className="text-sky-500 font-bold mr-2">&gt; [LOG] load_competence.sh:</span> 
+                  {t("About Paragraph 2")}
+                </p>
+                <p>
+                  <span className="text-indigo-500 font-bold mr-2">&gt; [LOG] exec_vision.sh:</span> 
+                  {t("About Paragraph 3")}
+                </p>
+              </div>
 
               {/* Skill bars */}
-              <div className="space-y-4 pt-6">
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">{t("Core Proficiencies")}</p>
+              <div className="space-y-4 pt-4">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 flex items-center gap-1.5">
+                  <Settings size={12} className="text-slate-400 animate-spin" style={{ animationDuration: '4s' }} />
+                  {t("Core Proficiencies")}
+                </p>
+                
                 {bars.map((s) => (
                   <div key={s.label} className="space-y-1.5">
                     <div className="flex justify-between text-xs">
                       <span className="font-medium text-foreground">{s.label}</span>
-                      <span className="font-semibold" style={{ color: s.color }}>{s.pct}%</span>
+                      <span className="font-bold text-blue-600">{s.pct}%</span>
                     </div>
-                    <div className="h-2 rounded-full" style={{ background: s.trail }}>
+                    <div className="h-2.5 rounded-full p-0.5 bg-slate-100 dark:bg-slate-900 shadow-inner">
                       <motion.div
                         initial={{ width: 0 }}
                         whileInView={{ width: `${s.pct}%` }}
@@ -173,26 +197,40 @@ const About = () => {
             </div>
           </AnimatedSection>
 
-          {/* ── Card column ── */}
+          {/* ── Card column (Node Indicators) ── */}
           <AnimatedSection delay={0.25}>
-            <div className="space-y-4">
-              <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-5">{t("Highlights")}</p>
+            <div className="space-y-4 w-full">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-5">
+                SYSTEM_NODES
+              </p>
+              
               {cards.map((item, i) => (
                 <motion.div key={i}
-                  initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                  whileHover={{ x: -4 }}
-                  className="flex gap-4 items-start rounded-2xl p-4 bg-background border transition-all duration-300"
-                  style={{ borderColor: item.border, boxShadow: `0 2px 12px ${item.iconBg}` }}
-                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 24px ${item.iconBg}`}
-                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.boxShadow = `0 2px 12px ${item.iconBg}`}>
-                  <div className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center"
+                  initial={{ opacity: 0, x: 20 }} 
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }} 
+                  transition={{ delay: i * 0.08 }}
+                  whileHover={{ x: -3 }}
+                  className={`relative flex gap-4 items-start rounded-2xl p-4 bg-card border border-border transition-all duration-300 shadow-sm group overflow-hidden ${item.border}`}
+                >
+                  {/* Top-Right Node ID watermark */}
+                  <span className="absolute top-2 right-2.5 font-mono text-[8px] text-slate-400 dark:text-slate-600 font-bold group-hover:text-blue-500/50 transition-colors">
+                    {item.nodeId}
+                  </span>
+
+                  {/* Icon */}
+                  <div className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105"
                     style={{ background: item.iconBg, color: item.iconColor }}>
                     {item.icon}
                   </div>
-                  <div>
-                    <p className="font-heading font-semibold text-foreground text-[13px] leading-snug">{t(item.title)}</p>
-                    <p className="text-[11px] text-muted-foreground mt-1">{t(item.sub)}</p>
+
+                  <div className="text-left min-w-0 pr-6">
+                    <p className="font-heading font-bold text-foreground text-xs leading-snug truncate">
+                      {t(item.title)}
+                    </p>
+                    <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed line-clamp-2">
+                      {t(item.sub)}
+                    </p>
                   </div>
                 </motion.div>
               ))}

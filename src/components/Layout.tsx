@@ -33,7 +33,7 @@ const Layout = () => {
   const toggleAudio = () => setIsPlaying(prev => !prev);
 
   return (
-    <div className="min-h-screen relative bg-background flex flex-col transition-all duration-500 ease-in-out">
+    <div className="min-h-screen relative bg-background flex flex-col transition-all duration-500 ease-in-out overflow-x-hidden">
       <CursorSpotlight />
       <ScrollProgress />
 

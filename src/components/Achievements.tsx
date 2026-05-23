@@ -1,12 +1,11 @@
-import { useState, useMemo, useEffect, Fragment } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import AnimatedSection from "./AnimatedSection";
-import { Search, ExternalLink, QrCode, X, Loader2, ChevronLeft, ChevronRight, Award } from "lucide-react";
+import { Search, ExternalLink, QrCode, Loader2, ChevronLeft, ChevronRight, Award, ShieldAlert, CheckCircle2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getAchievements, type Achievement as DBAchievement } from "@/lib/supabase";
 
-// Local type that matches the Supabase DB fields mapped to camelCase
 interface Achievement {
   id: string;
   title: string;
@@ -38,7 +37,7 @@ function adaptAchievement(a: DBAchievement): Achievement {
 export default function Achievements() {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
-  const [selectedAchievement, setSelectedAchievement] = useState<Achievement | null>(null);
+  const [activeItem, setActiveItem] = useState<Achievement | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [fullScreenImage, setFullScreenImage] = useState<string | null>(null);
   const [achievementsData, setAchievementsData] = useState<Achievement[]>([]);
@@ -48,7 +47,13 @@ export default function Achievements() {
 
   useEffect(() => {
     getAchievements()
-      .then((data) => setAchievementsData(data.map(adaptAchievement)))
+      .then((data) => {
+        const mapped = data.map(adaptAchievement);
+        setAchievementsData(mapped);
+        if (mapped.length > 0) {
+          setActiveItem(mapped[0]);
+        }
+      })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
   }, []);
@@ -84,7 +89,6 @@ export default function Achievements() {
       const matchesType = selectedType === "All" || item.type === selectedType;
       return matchesSearch && matchesType;
     }).sort((a, b) => {
-      // Sort by custom order checking both type and category
       const customOrder: Record<string, number> = {
         "award": 1,
         "professional": 2,
@@ -108,21 +112,35 @@ export default function Achievements() {
         return orderA - orderB;
       }
       
-      // Then by upload date (newest first), fallback to issue date
       const timeA = a.createdAt ? new Date(a.createdAt).getTime() : new Date(a.issueDate).getTime();
       const timeB = b.createdAt ? new Date(b.createdAt).getTime() : new Date(b.issueDate).getTime();
       return timeB - timeA;
     });
   }, [search, achievementsData, selectedType]);
 
+  // Sync active item when filtering changes
+  useEffect(() => {
+    if (filteredData.length > 0) {
+      // Keep active item if still in filtered list, else select first
+      const matches = filteredData.find(item => item.id === activeItem?.id);
+      if (!matches) {
+        setActiveItem(filteredData[0]);
+        setCurrentImageIndex(0);
+      }
+    } else {
+      setActiveItem(null);
+    }
+  }, [filteredData]);
 
   return (
-    <section className="py-24 bg-background relative z-10 min-h-screen">
+    <section className="py-24 bg-background relative z-10 min-h-screen text-left">
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
+        
+        {/* Title */}
         <AnimatedSection>
           <div className="mb-10 pb-6 border-b border-border/60">
             <h2 className="font-heading text-2xl md:text-3xl font-bold flex items-center gap-3 mb-3 text-foreground">
-              <Award size={28} className="text-primary" />
+              <Award size={28} className="text-blue-500" />
               {t("Achievements Title Part2") || "Achievements"}
             </h2>
             <p className="text-muted-foreground text-sm max-w-2xl">
@@ -132,30 +150,29 @@ export default function Achievements() {
         </AnimatedSection>
 
         {/* Search & Filters */}
-        <AnimatedSection delay={0.1}>
-          <div className="space-y-6 mb-10">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+        <AnimatedSection delay={0.05}>
+          <div className="grid md:grid-cols-12 gap-4 items-center mb-8">
+            <div className="md:col-span-6 relative group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-blue-500 transition-colors" size={16} />
               <input
                 type="text"
-                placeholder="Search achievements..."
+                placeholder="Search credentials directory..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-card border border-border/50 rounded-lg outline-none focus:ring-2 focus:ring-primary/50 text-sm h-11"
+                className="w-full pl-10 pr-4 py-2 bg-card border border-border/60 rounded-xl outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10 text-sm h-11 transition-all"
               />
             </div>
 
             {/* Type Filters */}
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase mr-2">FILTER BY TYPE:</span>
+            <div className="md:col-span-6 flex flex-wrap items-center gap-1.5 md:justify-end">
               {types.map((type) => (
                 <button
                   key={type}
                   onClick={() => setSelectedType(type)}
-                  className={`px-4 py-1.5 rounded-full text-[11px] font-bold transition-all duration-300 border ${
+                  className={`px-3.5 py-1.5 rounded-lg text-[10px] font-bold transition-all duration-200 border ${
                     selectedType === type
-                      ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20 scale-105"
-                      : "bg-card text-muted-foreground border-border/50 hover:bg-muted"
+                      ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/10 scale-102"
+                      : "bg-card text-muted-foreground border-border/60 hover:border-slate-300 dark:hover:border-slate-800 hover:text-foreground"
                   }`}
                 >
                   {type.toUpperCase()}
@@ -163,243 +180,151 @@ export default function Achievements() {
               ))}
             </div>
           </div>
-
-          <div className="mb-8 text-sm text-muted-foreground font-medium flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-            Showing {filteredData.length} achievements
-          </div>
         </AnimatedSection>
 
-        {/* Loading Skeleton */}
+        {/* Loading */}
         {loading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="bg-card border border-border/50 rounded-2xl overflow-hidden animate-pulse flex flex-col">
-                <div className="aspect-video sm:aspect-[4/3] bg-muted" />
-                <div className="p-5 space-y-2">
-                  <div className="h-3 bg-muted rounded w-1/2" />
-                  <div className="h-4 bg-muted rounded w-full" />
-                  <div className="h-3 bg-muted rounded w-3/4" />
-                </div>
-              </div>
-            ))}
+          <div className="flex items-center justify-center gap-3 py-24 text-muted-foreground">
+            <Loader2 size={24} className="animate-spin text-blue-500" />
+            <span className="text-sm">Initializing credential deck...</span>
           </div>
         )}
 
         {/* Error */}
         {error && !loading && (
           <div className="flex items-center justify-center gap-3 py-16 text-muted-foreground">
-            <Loader2 size={20} className="animate-spin" />
+            <ShieldAlert size={20} className="text-red-500" />
             <span className="text-sm">{t("Failed to load data") || "Failed to load data"}: {error}</span>
           </div>
         )}
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredData.map((item, index) => (
-             <AnimatedSection key={item.id} delay={0.1 * (index % 4)} className="h-full">
-               <div 
-                  className="bg-card border border-border/50 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group flex flex-col h-full hover:-translate-y-1"
-                  onClick={() => {
-                    setSelectedAchievement(item);
-                    setCurrentImageIndex(0);
-                  }}
-               >
-                  <div className="aspect-video sm:aspect-[4/3] relative overflow-hidden bg-white/5 border-b border-border/50 shrink-0">
-                    {item.images && item.images.length > 0 ? (
-                      <img 
-                        src={item.images[0]} 
-                        alt={item.title} 
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-muted">
-                        <span className="text-xs text-muted-foreground">{t("No Image") || "No Image"}</span>
+        {/* Workspace Console Grid */}
+        {!loading && !error && filteredData.length > 0 && (
+          <div className="grid lg:grid-cols-12 gap-8 max-w-6xl mx-auto items-stretch">
+            
+            {/* LEFT COLUMN: LIST INDEX (5 cols) */}
+            <div className="lg:col-span-5 flex flex-col gap-3 max-h-[750px] overflow-y-auto pr-1">
+              {filteredData.map((item, index) => {
+                const isActive = activeItem?.id === item.id;
+                
+                return (
+                  <AnimatedSection key={item.id} delay={0.04 * (index % 6)}>
+                    <div
+                      onClick={() => {
+                        if (activeItem?.id === item.id) {
+                          setActiveItem(null);
+                        } else {
+                          setActiveItem(item);
+                          setCurrentImageIndex(0);
+                        }
+                      }}
+                      className={`relative p-4 rounded-xl border transition-all duration-350 cursor-pointer flex flex-col gap-3 group ${
+                        isActive
+                          ? "bg-slate-50 dark:bg-slate-900 border-blue-500/30 shadow-[0_4px_25px_rgba(37,99,235,0.04)]"
+                          : "bg-card border-border/60 hover:border-blue-500/20"
+                      }`}
+                    >
+                      {/* Active indicator bar */}
+                      {isActive && (
+                        <div className="absolute left-0 top-3 bottom-3 w-1 rounded-r bg-blue-500" />
+                      )}
+
+                      <div className="flex items-start gap-3 w-full">
+                        {/* Index Indicator */}
+                        <span className="font-mono text-[10px] text-slate-400 font-bold bg-muted px-1.5 py-0.5 rounded border border-border/40 shrink-0">
+                          LOG_{index + 1}
+                        </span>
+                        
+                        {/* Title Info */}
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-heading font-bold text-foreground text-sm leading-snug group-hover:text-blue-500 transition-colors line-clamp-2">
+                            {item.title}
+                          </h4>
+                          <p className="text-xs text-muted-foreground mt-0.5 truncate font-medium">
+                            {item.issuer}
+                          </p>
+                        </div>
                       </div>
-                    )}
-                  </div>
-                  <div className="p-5 flex flex-col grow">
-                    <p className="text-[10px] font-mono text-muted-foreground mb-2 truncate bg-muted/40 w-fit px-2 py-0.5 rounded">
-                      {item.credentialId || "CREDENTIAL ID HIDDEN"}
-                    </p>
-                    <h3 className="font-heading font-bold text-lg mb-1.5 text-foreground group-hover:text-amber-500 transition-colors line-clamp-2">
-                      {item.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-1">
-                      {item.issuer}
-                    </p>
-                    <div className="flex gap-2 mb-4 flex-wrap mt-auto pt-2">
-                      <span className="text-[10px] items-center flex uppercase font-bold tracking-wider px-2 py-1 rounded-full bg-secondary text-secondary-foreground border border-border/50">
-                        {item.type}
-                      </span>
-                      <span className="text-[10px] items-center flex uppercase font-bold tracking-wider px-2 py-1 rounded-full bg-secondary text-secondary-foreground border border-border/50">
-                        {item.category}
-                      </span>
+
+                      {/* Meta Tags Footer */}
+                      <div className="flex justify-between items-center text-[10px] border-t border-border/30 pt-2 mt-1">
+                        <span className="font-mono text-slate-400">ISSUED: {item.issueDate}</span>
+                        <span className="px-2 py-0.5 rounded-md bg-blue-500/5 text-blue-600 font-bold border border-blue-500/5 uppercase">
+                          {item.type}
+                        </span>
+                      </div>
+
+                      {/* Expandable sub-diagnostics scanner (ONLY displayed on mobile/tablet screens) */}
+                      <AnimatePresence initial={false}>
+                        {isActive && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1, marginTop: "12px" }}
+                            exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                            transition={{ duration: 0.25, ease: "easeInOut" }}
+                            className="lg:hidden w-full overflow-hidden border-t border-border/50 pt-4"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <DiagnosticPanel 
+                              item={item} 
+                              t={t} 
+                              currentIdx={currentImageIndex} 
+                              setCurrentIdx={setCurrentImageIndex}
+                              setFullScreenImage={setFullScreenImage}
+                            />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
                     </div>
-                    <div className="flex justify-between items-center text-[10px] text-muted-foreground uppercase tracking-wide border-t border-border/40 pt-3">
-                      <span>{t("Issued on") || "Issued on"} {item.issueDate}</span>
-                      <ExternalLink size={14} className="opacity-50 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                  </div>
-               </div>
-             </AnimatedSection>
-          ))}
-        </div>
-        {filteredData.length === 0 && (
-          <AnimatedSection delay={0.2}>
-            <div className="text-center py-24 text-muted-foreground">
-              <p>{t("No results found") || "No achievements found matching your search."}</p>
+                  </AnimatedSection>
+                );
+              })}
+            </div>
+
+            {/* RIGHT COLUMN: IMMERSIVE SCANNER VIEW (7 cols) - Hidden on Mobile */}
+            <div className="hidden lg:block lg:col-span-7 h-full">
+              <div className="h-full rounded-2xl border border-border bg-slate-50/50 dark:bg-slate-900/10 backdrop-blur-sm p-6 relative overflow-y-auto shadow-inner flex flex-col min-h-[600px]">
+                
+                {/* Cyber Grid Watermark */}
+                <div className="absolute inset-0 bg-grid opacity-[0.1] pointer-events-none" />
+
+                <AnimatePresence mode="wait">
+                  {activeItem && (
+                    <motion.div
+                      key={activeItem.id}
+                      initial={{ opacity: 0, scale: 0.98 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.98 }}
+                      transition={{ duration: 0.25 }}
+                      className="flex-1 flex flex-col justify-between h-full"
+                    >
+                      <DiagnosticPanel 
+                        item={activeItem} 
+                        t={t} 
+                        currentIdx={currentImageIndex} 
+                        setCurrentIdx={setCurrentImageIndex}
+                        setFullScreenImage={setFullScreenImage}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && !error && filteredData.length === 0 && (
+          <AnimatedSection delay={0.1}>
+            <div className="text-center py-24 text-muted-foreground border border-dashed border-border rounded-2xl bg-card/50 max-w-lg mx-auto">
+              <p className="text-sm font-semibold">{t("No results found") || "No achievements found matching query."}</p>
             </div>
           </AnimatedSection>
         )}
+
       </div>
-
-      {/* Detail Modal */}
-      {createPortal(
-        <AnimatePresence>
-          {selectedAchievement && (
-           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 xl:p-8">
-             <motion.div
-               initial={{ opacity: 0 }}
-               animate={{ opacity: 1 }}
-               exit={{ opacity: 0 }}
-               onClick={() => setSelectedAchievement(null)}
-               className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-             />
-
-             <motion.div
-               initial={{ scale: 0.95, opacity: 0, y: 20 }}
-               animate={{ scale: 1, opacity: 1, y: 0 }}
-               exit={{ scale: 0.95, opacity: 0, y: 20 }}
-               className="relative w-full max-w-5xl bg-background rounded-2xl overflow-hidden shadow-2xl border border-border flex flex-col md:flex-row h-auto max-h-[90vh]"
-             >
-                <button
-                  onClick={() => setSelectedAchievement(null)}
-                  className="absolute top-4 right-4 z-[110] p-2 rounded-full bg-black/20 hover:bg-black/40 text-white transition-colors backdrop-blur-md"
-                >
-                  <X size={18} />
-                </button>
-
-                {/* Left Side: Cert Images Carousel */}
-                <div className="md:w-[60%] bg-muted/30 p-4 shrink-0 md:p-8 flex items-center justify-center border-b md:border-b-0 md:border-r border-border/40 min-h-[220px] md:min-h-[300px] relative group">
-                   {selectedAchievement.images && selectedAchievement.images.length > 0 ? (
-                     <div className="relative w-full h-full flex flex-col items-center justify-center">
-                       <img 
-                         src={selectedAchievement.images[currentImageIndex]} 
-                         alt={`${selectedAchievement.title} - Image ${currentImageIndex + 1}`} 
-                         className="max-w-full max-h-[40vh] md:max-h-[70vh] object-contain rounded shadow-lg border border-border/20 bg-white transition-all duration-300 cursor-pointer hover:scale-[1.02]" 
-                         onClick={(e) => {
-                           e.stopPropagation();
-                           setFullScreenImage(selectedAchievement.images[currentImageIndex]);
-                         }}
-                       />
-                       
-                       {/* Carousel Controls */}
-                       {selectedAchievement.images.length > 1 && (
-                         <>
-                           <button 
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               setCurrentImageIndex((prev) => prev === 0 ? selectedAchievement.images.length - 1 : prev - 1);
-                             }}
-                             className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors opacity-0 group-hover:opacity-100"
-                           >
-                             <ChevronLeft size={24} />
-                           </button>
-                           
-                           <button 
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               setCurrentImageIndex((prev) => (prev + 1) % selectedAchievement.images.length);
-                             }}
-                             className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors opacity-0 group-hover:opacity-100"
-                           >
-                             <ChevronRight size={24} />
-                           </button>
-
-                           {/* Dots indicators */}
-                           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 bg-black/30 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                             {selectedAchievement.images.map((_, idx) => (
-                               <button
-                                 key={idx}
-                                 onClick={(e) => {
-                                   e.stopPropagation();
-                                   setCurrentImageIndex(idx);
-                                 }}
-                                 className={`w-2 h-2 rounded-full transition-all ${currentImageIndex === idx ? "bg-white scale-125" : "bg-white/50 hover:bg-white/80"}`}
-                               />
-                             ))}
-                           </div>
-                         </>
-                       )}
-                     </div>
-                   ) : (
-                     <div className="w-full h-full flex flex-col items-center justify-center opacity-50">
-                       <span>{t("No image found.") || "No image found."}</span>
-                     </div>
-                   )}
-                </div>
-                
-                {/* Right Side: details */}
-                <div className="md:w-[40%] p-6 md:p-8 flex flex-col bg-card overflow-y-auto flex-1">
-                   <h3 className="text-xl md:text-2xl font-bold leading-snug mb-2 text-foreground pr-8">
-                     {selectedAchievement.title}
-                   </h3>
-                   <p className="text-sm font-medium text-muted-foreground mb-8">
-                     {selectedAchievement.issuer}
-                   </p>
-                   
-                   <div className="space-y-6 flex-1">
-                      {selectedAchievement.credentialId && (
-                        <div>
-                           <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1 font-semibold">Credential ID</p>
-                           <p className="text-sm font-mono bg-muted w-fit max-w-full break-all px-2 py-1 rounded border border-border/50 text-foreground">
-                             {selectedAchievement.credentialId}
-                           </p>
-                        </div>
-                      )}
-
-                      <div>
-                         <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1 font-semibold">Type</p>
-                         <p className="text-sm font-medium text-foreground">{selectedAchievement.type}</p>
-                      </div>
-                      
-                      <div>
-                         <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1 font-semibold">Category</p>
-                         <p className="text-sm font-medium text-foreground">{selectedAchievement.category}</p>
-                      </div>
-
-                      <div>
-                         <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1 font-semibold">Issue Date</p>
-                         <p className="text-sm font-medium text-foreground">{selectedAchievement.issueDate}</p>
-                      </div>
-                   </div>
-
-                   <div className="pt-8 mt-4 border-t border-border/40">
-                      <a 
-                        href={selectedAchievement.credentialUrl !== "#" ? selectedAchievement.credentialUrl : undefined}
-                        target="_blank"
-                        rel="noreferrer"
-                        className={`flex items-center justify-center gap-2 w-full py-3 rounded-full text-sm font-bold transition-all
-                          ${selectedAchievement.credentialUrl !== "#" ? "bg-amber-400 hover:bg-amber-500 text-amber-950 shadow hover:shadow-md" : "bg-muted text-muted-foreground cursor-not-allowed"}
-                        `}
-                      >
-                        {selectedAchievement.credentialUrl !== "#" ? (
-                           <>
-                               <QrCode size={16} /> {t("View Credential") || "View Credential"}
-                           </>
-                        ) : (
-                          t("Credential URL Unavailable") || "Credential URL Unavailable"
-                        )}
-                      </a>
-                   </div>
-                </div>
-             </motion.div>
-           </div>
-         )}
-       </AnimatePresence>,
-       document.body
-     )}
 
       {/* Full Screen Image Modal */}
       {createPortal(
@@ -418,7 +343,7 @@ export default function Achievements() {
                 exit={{ scale: 0.9, opacity: 0 }}
                 src={fullScreenImage}
                 alt="Fullscreen"
-                className="relative z-10 max-w-[90vw] md:max-w-3xl max-h-[70vh] object-contain cursor-zoom-out rounded-xl shadow-2xl"
+                className="relative z-10 max-w-[90vw] md:max-w-3xl max-h-[70vh] object-contain cursor-zoom-out rounded-xl shadow-2xl border border-white/10"
                 onClick={(e) => {
                   e.stopPropagation();
                   setFullScreenImage(null);
@@ -438,6 +363,150 @@ export default function Achievements() {
         </AnimatePresence>,
         document.body
       )}
+
     </section>
   );
 }
+
+/* ── DRY DIAGNOSTIC PANEL FOR SINGLE/ACCORDION VIEWS ── */
+
+const DiagnosticPanel = ({
+  item, t, currentIdx, setCurrentIdx, setFullScreenImage
+}: {
+  item: Achievement; t: any; currentIdx: number; setCurrentIdx: any; setFullScreenImage: any;
+}) => {
+  return (
+    <div className="flex flex-col h-full justify-between relative z-10 space-y-6">
+      
+      {/* Scanner Diagnostic Header */}
+      <div className="flex justify-between items-center pb-3 border-b border-border/50">
+        <div className="flex items-center gap-1.5 font-mono text-[9px] font-bold text-slate-500">
+          <span>SCAN_ID:</span>
+          <span className="text-blue-500 font-bold truncate max-w-[120px]">{item.id.slice(0, 10).toUpperCase()}</span>
+        </div>
+        
+        {/* Verification Badge */}
+        <div className="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded text-[8px] font-mono font-bold">
+          <CheckCircle2 size={10} />
+          <span>VERIFIED [SECURE]</span>
+        </div>
+      </div>
+
+      {/* Stacked Layout */}
+      <div className="flex flex-col gap-5 flex-grow">
+        
+        {/* Carousel Image Panel (Full Width) */}
+        <div className="w-full bg-muted/40 p-3 rounded-xl border border-border/50 relative group min-h-[180px] flex items-center justify-center">
+          
+          {/* Diagnostic Corner brackets */}
+          <div className="absolute top-1 left-1 w-2.5 h-2.5 border-t border-l border-blue-500/40" />
+          <div className="absolute top-1 right-1 w-2.5 h-2.5 border-t border-r border-blue-500/40" />
+          <div className="absolute bottom-1 left-1 w-2.5 h-2.5 border-b border-l border-blue-500/40" />
+          <div className="absolute bottom-1 right-1 w-2.5 h-2.5 border-b border-r border-blue-500/40" />
+ 
+          {item.images && item.images.length > 0 ? (
+            <div className="relative w-full h-full flex flex-col items-center justify-center">
+              <img 
+                src={item.images[currentIdx]} 
+                alt={`${item.title}`} 
+                className="max-w-full max-h-[300px] object-contain rounded shadow border border-border bg-white cursor-zoom-in hover:scale-[1.01] transition-transform" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFullScreenImage(item.images[currentIdx]);
+                }}
+              />
+              
+              {/* Carousel Arrows */}
+              {item.images.length > 1 && (
+                <>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCurrentIdx((prev: number) => prev === 0 ? item.images.length - 1 : prev - 1);
+                    }}
+                    className="absolute left-1.5 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-1 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                  
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCurrentIdx((prev: number) => (prev + 1) % item.images.length);
+                    }}
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-1 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                </>
+              )}
+            </div>
+          ) : (
+            <div className="text-[10px] text-muted-foreground/60 uppercase font-mono">NO DIAGNOSTIC PHOTO</div>
+          )}
+        </div>
+ 
+        {/* Text Diagnostics Panel (Full Width Grid) */}
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4 text-left font-mono text-xs bg-slate-100/50 dark:bg-slate-900/60 p-4 rounded-xl border border-border/40">
+          <div className="sm:col-span-2">
+            <span className="text-slate-400 block font-bold mb-0.5">CREDENTIAL_TITLE</span>
+            <span className="text-sm font-heading font-bold text-foreground leading-snug tracking-tight block">
+              {item.title}
+            </span>
+          </div>
+ 
+          <div>
+            <span className="text-slate-400 block font-bold mb-0.5">ISSUER_OR_NODE</span>
+            <span className="text-foreground font-semibold block text-xs">{item.issuer}</span>
+          </div>
+ 
+          <div>
+            <span className="text-slate-400 block font-bold mb-0.5">TIMESTAMP</span>
+            <span className="text-foreground font-semibold text-xs">{item.issueDate}</span>
+          </div>
+ 
+          {item.credentialId && (
+            <div className="sm:col-span-2">
+              <span className="text-slate-400 block font-bold mb-0.5">CREDENTIAL_ID</span>
+              <span className="text-foreground font-mono bg-card p-1 px-1.5 border border-border/40 rounded block break-all text-[10px]">
+                {item.credentialId}
+              </span>
+            </div>
+          )}
+ 
+          <div>
+            <span className="text-slate-400 block font-bold mb-0.5">TYPE</span>
+            <span className="text-foreground font-semibold uppercase text-xs">{item.type}</span>
+          </div>
+          
+          <div>
+            <span className="text-slate-400 block font-bold mb-0.5">CATEGORY</span>
+            <span className="text-foreground font-semibold uppercase text-xs">{item.category}</span>
+          </div>
+        </div>
+ 
+      </div>
+
+      {/* Verification button */}
+      <div className="pt-4 border-t border-border/40 w-full shrink-0">
+        <a 
+          href={item.credentialUrl !== "#" ? item.credentialUrl : undefined}
+          target="_blank"
+          rel="noreferrer"
+          className={`flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs font-bold transition-all
+            ${item.credentialUrl !== "#" ? "bg-blue-600 hover:bg-blue-700 text-white shadow shadow-blue-500/10 hover:shadow-lg" : "bg-muted text-muted-foreground cursor-not-allowed"}
+          `}
+        >
+          {item.credentialUrl !== "#" ? (
+             <>
+                 <QrCode size={14} /> {t("View Credential") || "View Credential"}
+             </>
+          ) : (
+            t("Credential URL Unavailable") || "Credential URL Unavailable"
+          )}
+        </a>
+      </div>
+
+    </div>
+  );
+};

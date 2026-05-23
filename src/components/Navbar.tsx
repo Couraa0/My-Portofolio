@@ -87,7 +87,7 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
           : "bg-transparent"
       }`}
     >
-      <div className="container mx-auto flex items-center justify-between px-6 py-4">
+      <div className="container mx-auto flex items-center justify-between px-4 sm:px-6 py-4">
         <Link
           to="/"
           className="font-heading text-xl font-bold tracking-tight"
@@ -106,9 +106,9 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
                   to={link.to}
                   onClick={() => handleNavClick(link.to)}
                   className={`group px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg flex items-center justify-center ${
-                    active
-                      ? "text-[hsl(250_84%_50%)] dark:text-[hsl(250_84%_60%)]"
-                      : "text-muted-foreground hover:text-foreground"
+                      active
+                        ? "text-primary"
+                        : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   <span className="relative">
@@ -119,7 +119,7 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
                         className="absolute -bottom-1 left-0 w-full h-0.5 rounded-full"
                         style={{
                           background:
-                            "linear-gradient(90deg, hsl(250 84% 60%), hsl(196 100% 47%))",
+                            "linear-gradient(90deg, hsl(var(--primary)), hsl(var(--cyan)))",
                         }}
                       />
                     ) : (
@@ -171,7 +171,7 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
                       onClick={() => handleNavClick(link.to)}
                       className={`rounded-xl py-3 px-4 text-sm font-medium text-center transition-all duration-200 ${
                         active
-                          ? "text-[hsl(250_84%_50%)] dark:text-[hsl(250_84%_60%)] bg-[hsl(250_84%_60%/0.07)] border-[hsl(250_84%_60%/0.18)]"
+                          ? "text-primary bg-primary/10 border-primary/20"
                           : "text-muted-foreground hover:text-foreground bg-transparent border-transparent"
                       }`}
                       style={{
@@ -206,8 +206,8 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
                 className="w-full rounded-full py-3 text-sm font-semibold text-white transition-all duration-200 active:scale-95 block text-center"
                 style={{
                   background:
-                    "linear-gradient(135deg, hsl(250 84% 60%), hsl(196 100% 47%))",
-                  boxShadow: "0 4px 16px hsl(250 84% 60% / 0.25)",
+                    "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--cyan)))",
+                  boxShadow: "0 4px 16px hsl(var(--primary) / 0.25)",
                 }}
               >
                 {t("Hire Me")}

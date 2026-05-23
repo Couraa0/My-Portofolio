@@ -76,7 +76,7 @@ const NotFound = () => {
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
           className="absolute top-[22%] right-[15%] opacity-30"
         >
-          <Sparkles size={24} className="text-cyan-400" />
+          <Sparkles size={24} className="text-sky-400" />
         </motion.div>
         <motion.div
           animate={{ y: [0, -10, 0], x: [0, 8, 0] }}

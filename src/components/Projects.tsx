@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ExternalLink, Github, FolderKanban, Star, ChevronLeft, Loader2 } from "lucide-react";
+import { ExternalLink, Github, FolderKanban, Star, ChevronLeft, Loader2, Cpu, Terminal, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import AnimatedSection from "./AnimatedSection";
-import { getProjects, getProjectCategories, type Project as DBProject, type ProjectCategory } from "@/lib/supabase";
+import { getProjects, getProjectCategories, type Project as DBProject } from "@/lib/supabase";
 
-// Adapter: map DB snake_case fields → component camelCase
 interface Project {
   id: string;
   title: string;
@@ -43,14 +42,14 @@ function adaptProject(p: DBProject): Project {
   };
 }
 
-const colorMap: Record<string, { bg: string; text: string; border: string; hoverBorder: string }> = {
-  emerald: { bg: "bg-emerald/10", text: "text-emerald", border: "border-emerald/20", hoverBorder: "hover:border-emerald/50" },
-  cyan:    { bg: "bg-cyan/10",    text: "text-cyan",    border: "border-cyan/20",    hoverBorder: "hover:border-cyan/50" },
-  violet:  { bg: "bg-violet/10",  text: "text-violet",  border: "border-violet/20",  hoverBorder: "hover:border-violet/50" },
-  rose:    { bg: "bg-rose/10",    text: "text-rose",    border: "border-rose/20",    hoverBorder: "hover:border-rose/50" },
-  amber:   { bg: "bg-amber/10",   text: "text-amber",   border: "border-amber/20",   hoverBorder: "hover:border-amber/50" },
-  indigo:  { bg: "bg-indigo/10",  text: "text-indigo",  border: "border-indigo/20",  hoverBorder: "hover:border-indigo/50" },
-  default: { bg: "bg-primary/10", text: "text-primary", border: "border-primary/20", hoverBorder: "hover:border-primary/50" },
+const colorMap: Record<string, { bg: string; text: string; border: string; hoverBorder: string; glow: string }> = {
+  emerald: { bg: "bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/10", text: "text-teal-600 dark:text-teal-400", border: "border-teal-500/10", hoverBorder: "hover:border-teal-500/40 hover:shadow-teal-500/5 hover:-translate-y-1", glow: "rgba(20, 184, 166, 0.2)" },
+  cyan:    { bg: "bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/10", text: "text-sky-600 dark:text-sky-400", border: "border-sky-500/10", hoverBorder: "hover:border-sky-500/40 hover:shadow-sky-500/5 hover:-translate-y-1", glow: "rgba(6, 182, 212, 0.2)" },
+  violet:  { bg: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/10", text: "text-indigo-600 dark:text-indigo-400", border: "border-indigo-500/10", hoverBorder: "hover:border-indigo-500/40 hover:shadow-indigo-500/5 hover:-translate-y-1", glow: "rgba(99, 102, 241, 0.2)" },
+  rose:    { bg: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/10", text: "text-blue-600 dark:text-blue-400", border: "border-blue-500/10", hoverBorder: "hover:border-blue-500/40 hover:shadow-blue-500/5 hover:-translate-y-1", glow: "rgba(59, 130, 246, 0.2)" },
+  amber:   { bg: "bg-blue-600/10 text-blue-600 dark:text-blue-400 border border-blue-600/10", text: "text-blue-600 dark:text-blue-400", border: "border-blue-600/10", hoverBorder: "hover:border-blue-600/40 hover:shadow-blue-600/5 hover:-translate-y-1", glow: "rgba(37, 99, 235, 0.2)" },
+  indigo:  { bg: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/10", text: "text-indigo-600 dark:text-indigo-400", border: "border-indigo-500/10", hoverBorder: "hover:border-indigo-500/40 hover:shadow-indigo-500/5 hover:-translate-y-1", glow: "rgba(99, 102, 241, 0.2)" },
+  default: { bg: "bg-blue-600/10 text-blue-600 dark:text-blue-400 border border-blue-600/10", text: "text-blue-600 dark:text-blue-400", border: "border-blue-600/10", hoverBorder: "hover:border-blue-600/40 hover:shadow-blue-600/5 hover:-translate-y-1", glow: "rgba(37, 99, 235, 0.2)" },
 };
 
 const Projects = () => {
@@ -67,7 +66,6 @@ const Projects = () => {
       .then(([projectsData, categoriesData]) => {
         const mapped = projectsData.map(adaptProject);
         
-        // Dynamic categories from DB
         const customOrder = ["Website", "Mobile", "Business", "IOT"];
         const catNames = categoriesData.map(c => c.name).sort((a, b) => {
           const aIdx = customOrder.findIndex(cat => cat.toLowerCase() === a.toLowerCase());
@@ -80,16 +78,12 @@ const Projects = () => {
         
         setCategories(["All", ...catNames]);
 
-        // Custom Sort: 
-        // 1. Category matches index in custom sorted catNames
-        // 2. Featured comes first
         const categoryPriority: Record<string, number> = {};
         catNames.forEach((cat, index) => {
           categoryPriority[cat] = index + 1;
         });
 
         mapped.sort((a, b) => {
-          // Sort by category priority using the first category or fallback
           const aCat = a.category && a.category.length > 0 ? a.category[0] : '';
           const bCat = b.category && b.category.length > 0 ? b.category[0] : '';
 
@@ -97,11 +91,9 @@ const Projects = () => {
           const bPriority = categoryPriority[bCat] || 99;
           if (aPriority !== bPriority) return aPriority - bPriority;
           
-          // Then by featured status
           if (a.featured && !b.featured) return -1;
           if (!a.featured && b.featured) return 1;
           
-          // Finally, sort alphabetically by title
           return a.title.localeCompare(b.title);
         });
         setProjects(mapped);
@@ -127,12 +119,12 @@ const Projects = () => {
   const filtered = filter === "All" ? projects : projects.filter((p) => (p.category || []).includes(filter));
 
   return (
-    <section id="projects" className="py-24 bg-background relative z-10 min-h-screen">
-      <div className="container mx-auto px-6 max-w-6xl">
+    <section id="projects" className="py-24 bg-background relative z-10 min-h-screen text-left">
+      <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
         <AnimatedSection>
           <div className="mb-10 pb-6 border-b border-border/60">
             <h2 className="font-heading text-2xl md:text-3xl font-bold flex items-center gap-3 mb-3 text-foreground">
-              <FolderKanban size={28} className="text-primary" />
+              <FolderKanban size={28} className="text-blue-500" />
               {t("Projects")}
             </h2>
             <p className="text-muted-foreground text-sm max-w-2xl">
@@ -144,15 +136,15 @@ const Projects = () => {
         {/* Filter */}
         <AnimatedSection delay={0.1}>
           <div className="flex flex-wrap items-center gap-3 mb-6">
-            <span className="text-sm font-semibold text-muted-foreground mr-2">{t("CATEGORY")}</span>
+            <span className="text-xs font-bold tracking-widest text-slate-500 uppercase mr-2">{t("CATEGORY")}</span>
             {categories.map((f) => (
               <button
                 key={f}
                 onClick={() => setFilter(f)}
-                className={`rounded-full px-5 py-2 text-sm font-semibold transition-all duration-300 ${
+                className={`rounded-full px-5 py-2 text-sm font-bold transition-all duration-300 border ${
                   filter === f
-                    ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 scale-105"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                    ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/20 scale-105"
+                    : "bg-card text-muted-foreground border-border/60 hover:border-slate-300 dark:hover:border-slate-800 hover:text-foreground"
                 }`}
               >
                 {t(f)}
@@ -161,7 +153,7 @@ const Projects = () => {
           </div>
 
           <div className="mb-8 text-sm text-muted-foreground font-medium flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
             Showing {filtered.length} {t("projects") || "projects"}
           </div>
         </AnimatedSection>
@@ -170,7 +162,7 @@ const Projects = () => {
         {loading && (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="rounded-2xl bg-card border border-border overflow-hidden animate-pulse">
+              <div key={i} className="rounded-2xl bg-card border border-border/60 overflow-hidden animate-pulse">
                 <div className="h-48 bg-muted" />
                 <div className="p-5 space-y-3">
                   <div className="h-4 bg-muted rounded w-3/4" />
@@ -185,7 +177,7 @@ const Projects = () => {
         {/* Error */}
         {error && !loading && (
           <div className="flex items-center justify-center gap-3 py-16 text-muted-foreground">
-            <Loader2 size={20} className="animate-spin" />
+            <Loader2 size={20} className="animate-spin text-blue-500" />
             <span className="text-sm">{t("Failed to load data")}: {error}</span>
           </div>
         )}
@@ -209,7 +201,7 @@ const Projects = () => {
         )}
       </div>
 
-      {/* Project Detail Modal / Page */}
+      {/* Project Detail Modal Diagnostic Overlap Overlay */}
       {createPortal(
         <AnimatePresence>
           {selectedProject && (
@@ -217,142 +209,164 @@ const Projects = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed inset-0 z-40 bg-background overflow-y-auto"
+            className="fixed inset-0 z-[120] bg-background overflow-y-auto"
             onScroll={(e) => {
               window.dispatchEvent(new CustomEvent("modalState", { detail: e.currentTarget.scrollTop > 20 }));
             }}
           >
-            <div className="container mx-auto px-6 pt-28 pb-12 max-w-4xl min-h-screen flex flex-col">
-              {/* Title Header */}
-              <div className="mb-6">
-                <h1 className="text-3xl md:text-5xl font-heading font-bold mb-6 text-foreground">
-                  {selectedProject.title}
-                </h1>
-                <div className="flex items-center gap-4 pt-6 border-t border-border/60">
-                  <span className="text-sm text-muted-foreground">{t("Role:")} <strong className="text-foreground">{selectedProject.role || "Developer"}</strong></span>
-                  <span className="text-sm text-muted-foreground">{t("Category:")} <strong className="text-foreground">{(Array.isArray(selectedProject.category) ? selectedProject.category : (typeof selectedProject.category === 'string' ? [selectedProject.category] : [])).map(cat => t(cat)).join(", ")}</strong></span>
-                </div>
-              </div>
+            <div className="container mx-auto px-4 sm:px-6 pt-28 pb-12 max-w-4xl min-h-screen flex flex-col">
+              
+              {/* Corner HUD markers on content body */}
+              <div className="relative p-6 border border-border/80 rounded-2xl bg-card/30 shadow-inner overflow-hidden mb-12">
+                <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-blue-500/50" />
+                <div className="absolute top-2 right-2 w-3 h-3 border-t border-r border-blue-500/50" />
+                <div className="absolute bottom-2 left-2 w-3 h-3 border-b border-l border-blue-500/50" />
+                <div className="absolute bottom-2 right-2 w-3 h-3 border-b border-r border-blue-500/50" />
 
-              {/* Big Image */}
-              <div 
-                className="w-full relative rounded-2xl overflow-hidden bg-muted/30 aspect-video mb-10 border border-border/50"
-              >
-                {selectedProject.image ? (
-                  <img 
-                    src={selectedProject.image} 
-                    alt={selectedProject.title} 
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/50">
-                    <FolderKanban size={64} className="mb-4" />
-                    <span>{t("No preview image")}</span>
+                {/* Title Header */}
+                <div className="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                  <div className="text-left">
+                    <span className="font-mono text-[9px] text-blue-500 font-bold uppercase tracking-wider block">DIAGNOSTIC_REPORT</span>
+                    <h1 className="text-2xl md:text-4xl font-heading font-bold text-foreground mt-0.5">
+                      {selectedProject.title}
+                    </h1>
                   </div>
-                )}
-              </div>
 
-              {/* Content Grid */}
-              <div className="grid md:grid-cols-3 gap-10 pb-20">
-                <div className="md:col-span-2 space-y-8">
-                  <section>
-                    <h3 className="text-xl font-bold mb-4">Overview</h3>
-                    <p className="text-muted-foreground leading-relaxed text-sm whitespace-pre-wrap">
-                      {selectedProject.description}
-                    </p>
-                  </section>
+                  <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] text-slate-400">
+                    <span className="p-1 px-2 bg-muted rounded border border-border/40">ROLE: {selectedProject.role || "Developer"}</span>
+                    <span className="p-1 px-2 bg-muted rounded border border-border/40">CAT: {(Array.isArray(selectedProject.category) ? selectedProject.category : (typeof selectedProject.category === 'string' ? [selectedProject.category] : [])).map(cat => t(cat)).join(", ")}</span>
+                  </div>
+                </div>
+
+                {/* Big Image Scanner */}
+                <div className="w-full relative rounded-xl overflow-hidden bg-muted/40 aspect-video mb-8 border border-border/60">
+                  {selectedProject.image ? (
+                    <img 
+                      src={selectedProject.image} 
+                      alt={selectedProject.title} 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/45">
+                      <FolderKanban size={64} className="mb-4" />
+                      <span>{t("No preview image")}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Content Matrix Grid */}
+                <div className="grid md:grid-cols-12 gap-8 text-left">
                   
-                  {selectedProject.additionalDesc && (
-                    <section>
-                      <h3 className="text-xl font-bold mb-4">Approach & Solution</h3>
-                      <p className="text-muted-foreground leading-relaxed text-sm whitespace-pre-wrap">
-                        {selectedProject.additionalDesc}
+                  {/* Left Specs (8 cols) */}
+                  <div className="md:col-span-8 space-y-6">
+                    <section className="space-y-2">
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
+                        <Terminal size={14} className="text-blue-500" />
+                        SYSTEM_OVERVIEW
+                      </h3>
+                      <p className="text-muted-foreground leading-relaxed text-sm whitespace-pre-wrap font-sans">
+                        {selectedProject.description}
                       </p>
                     </section>
-                  )}
+                    
+                    {selectedProject.additionalDesc && (
+                      <section className="space-y-2">
+                        <h3 className="text-sm font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
+                          <Cpu size={14} className="text-sky-500" />
+                          APPROACH_AND_SOLUTION
+                        </h3>
+                        <p className="text-muted-foreground leading-relaxed text-sm whitespace-pre-wrap font-sans">
+                          {selectedProject.additionalDesc}
+                        </p>
+                      </section>
+                    )}
 
-                  {selectedProject.projectOutput && selectedProject.projectOutput.length > 0 && (
-                    <section>
-                      <h3 className="text-xl font-bold mb-4">{t("Key Features")}</h3>
-                      <ul className="grid gap-3">
-                        {selectedProject.projectOutput.map((output, idx) => (
-                          <li key={idx} className="flex items-start text-sm text-muted-foreground">
-                            <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 mr-3 flex-shrink-0" />
-                            <span className="leading-relaxed">{output}</span>
+                    {selectedProject.projectOutput && selectedProject.projectOutput.length > 0 && (
+                      <section className="space-y-2">
+                        <h3 className="text-sm font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
+                          <Sparkles size={14} className="text-purple-500" />
+                          {t("Key Features")}
+                        </h3>
+                        <ul className="grid gap-2.5 font-mono text-xs text-slate-500 dark:text-slate-400">
+                          {selectedProject.projectOutput.map((output, idx) => (
+                            <li key={idx} className="flex items-start">
+                              <span className="text-blue-500 font-bold mr-2.5">&gt;</span>
+                              <span className="leading-relaxed">{output}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+                    )}
+                  </div>
+                  
+                  {/* Right Specs (4 cols) */}
+                  <div className="md:col-span-4 space-y-6">
+                    <section className="space-y-3">
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">COMPILED_TECH</h3>
+                      <ul className="flex flex-wrap gap-1.5">
+                        {selectedProject.tech.map((tech) => (
+                          <li key={tech} className="px-2.5 py-1 text-[10px] font-bold font-mono bg-blue-500/5 text-blue-600 dark:text-blue-400 border border-blue-500/10 rounded-md">
+                            {tech}
                           </li>
                         ))}
                       </ul>
                     </section>
-                  )}
+                    
+                    <section className="space-y-3">
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">TRANSCEIVER_LINKS</h3>
+                      <div className="flex flex-col gap-2.5">
+                        {selectedProject.liveUrl && (
+                          <a 
+                            href={selectedProject.liveUrl} 
+                            target="_blank" 
+                            rel="noreferrer"
+                            className="flex items-center justify-between p-3 rounded-xl bg-blue-500/10 text-blue-600 border border-blue-500/10 font-bold font-mono text-xs hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all shadow-sm"
+                          >
+                            {selectedProject.liveUrlLabel || t("Live Demo")}
+                            <ExternalLink size={14} />
+                          </a>
+                        )}
+                        {selectedProject.githubUrl && (
+                          <a 
+                            href={selectedProject.githubUrl} 
+                            target="_blank" 
+                            rel="noreferrer"
+                            className="flex items-center justify-between p-3 rounded-xl bg-muted text-foreground font-bold font-mono text-xs border border-border hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
+                          >
+                            {t("Source Code")}
+                            <Github size={14} />
+                          </a>
+                        )}
+                        {!selectedProject.liveUrl && !selectedProject.githubUrl && (
+                          <p className="text-[10px] font-mono text-muted-foreground italic">{t("Private / Internal")}</p>
+                        )}
+                      </div>
+                    </section>
+                  </div>
+
                 </div>
-                
-                <div className="space-y-8">
-                  <section>
-                    <h3 className="text-lg font-bold mb-4">Tech Stack</h3>
-                    <ul className="flex flex-col gap-2">
-                      {selectedProject.tech.map((t) => (
-                        <li key={t} className="flex items-center text-sm text-muted-foreground">
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary mr-3" />
-                          {t}
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-                  
-                  <section>
-                    <h3 className="text-lg font-bold mb-4">{t("Links")}</h3>
-                    <div className="flex flex-col gap-3">
-                      {selectedProject.liveUrl && (
-                        <a 
-                          href={selectedProject.liveUrl} 
-                          target="_blank" 
-                          rel="noreferrer"
-                          className="flex items-center justify-between p-3 rounded-lg bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition-colors"
-                        >
-                          {selectedProject.liveUrlLabel || t("Live Demo")}
-                          <ExternalLink size={16} />
-                        </a>
-                      )}
-                      {selectedProject.githubUrl && (
-                        <a 
-                          href={selectedProject.githubUrl} 
-                          target="_blank" 
-                          rel="noreferrer"
-                          className="flex items-center justify-between p-3 rounded-lg bg-muted text-foreground font-semibold hover:bg-muted/80 transition-colors"
-                        >
-                          {t("Source Code")}
-                          <Github size={16} />
-                        </a>
-                      )}
-                      {!selectedProject.liveUrl && !selectedProject.githubUrl && (
-                        <p className="text-sm text-muted-foreground italic">{t("Private / Internal")}</p>
-                      )}
-                    </div>
-                  </section>
-                </div>
+
               </div>
 
               {/* Bottom Back Button */}
-              <div className="mt-12 pt-10 border-t border-border/30 flex justify-center pb-12 relative group/back">
-                {/* Subtle background glow */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-16 bg-primary/20 blur-[30px] rounded-full pointer-events-none opacity-0 group-hover/back:opacity-100 transition-opacity duration-500" />
+              <div className="mt-4 flex justify-center relative group/back">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-16 bg-blue-500/10 blur-[30px] rounded-full pointer-events-none opacity-0 group-hover/back:opacity-100 transition-opacity duration-500" />
                 
                 <button 
                   onClick={() => setSelectedProject(null)}
-                  className="group relative flex items-center justify-center gap-2 py-3.5 px-8 rounded-full overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/25 bg-card/80 backdrop-blur-md border border-border/80 hover:border-primary/50"
+                  className="group relative flex items-center justify-center gap-2 py-3 px-8 rounded-full overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 bg-card border border-border hover:border-blue-500/50"
                 >
-                  {/* Hover Background Gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-blue-500/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   
-                  {/* Content */}
-                  <div className="relative z-10 flex items-center gap-2 text-muted-foreground group-hover:text-primary transition-colors duration-300">
-                    <ChevronLeft size={18} className="group-hover:-translate-x-1.5 transition-transform duration-300" />
-                    <span className="tracking-widest uppercase text-xs font-bold">{t("Back to Projects")}</span>
+                  <div className="relative z-10 flex items-center gap-2 text-muted-foreground group-hover:text-blue-500 transition-colors duration-300">
+                    <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform duration-300" />
+                    <span className="tracking-widest uppercase text-[10px] font-bold font-mono">{t("Back to Projects")}</span>
                   </div>
                 </button>
               </div>
+
             </div>
-            </motion.div>
+          </motion.div>
           )}
         </AnimatePresence>,
         document.body
@@ -369,67 +383,77 @@ const ProjectCard = ({ project, index, onClick }: { project: Project; index: num
       <motion.div
         whileHover={{ y: -4 }}
         onClick={onClick}
-        className={`group flex flex-col h-full rounded-2xl bg-card border border-border overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer ${theme.hoverBorder}`}
+        className={`group flex flex-col h-full rounded-2xl bg-card border border-border/60 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer relative ${theme.hoverBorder}`}
       >
+        
+        {/* HUD Absolute Corner Indicators on card hover */}
+        <div className="absolute top-1 left-1 w-2.5 h-2.5 border-t border-l border-blue-500/0 group-hover:border-blue-500/50 transition-colors duration-300 z-10" />
+        <div className="absolute top-1 right-1 w-2.5 h-2.5 border-t border-r border-blue-500/0 group-hover:border-blue-500/50 transition-colors duration-300 z-10" />
+        <div className="absolute bottom-1 left-1 w-2.5 h-2.5 border-b border-l border-blue-500/0 group-hover:border-blue-500/50 transition-colors duration-300 z-10" />
+        <div className="absolute bottom-1 right-1 w-2.5 h-2.5 border-b border-r border-blue-500/0 group-hover:border-blue-500/50 transition-colors duration-300 z-10" />
+
         {/* Cover Image */}
-        <div className="relative h-48 sm:h-52 overflow-hidden bg-muted flex items-center justify-center">
+        <div className="relative h-44 sm:h-48 overflow-hidden bg-muted flex items-center justify-center">
           <div className="absolute inset-0 bg-gradient-to-br from-black/5 to-transparent pointer-events-none z-10" />
           {project.image ? (
             <img 
               src={project.image} 
               alt={project.title} 
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
             />
           ) : (
-            <FolderKanban size={48} className="text-muted-foreground/30" />
+            <FolderKanban size={44} className="text-slate-300 dark:text-slate-700" />
           )}
           {project.featured && (
-            <div className="absolute top-0 right-0 bg-[#ffcc00] text-black text-[10px] uppercase tracking-wider font-extrabold px-3 py-1.5 rounded-bl-xl shadow flex items-center gap-1 z-20">
-              <Star size={12} fill="currentColor" strokeWidth={0} />
+            <div className="absolute top-0 right-0 bg-blue-600 text-white text-[9px] uppercase tracking-wider font-extrabold px-2.5 py-1 rounded-bl-lg shadow flex items-center gap-1 z-20">
+              <Star size={11} fill="currentColor" strokeWidth={0} />
               FEATURED
             </div>
           )}
         </div>
 
         {/* Content */}
-        <div className="p-5 flex flex-col flex-1">
-          <h3 className={`font-heading font-bold text-lg mb-1.5 text-card-foreground group-hover:${theme.text} transition-colors line-clamp-1`}>
+        <div className="p-5 flex flex-col flex-grow text-left">
+          
+          <h3 className="font-heading font-extrabold text-base mb-1.5 text-card-foreground group-hover:text-blue-600 transition-colors line-clamp-1">
             {project.title}
           </h3>
-          <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+          <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed mb-4">
             {project.description}
           </p>
-          
+
           <div className="flex-1" />
 
+
+          
           {/* Tech Stack Tags */}
-          <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border/40">
-            {project.tech.slice(0, 4).map((tech) => (
+          <div className="flex flex-wrap gap-1 mt-4 pt-3.5 border-t border-border/40">
+            {project.tech.slice(0, 3).map((tech) => (
               <span
                 key={tech}
-                className={`px-2.5 py-1 ${theme.bg} ${theme.text} text-[10px] font-semibold rounded-md`}
+                className={`px-2 py-0.5 ${theme.bg} text-[10px] font-bold font-mono rounded-md`}
               >
                 {tech}
               </span>
             ))}
-            {project.tech.length > 4 && (
-              <span className={`px-2.5 py-1 ${theme.bg} ${theme.text} text-[10px] font-semibold rounded-md`}>
-                +{project.tech.length - 4}
+            {project.tech.length > 3 && (
+              <span className={`px-2 py-0.5 ${theme.bg} text-[10px] font-bold font-mono rounded-md`}>
+                +{project.tech.length - 3}
               </span>
             )}
           </div>
 
           {/* Links Row */}
-          <div className="flex items-center gap-3 mt-4 pt-3">
+          <div className="flex items-center gap-3 mt-3 pt-2.5">
             {project.githubUrl && (
-              <div className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors" title="Source Code">
-                <Github size={16} />
+              <div className="p-1 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors" title="Source Code">
+                <Github size={15} />
               </div>
             )}
             {project.liveUrl && (
-              <div className="p-1.5 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-md transition-colors ml-auto flex items-center gap-1.5 text-[11px] font-semibold">
+              <div className="p-1 text-muted-foreground hover:text-blue-500 hover:bg-blue-500/10 rounded transition-colors ml-auto flex items-center gap-1 text-[10px] font-bold">
                 {project.liveUrlLabel || "Live Demo"}
-                <ExternalLink size={12} />
+                <ExternalLink size={11} />
               </div>
             )}
           </div>
