@@ -55,6 +55,10 @@ const softSkillsData = [
   { icon: "👥", name: "Leadership", desc: "Mentoring engineers, fostering delegation, and encouraging collaboration." },
   { icon: "🔗", name: "Cross-functional Team Collaboration", desc: "Bridging UI/UX designers, developers, and analysts." },
   { icon: "💬", name: "Communication", desc: "Active listening, clear standups, and documentation excellence." },
+  { icon: "🧠", name: "Problem-solving", desc: "Diagnosing complex bugs, optimizing performance, and architecting scalable solutions." },
+  { icon: "💡", name: "Innovation & Prototyping", desc: "Rapidly building MVPs, experimenting with new technologies, and driving feature development." },
+  { icon: "🛡️", name: "Security", desc: "Implementing robust authentication, data protection, and secure coding practices." },
+
 ];
 
 /* ── Sub-components ───────────────────────────────── */
