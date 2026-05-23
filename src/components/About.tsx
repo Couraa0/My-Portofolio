@@ -130,7 +130,7 @@ const About = () => {
 
               {/* Download CV */}
               <motion.a
-                href="https://drive.google.com/file/d/1JHdnHLOJfDU3Wf3jK1hrfgMrzbeGfQdT/view?usp=drive_link"
+                href="https://drive.google.com/file/d/11IWyd4FVIs1QjJGyMLBSaVOV83W-2fwe/view?usp=sharing"
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.02 }}
