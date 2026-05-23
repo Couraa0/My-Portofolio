@@ -56,44 +56,6 @@ function adaptEdu(e: DBEdu): Education {
   };
 }
 
-const GPACircle = ({ gpa }: { gpa: string }) => {
-  const score = parseFloat(gpa);
-  if (isNaN(score)) return null;
-  const percentage = (score / 4.0) * 100;
-  const radius = 15;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (percentage / 100) * circumference;
-
-  return (
-    <div className="relative flex items-center justify-center w-11 h-11 shrink-0">
-      <svg className="w-full h-full transform -rotate-90">
-        <circle
-          cx="22"
-          cy="22"
-          r={radius}
-          className="stroke-slate-100 dark:stroke-slate-900 fill-none"
-          strokeWidth="3"
-        />
-        <motion.circle
-          cx="22"
-          cy="22"
-          r={radius}
-          className="stroke-blue-600 fill-none"
-          strokeWidth="3"
-          strokeDasharray={circumference}
-          initial={{ strokeDashoffset: circumference }}
-          whileInView={{ strokeDashoffset }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
-          strokeLinecap="round"
-        />
-      </svg>
-      <span className="absolute font-mono text-[10px] font-bold text-foreground">
-        {gpa}
-      </span>
-    </div>
-  );
-};
 
 const Experience = () => {
   const { t } = useTranslation();
@@ -265,14 +227,41 @@ const Experience = () => {
                     whileHover={{ y: -3 }}
                     className="group p-5 rounded-2xl bg-card border border-border/60 shadow-sm flex items-start gap-4 h-full transition-all hover:border-blue-500/20 hover:shadow-md hover:shadow-blue-500/5"
                   >
-                    {/* Circle GPA Wheel */}
-                    <GPACircle gpa={edu.gpa} />
+                    {/* School Logo */}
+                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-white dark:bg-slate-950 flex items-center justify-center p-2 border border-border shadow-sm">
+                      {edu.logo ? (
+                        <img 
+                          src={edu.logo} 
+                          alt={edu.school} 
+                          className="object-contain w-full h-full"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            const parent = e.currentTarget.parentElement;
+                            const fallback = parent?.querySelector('.fallback-icon');
+                            if (fallback) {
+                              (fallback as HTMLElement).classList.remove('hidden');
+                              (fallback as HTMLElement).classList.add('flex');
+                            }
+                          }}
+                        />
+                      ) : null}
+                      <GraduationCap 
+                        className={`text-slate-400 dark:text-slate-600 w-6 h-6 fallback-icon ${edu.logo ? 'hidden' : 'flex'}`} 
+                      />
+                    </div>
 
                     <div className="flex-1 flex flex-col min-w-0 text-left">
-                      <h3 className="font-heading font-bold text-base text-foreground group-hover:text-blue-500 transition-colors line-clamp-2 md:truncate leading-snug">
-                        {edu.school}
-                      </h3>
-                      <p className="text-sm text-muted-foreground mt-1 mb-3 line-clamp-2 leading-relaxed">
+                      <div className="flex justify-between items-start gap-2 mb-1">
+                        <h3 className="font-heading font-bold text-base text-foreground group-hover:text-blue-500 transition-colors line-clamp-2 leading-snug">
+                          {edu.school}
+                        </h3>
+                        {edu.gpa && (
+                          <span className="font-mono text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-500/5 px-2 py-0.5 border border-blue-500/10 rounded shrink-0">
+                            {parseFloat(edu.gpa) > 4.0 ? `Grade: ${edu.gpa}` : `GPA: ${edu.gpa}`}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
                         {edu.degree}
                       </p>
                       
