@@ -69,7 +69,7 @@ const About = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[290px_1fr_290px] gap-8 lg:gap-10 items-start max-w-6xl mx-auto">
 
           {/* ── Photo column (Simulated Diagnostic Card) ── */}
-          <AnimatedSection delay={0.05}>
+          <AnimatedSection delay={0.05} className="w-full">
             <div className="flex flex-col items-center lg:sticky lg:top-32 gap-6 w-full">
               
               {/* Photo frame */}
@@ -143,7 +143,7 @@ const About = () => {
           </AnimatedSection>
 
           {/* ── Text + bars column (Simulated Terminal Terminal Console) ── */}
-          <AnimatedSection delay={0.15}>
+          <AnimatedSection delay={0.15} className="w-full">
             <div className="space-y-6">
               
               {/* Directory Bar */}
@@ -198,7 +198,7 @@ const About = () => {
           </AnimatedSection>
 
           {/* ── Card column (Node Indicators) ── */}
-          <AnimatedSection delay={0.25}>
+          <AnimatedSection delay={0.25} className="w-full">
             <div className="space-y-4 w-full">
               <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-5">
                 SYSTEM_NODES
@@ -206,8 +206,8 @@ const About = () => {
               
               {cards.map((item, i) => (
                 <motion.div key={i}
-                  initial={{ opacity: 0, x: 20 }} 
-                  whileInView={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, y: 15 }} 
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }} 
                   transition={{ delay: i * 0.08 }}
                   whileHover={{ x: -3 }}

@@ -62,36 +62,41 @@
 
   .dark {
     --hero-tint: 215 100% 8%;
-    --grid-color: 215 100% 20%;
+    --grid-color: 215 100% 15%;
 
-    --background: 224 71% 4%;
-    --foreground: 213 31% 91%;
-    --card: 224 71% 4%;
-    --card-foreground: 213 31% 91%;
-    --popover: 224 71% 4%;
-    --popover-foreground: 215 20.2% 65.1%;
+    --background: 224 71% 3.5%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 9.5%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 9.5%;
+    --popover-foreground: 210 40% 98%;
     --primary: 215 100% 55%;
     --primary-foreground: 210 40% 98%;
     --secondary: 222.2 47.4% 11.2%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 223 47% 11%;
-    --muted-foreground: 215.4 16.3% 56.9%;
+    --muted: 217.2 32.6% 15%;
+    --muted-foreground: 215.4 16.3% 72%;
     --accent: 215 100% 55%;
     --accent-foreground: 210 40% 98%;
     --destructive: 359 51% 48%;
     --destructive-foreground: 210 40% 98%;
-    --border: 216 34% 17%;
-    --input: 216 34% 17%;
+    --border: 217 32% 16%;
+    --input: 217 32% 16%;
     --ring: 215 100% 55%;
 
-    --sidebar-background: 224 71% 4%;
-    --sidebar-foreground: 213 31% 91%;
+    --sidebar-background: 224 71% 3.5%;
+    --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 215 100% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 47% 11%;
-    --sidebar-accent-foreground: 213 31% 91%;
-    --sidebar-border: 216 34% 17%;
+    --sidebar-accent: 222 47% 9.5%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 32% 16%;
     --sidebar-ring: 215 100% 55%;
+
+    --emerald: 142 80% 50%;
+    --rose: 346 80% 55%;
+    --cyan: 190 90% 50%;
+    --violet: 250 80% 65%;
   }
 }
 
@@ -524,4 +529,51 @@
       transform: translateY(0);
     }
   }
+
+  /* ── Retro Terminal Theme Override ── */
+  .terminal-theme {
+    --emerald: 142 80% 50% !important;
+    --rose: 346 80% 55% !important;
+    --cyan: 190 90% 50% !important;
+  }
+
+  /* ── Retro CRT Scanline Effect ── */
+  .bg-scanlines {
+    background: linear-gradient(
+      rgba(18, 16, 16, 0) 50%, 
+      rgba(0, 0, 0, 0.25) 50%
+    );
+    background-size: 100% 4px;
+  }
+
+  /* ── Scrollbar overrides for Retro Terminal ── */
+  .terminal-theme ::-webkit-scrollbar-thumb {
+    background: hsl(var(--emerald) / 0.3) !important;
+  }
+  .terminal-theme ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--emerald)) !important;
+  }
+  .terminal-theme ::-webkit-scrollbar-track {
+    background: transparent !important;
+  }
+
+  /* ── Custom Scrollbar for Terminal Logs ── */
+  .terminal-log-container {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--emerald) / 0.3) transparent !important;
+  }
+  .terminal-log-container::-webkit-scrollbar {
+    width: 4px !important;
+  }
+  .terminal-log-container::-webkit-scrollbar-track {
+    background: transparent !important;
+  }
+  .terminal-log-container::-webkit-scrollbar-thumb {
+    background: hsl(var(--emerald) / 0.3) !important;
+    border-radius: 99px !important;
+  }
+  .terminal-log-container::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--emerald) / 0.6) !important;
+  }
 }
+

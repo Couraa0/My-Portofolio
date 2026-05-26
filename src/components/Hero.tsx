@@ -235,7 +235,7 @@ const Hero = () => {
                 <div className="absolute bottom-0 left-0 right-0 h-36 rounded-b-[2.5rem]"
                   style={{ background: "linear-gradient(to top, hsl(var(--card)) 70%, transparent)" }} />
                 <div className="relative z-10">
-                  <p className="font-heading font-bold text-foreground text-lg leading-tight">Muhammad Rakha S.</p>
+                  <p className="font-heading font-bold text-foreground text-lg leading-tight">Muhammad Rakha Syamputra</p>
                   <p className="text-xs text-muted-foreground mt-1">IT Project + Product Manager · Software Developer Enthusiast</p>
                   <div className="flex items-center justify-center gap-2 mt-3 rounded-full px-4 py-1.5 mx-auto w-fit"
                     style={{ background: "hsl(158 80% 42% / 0.09)", border: "1px solid hsl(158 80% 42% / 0.22)" }}>

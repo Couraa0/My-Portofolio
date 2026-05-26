@@ -12,7 +12,7 @@ export default defineConfig({
     },
     headers: {
       "Content-Security-Policy":
-        "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://api.emailjs.com https://va.vercel-scripts.com https://vercel.live; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://vercel.live; font-src 'self' https://fonts.gstatic.com https://vercel.live; connect-src 'self' https://api.emailjs.com https://smtp.emailjs.com https://vitals.vercel-insights.com https://vercel.live https://*.supabase.co; img-src 'self' data: blob: https://cdn.simpleicons.org https: https://vercel.live; frame-src https://vercel.live;",
+        "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://api.emailjs.com https://va.vercel-scripts.com https://vercel.live; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://vercel.live; font-src 'self' https://fonts.gstatic.com https://vercel.live; connect-src 'self' https://api.emailjs.com https://smtp.emailjs.com https://vitals.vercel-insights.com https://vercel.live https://*.supabase.co https://github-contributions-api.jogruber.de; img-src 'self' data: blob: https://cdn.simpleicons.org https: https://vercel.live; frame-src https://vercel.live;",
     },
   },
   plugins: [react()],

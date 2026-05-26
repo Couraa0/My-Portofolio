@@ -158,7 +158,7 @@ const resources = {
       // Achievements
       "Achievements Badge": "Recognition",
       "Achievements Title Part1": "Achievements &",
-      "Achievements Title Part2": "Certificates",
+      "Achievements Title Part2": "Achievements",
       "Achievements Subtitle": "Awards, certifications, and honors I've earned throughout my journey.",
       "Awards": "Awards",
       "Certificates": "Certificates",
@@ -242,7 +242,10 @@ const resources = {
       "Experience Skills Header": "Skills",
       "Experience Subtitle": "My professional journey. Slide to see more.",
       "Education Subtitle": "My educational journey.",
-      "Loading data...": "Loading data..."
+      "Loading data...": "Loading data...",
+      "Terminal Uplink": "Hacking Minigame: Cyber Decryptor",
+      "Terminal Subtitle": "A retro hacking puzzle. Bypass the mainframe firewall by guessing the correct passcode. Match letter positions to decrypt classified files and unlock restricted dossier clearance.",
+      "Access Classified Dossier": "Access Classified Dossier"
     }
   },
   id: {
@@ -396,7 +399,7 @@ const resources = {
       // Achievements
       "Achievements Badge": "Pengakuan",
       "Achievements Title Part1": "Pencapaian &",
-      "Achievements Title Part2": "Sertifikat",
+      "Achievements Title Part2": "Pencapaian",
       "Achievements Subtitle": "Penghargaan, sertifikasi, dan kehormatan yang saya peroleh sepanjang perjalanan.",
       "Awards": "Penghargaan",
       "Certificates": "Sertifikat",
@@ -480,7 +483,10 @@ const resources = {
       "Experience Skills Header": "Keterampilan",
       "Experience Subtitle": "Perjalanan profesional saya. Geser untuk melihat selengkapnya.",
       "Education Subtitle": "Perjalanan pendidikan saya.",
-      "Loading data...": "Memuat data..."
+      "Loading data...": "Memuat data...",
+      "Terminal Uplink": "Minigame: Cyber Decryptor",
+      "Terminal Subtitle": "Minigame peretasan retro. Bypass firewall mainframe dengan menebak kata sandi yang tepat. Cocokkan posisi huruf untuk mendekripsi dokumen terklasifikasi dan membuka berkas rahasia.",
+      "Access Classified Dossier": "Akses Berkas Rahasia"
     }
   }
 };

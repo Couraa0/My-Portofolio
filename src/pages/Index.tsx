@@ -20,6 +20,7 @@ import { useTranslation } from "react-i18next";
 
 const Skills = lazy(() => import("@/components/Skills"));
 const SectionPreview = lazy(() => import("@/components/SectionPreview"));
+const DecryptionGame = lazy(() => import("@/components/DecryptionGame"));
 
 const container: Variants = {
   hidden: {},
@@ -344,7 +345,7 @@ const Index = () => {
 
                           <div className="pl-4">
                             <span className="text-sky-400">name: </span>
-                            <span className="text-emerald-400">"Muhammad Rakha S."</span>
+                            <span className="text-emerald-400">"Muhammad Rakha Syamputra"</span>
                             <span className="text-slate-400">,</span>
                           </div>
 
@@ -397,8 +398,8 @@ const Index = () => {
                             <div className="space-y-2">
                               <div className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Backlog</div>
                               <div className="p-2 rounded bg-slate-950 border border-slate-800 hover:border-slate-700 transition-colors">
-                                <p className="text-[10px] font-bold text-slate-300 leading-tight">UAT Deployment</p>
-                                <span className="text-[8px] bg-slate-800 text-slate-400 px-1 py-0.5 rounded mt-1.5 inline-block">Ops</span>
+                                <p className="text-[10px] font-bold text-slate-300 leading-tight">Build Smart City App</p>
+                                <span className="text-[8px] bg-slate-800 text-slate-400 px-1 py-0.5 rounded mt-1.5 inline-block">Plan</span>
                               </div>
                             </div>
 
@@ -409,8 +410,16 @@ const Index = () => {
                                 Progress
                               </div>
                               <div className="p-2 rounded bg-slate-950 border border-blue-900/30 hover:border-blue-700/50 transition-colors shadow-[0_0_8px_rgba(59,130,246,0.05)]">
-                                <p className="text-[10px] font-bold text-slate-200 leading-tight">Redesign UI Portfolio</p>
-                                <span className="text-[8px] bg-blue-900/30 text-blue-300 px-1 py-0.5 rounded mt-1.5 inline-block">Design</span>
+                                <p className="text-[10px] font-bold text-slate-200 leading-tight">Build E Commerce Website</p>
+                                <span className="text-[8px] bg-blue-900/30 text-blue-300 px-1 py-0.5 rounded mt-1.5 inline-block">Development</span>
+                              </div>
+                              <div className="p-2 rounded bg-slate-950 border border-blue-900/30 hover:border-blue-700/50 transition-colors shadow-[0_0_8px_rgba(59,130,246,0.05)]">
+                                <p className="text-[10px] font-bold text-slate-200 leading-tight">Build Satu Tani App</p>
+                                <span className="text-[8px] bg-blue-900/30 text-blue-300 px-1 py-0.5 rounded mt-1.5 inline-block">Development</span>
+                              </div>
+                              <div className="p-2 rounded bg-slate-950 border border-blue-900/30 hover:border-blue-700/50 transition-colors shadow-[0_0_8px_rgba(59,130,246,0.05)]">
+                                <p className="text-[10px] font-bold text-slate-200 leading-tight">Build Educational AI Stock</p>
+                                <span className="text-[8px] bg-blue-900/30 text-blue-300 px-1 py-0.5 rounded mt-1.5 inline-block">Development</span>
                               </div>
                             </div>
 
@@ -662,6 +671,11 @@ const Index = () => {
       {/* ═══════════════ WHAT I OFFER ═══════════════ */}
       <Suspense fallback={<div className="h-40" />}>
         <SectionPreview />
+      </Suspense>
+
+      {/* ═══════════════ CYBER DECRYPTOR GAME ═══════════════ */}
+      <Suspense fallback={<div className="h-40" />}>
+        <DecryptionGame />
       </Suspense>
     </>
   );

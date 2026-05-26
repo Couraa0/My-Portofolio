@@ -155,7 +155,7 @@ const Skills = () => {
 
         {/* Interactive Control Dashboard */}
         <AnimatedSection delay={0.08}>
-          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-border shadow-sm mb-10">
+          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-border shadow-sm mb-10">
 
             {/* Left side: Category Tabs */}
             <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto justify-center sm:justify-start">
@@ -207,7 +207,7 @@ const Skills = () => {
         </AnimatedSection>
 
         {/* Content Render Panel with Framer Motion */}
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <AnimatePresence mode="wait">
 
             {/* Category 1: PROGRAMMING */}
@@ -220,7 +220,7 @@ const Skills = () => {
                 transition={{ duration: 0.3 }}
               >
                 {viewMode === "grid" ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                     {programmingIcons.map((item, idx) => (
                       <motion.div
                         key={item.name}
@@ -288,7 +288,7 @@ const Skills = () => {
                 transition={{ duration: 0.3 }}
               >
                 {viewMode === "grid" ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                     {toolIcons.map((item, idx) => (
                       <motion.div
                         key={item.name}
@@ -357,7 +357,7 @@ const Skills = () => {
                 transition={{ duration: 0.3 }}
                 className="space-y-6"
               >
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                   {softSkillsData.map((s, i) => (
                     <motion.div
                       key={s.name}
