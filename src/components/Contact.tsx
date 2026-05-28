@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mail, Instagram, Linkedin, Github, ExternalLink, Terminal, ShieldAlert, Cpu, Loader2 } from "lucide-react";
+import { Mail, Instagram, Linkedin, Github, ExternalLink, Terminal, ShieldAlert, Cpu, Loader2, MessageSquare } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import emailjs from "@emailjs/browser";
 import { EMAILJS_CONFIG, getRateLimitSecondsLeft, markSent } from "@/lib/emailjs";
 import { toast } from "sonner";
+import GuestbookFeed from "./GuestbookFeed";
 
 const Contact = () => {
   const { t } = useTranslation();
@@ -78,7 +79,7 @@ const Contact = () => {
     },
   ];
 
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [status, setStatus] = useState("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -86,8 +87,12 @@ const Contact = () => {
 
     const waitSeconds = getRateLimitSecondsLeft();
     if (waitSeconds > 0) {
+      const minutes = Math.floor(waitSeconds / 60);
+      const seconds = waitSeconds % 60;
+      const timeString = minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
+
       toast.warning(t("Wait") || "Mohon tunggu sebentar", {
-        description: t("Wait cooldown", { time: waitSeconds }),
+        description: t("Wait cooldown", { time: timeString }),
       });
       return;
     }
@@ -108,6 +113,7 @@ const Contact = () => {
           user_email: form.email,
           email: form.email,
           reply_to: form.email,
+          subject: form.subject,
           message: form.message,
         },
         {
@@ -117,7 +123,7 @@ const Contact = () => {
 
       markSent();
       setStatus("success");
-      setForm({ name: "", email: "", message: "" });
+      setForm({ name: "", email: "", subject: "", message: "" });
       toast.dismiss(loadingToast);
       toast.success(t("Success!") || "Terkirim!", {
         description: t("Success Desc") || "Pesan Anda telah berhasil dikirim ke email saya.",
@@ -207,9 +213,29 @@ const Contact = () => {
             })}
           </div>
 
-          {/* RIGHT SIDE: Transceiver shell (7 cols) */}
-          <div className="lg:col-span-7 flex flex-col">
-            <div className="h-full rounded-2xl border border-border bg-slate-50/50 dark:bg-slate-900/10 backdrop-blur-sm p-6 relative overflow-hidden flex flex-col justify-between">
+          {/* RIGHT SIDE: Guestbook (7 cols) */}
+          <div className="lg:col-span-7 relative h-[600px] lg:h-auto lg:min-h-0">
+            <div className="w-full h-full lg:absolute lg:inset-0">
+              <GuestbookFeed />
+            </div>
+          </div>
+
+        </div>
+
+        {/* Email Form Section */}
+        <AnimatedSection delay={0.2}>
+          <div className="mt-16 pt-10 border-t border-border/50 max-w-4xl mx-auto">
+            <div className="mb-8 text-center">
+              <h3 className="font-heading text-2xl font-bold flex items-center justify-center gap-2 mb-2 text-foreground font-mono">
+                <Mail size={24} className="text-blue-500" />
+                {t("Send Private Email")}
+              </h3>
+              <p className="text-muted-foreground text-sm max-w-xl mx-auto">
+                {t("Email Form Desc")}
+              </p>
+            </div>
+            
+            <div className="rounded-2xl border border-border bg-slate-50/50 dark:bg-slate-900/10 backdrop-blur-sm p-6 relative overflow-hidden flex flex-col justify-between">
               
               {/* Grid backdrop */}
               <div className="absolute inset-0 bg-grid opacity-[0.08] pointer-events-none" />
@@ -264,6 +290,27 @@ const Contact = () => {
                           placeholder={t("Email placeholder") || "Email"}
                           value={form.email}
                           onChange={(e) => setForm({ ...form, email: e.target.value })}
+                          className="bg-card pl-6 border-border/60 focus:border-blue-500/40 focus-visible:ring-2 focus-visible:ring-blue-500/10 focus-visible:ring-offset-0 h-11 rounded-xl transition-all font-mono text-xs text-foreground placeholder:text-muted-foreground/50"
+                        />
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-xs text-blue-500/60 font-semibold group-focus-within/input:text-blue-500">";</span>
+                      </div>
+                    </div>
+
+                    {/* Subject field as coding variable */}
+                    <div className="space-y-1.5">
+                      <label htmlFor="subject" className="font-mono text-[10px] text-slate-500 dark:text-slate-400 font-bold block">
+                        const messageSubject = 
+                      </label>
+                      <div className="relative group/input">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-xs text-blue-500/60 font-semibold group-focus-within/input:text-blue-500">"</span>
+                        <Input
+                          required
+                          id="subject"
+                          name="subject"
+                          aria-label={t("Subject placeholder") || "Subject"}
+                          placeholder={t("Subject placeholder") || "Subject"}
+                          value={form.subject}
+                          onChange={(e) => setForm({ ...form, subject: e.target.value })}
                           className="bg-card pl-6 border-border/60 focus:border-blue-500/40 focus-visible:ring-2 focus-visible:ring-blue-500/10 focus-visible:ring-offset-0 h-11 rounded-xl transition-all font-mono text-xs text-foreground placeholder:text-muted-foreground/50"
                         />
                         <span className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-xs text-blue-500/60 font-semibold group-focus-within/input:text-blue-500">";</span>
@@ -326,8 +373,7 @@ const Contact = () => {
 
             </div>
           </div>
-
-        </div>
+        </AnimatedSection>
 
       </div>
     </section>

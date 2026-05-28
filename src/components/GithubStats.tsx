@@ -96,21 +96,9 @@ export default function GithubStats() {
 
         {/* Stats Cards Grid */}
         <AnimatedSection delay={0.1}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
-            {/* Card 1: Stats */}
-            <div className="p-4 rounded-2xl bg-card border border-border shadow-sm flex flex-col justify-center items-center relative overflow-hidden group">
-              <div className="absolute top-2 left-2 w-2.5 h-2.5 border-t border-l border-blue-500/20" />
-              <div className="absolute top-2 right-2 w-2.5 h-2.5 border-t border-r border-blue-500/20" />
-              <img 
-                src={`https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&${cardParams}`} 
-                alt="GitHub General Stats" 
-                className="w-full h-auto object-contain max-h-[195px] select-none"
-                loading="lazy"
-              />
-            </div>
-
-            {/* Card 2: Streak */}
+            {/* Card 1: Streak */}
             <div className="p-4 rounded-2xl bg-card border border-border shadow-sm flex flex-col justify-center items-center relative overflow-hidden group">
               <div className="absolute top-2 left-2 w-2.5 h-2.5 border-t border-l border-blue-500/20" />
               <div className="absolute top-2 right-2 w-2.5 h-2.5 border-t border-r border-blue-500/20" />
@@ -122,12 +110,12 @@ export default function GithubStats() {
               />
             </div>
 
-            {/* Card 3: Top Languages */}
-            <div className="p-4 rounded-2xl bg-card border border-border shadow-sm flex flex-col justify-center items-center relative overflow-hidden group md:col-span-2 lg:col-span-1">
+            {/* Card 2: Top Languages */}
+            <div className="p-4 rounded-2xl bg-card border border-border shadow-sm flex flex-col justify-center items-center relative overflow-hidden group">
               <div className="absolute top-2 left-2 w-2.5 h-2.5 border-t border-l border-blue-500/20" />
               <div className="absolute top-2 right-2 w-2.5 h-2.5 border-t border-r border-blue-500/20" />
               <img 
-                src={`https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=compact&${langParams}`} 
+                src={`https://github-stats-extended.vercel.app/api/top-langs/?username=${username}&layout=compact&${langParams}`} 
                 alt="GitHub Top Languages" 
                 className="w-full h-auto object-contain max-h-[195px] select-none"
                 loading="lazy"

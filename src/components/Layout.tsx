@@ -4,7 +4,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ScrollProgress from "./ScrollProgress";
 import CursorSpotlight from "./CursorSpotlight";
-import Guestbook from "./Guestbook";
+import Chatbot from "./Chatbot";
 
 const Layout = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -45,7 +45,7 @@ const Layout = () => {
       </main>
 
       <Footer />
-      <Guestbook />
+      <Chatbot />
     </div>
   );
 };

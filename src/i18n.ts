@@ -245,7 +245,10 @@ const resources = {
       "Loading data...": "Loading data...",
       "Terminal Uplink": "Hacking Minigame: Cyber Decryptor",
       "Terminal Subtitle": "A retro hacking puzzle. Bypass the mainframe firewall by guessing the correct passcode. Match letter positions to decrypt classified files and unlock restricted dossier clearance.",
-      "Access Classified Dossier": "Access Classified Dossier"
+      "Access Classified Dossier": "Access Classified Dossier",
+      "Send Private Email": "Send Private Email",
+      "Email Form Desc": "Got a question, collaboration offer, or professional inquiry? Use this form to send a message that goes straight privately to my email inbox.",
+      "Guestbook Subtitle": "Leave your message, impression, or greeting here! It will be displayed publicly on the website."
     }
   },
   id: {
@@ -486,7 +489,10 @@ const resources = {
       "Loading data...": "Memuat data...",
       "Terminal Uplink": "Minigame: Cyber Decryptor",
       "Terminal Subtitle": "Minigame peretasan retro. Bypass firewall mainframe dengan menebak kata sandi yang tepat. Cocokkan posisi huruf untuk mendekripsi dokumen terklasifikasi dan membuka berkas rahasia.",
-      "Access Classified Dossier": "Akses Berkas Rahasia"
+      "Access Classified Dossier": "Akses Berkas Rahasia",
+      "Send Private Email": "Kirim Email Privat",
+      "Email Form Desc": "Punya pertanyaan, tawaran kerja sama, atau keperluan profesional? Gunakan form ini untuk mengirim pesan yang akan langsung masuk secara privat ke inbox email saya.",
+      "Guestbook Subtitle": "Tinggalkan pesan, kesan, atau sapaan Anda di sini! Pesan ini akan tampil secara publik di website."
     }
   }
 };
