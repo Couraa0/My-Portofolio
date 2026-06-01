@@ -33,7 +33,7 @@ export const technicalSkills: SkillCategory[] = [
 ];
 
 export const tools = [
-  "Jira", "Trello", "Notion", "GitHub", "Docker", "VS Code", "XAMPP", "Laragon", "Google Colab", "Ollama"
+  "Jira", "Trello", "Notion", "GitHub", "Docker", "Microsoft Azure", "VS Code", "XAMPP", "Laragon", "Google Colab", "Ollama"
 ];
 
 export const softSkills = [

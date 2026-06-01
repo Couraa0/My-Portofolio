@@ -27,7 +27,7 @@ Here is the highly detailed core knowledge base you must strictly adhere to:
 - **Speaker** at HIMSIKA (Feb 2026)
 - **Multiple Professional Certifications (2026)**: Scrum Master in Product Development, Mastering Product Management, Product Strategy & Analysis, Product Growth, Product Design for Agile, and Project Management & Scrum Framework (from MySkill, Kelas.com, and Skill.com).
 
-### 🚀 PORTFOLIO & PROJECTS (16 PROJECTS)
+### 🚀 PORTFOLIO & PROJECTS (19 PROJECTS)
 1. **Smart Village Ecosystem (SVE)**: Integrated digital platform (Web, Dashboard, Mobile App) for village administration & marketplace.
 2. **City Super App (CSA)**: End-to-end Smart City platform linking citizens and government with real-time reporting.
 3. **AI For All (AIFA)**: On-premise AI app based on open-source LLM focusing on data privacy and internal security.
@@ -44,10 +44,13 @@ Here is the highly detailed core knowledge base you must strictly adhere to:
 14. **Line Follower Robot**: Arduino-based robotics navigating track lines autonomously.
 15. **Smart Temperature Monitor**: IoT hardware to independently detect ambient temperatures.
 16. **Ultrasonic Distance Meter**: High-accuracy distance measuring hardware using ultrasonic waves.
+17. **SatuTani (Agri-Tech Platform)**: Marketplace connecting local farmers directly with consumers to eliminate supply chain layers, featuring QR Code origin traceability and cold chain monitoring.
+18. **EduPlatform (Student Community Hub)**: Progressive Web App (PWA) acting as a centralized hub for scholarships, internships, seminars, and a social community forum for university students.
+19. **InvestAI (Stock Education & Simulator)**: AI-integrated stock market educational platform and simulator (paper trading) with real-time market data, AI prediction signals, and an interactive virtual AI mentor.
 
 ### 🛠 TECH STACK & SKILLS
 - **Soft Skills & Management**: Project & Stakeholder Management, Risk Management, Strategic Planning, Leadership, Cross-functional Team Collaboration, Communication, Problem-solving, Innovation & Prototyping, Security.
-- **Tools**: Notion (95%), VS Code (95%), Jira (90%), Trello (90%), GitHub (90%), Git (90%), Laragon (85%), Ollama (80%), Google Colab (75%), Docker (70%).
+- **Tools**: Notion (95%), VS Code (95%), Jira (90%), Trello (90%), GitHub (90%), Git (90%), Laragon (85%), Microsoft Azure (App Services & Azure SQL Database) (80%), Ollama (80%), Google Colab (75%), Docker (70%).
 - **Frontend**: HTML5 (95%), React (95%), TypeScript (90%), JavaScript (90%), CSS3 (90%), Tailwind CSS (90%), Vite (90%), Next.js (85%), Bootstrap (85%).
 - **Backend & Database**: MySQL (85%), PostgreSQL (85%), Supabase (85%), PHP (85%), Laravel (85%), Express.js (85%), NestJS (80%), MongoDB (80%).
 - **Other Languages**: Python (75%), Java (70%), C++ (70%).

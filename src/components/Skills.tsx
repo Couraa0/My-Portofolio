@@ -9,6 +9,7 @@ const getIconUrl = (slug: string, hex: string) => {
   if (slug === "css3") return "/css3.png";
   if (slug === "java") return "/java.png";
   if (slug === "visualstudiocode") return "/vs-code.png";
+  if (slug === "microsoftazure") return "/azure.svg";
   return `https://cdn.simpleicons.org/${slug}/${hex.toLowerCase()}`;
 };
 
@@ -41,8 +42,10 @@ const toolIcons = [
   { name: "Notion", slug: "notion", hex: "000000", level: "95%", desc: "Documentation & wikis" },
   { name: "GitHub", slug: "github", hex: "181717", level: "90%", desc: "Version control & workflows" },
   { name: "Docker", slug: "docker", hex: "2496ed", level: "70%", desc: "Containerized app runtime" },
+  { name: "Microsoft Azure", slug: "microsoftazure", hex: "0089d6", level: "80%", desc: "App Services & Azure SQL Database hosting" },
   { name: "VS Code", slug: "visualstudiocode", hex: "007acc", level: "95%", desc: "Primary IDE & dev setup" },
   { name: "Git", slug: "git", hex: "f05032", level: "90%", desc: "Branching, merging & VCS" },
+  { name: "XAMPP", slug: "xampp", hex: "fb7a24", level: "85%", desc: "Local database & web server management" },
   { name: "Laragon", slug: "laragon", hex: "066666", level: "85%", desc: "Local database & web hosting" },
   { name: "Google Colab", slug: "googlecolab", hex: "f9ab00", level: "75%", desc: "Cloud Jupyter notebooks" },
   { name: "Ollama", slug: "ollama", hex: "000000", level: "80%", desc: "On-premise LLM executions" },
