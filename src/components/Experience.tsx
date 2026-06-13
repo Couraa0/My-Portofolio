@@ -144,11 +144,31 @@ const Experience = () => {
                             }`} 
                           />
 
-                          <div className="flex items-center gap-2.5">
-                            <span className="font-mono text-[10px] text-slate-400 font-bold bg-muted px-1.5 py-0.5 rounded border border-border/40 shrink-0">
-                              STAGE_0{idx + 1}
-                            </span>
-                            <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-3">
+                            {/* Company Logo Thumbnail */}
+                            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-white dark:bg-slate-950 flex items-center justify-center p-1.5 border border-border shadow-sm overflow-hidden">
+                              {exp.logo ? (
+                                <img 
+                                  src={exp.logo} 
+                                  alt={exp.company} 
+                                  className="object-contain w-full h-full"
+                                  onError={(e) => {
+                                    e.currentTarget.style.display = 'none';
+                                    const parent = e.currentTarget.parentElement;
+                                    const fallback = parent?.querySelector('.fallback-icon');
+                                    if (fallback) {
+                                      (fallback as HTMLElement).classList.remove('hidden');
+                                      (fallback as HTMLElement).classList.add('flex');
+                                    }
+                                  }}
+                                />
+                              ) : null}
+                              <Briefcase 
+                                className={`text-slate-400 dark:text-slate-600 w-5 h-5 fallback-icon ${exp.logo ? 'hidden' : 'flex'}`} 
+                              />
+                            </div>
+
+                            <div className="min-w-0 flex-1 text-left">
                               <h4 className="font-heading font-bold text-sm text-foreground group-hover:text-blue-500 transition-colors truncate leading-snug">
                                 {exp.role}
                               </h4>

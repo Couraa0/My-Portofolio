@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { Code2, FolderKanban, GraduationCap, Timer } from "lucide-react";
+import { getProjects } from "@/lib/supabase";
 
 const stats = [
   { 
@@ -99,6 +100,38 @@ const Counter = ({ target, suffix, decimals = 0, from, to }: {
 
 const Stats = () => {
   const { t } = useTranslation();
+  const [projectCount, setProjectCount] = useState<number>(15);
+  const [techCount, setTechCount] = useState<number>(15);
+
+  useEffect(() => {
+    getProjects()
+      .then((data) => {
+        if (data && data.length > 0) {
+          setProjectCount(data.length);
+          
+          const allTech = data.flatMap(p => p.tech || []);
+          const uniqueTech = new Set(allTech.map(t => t.trim().toLowerCase()));
+          uniqueTech.delete("");
+          if (uniqueTech.size > 0) {
+            setTechCount(uniqueTech.size);
+          }
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load project stats:", err);
+      });
+  }, []);
+
+  const dynamicStats = stats.map((s) => {
+    if (s.label === "Projects Completed") {
+      return { ...s, value: projectCount };
+    }
+    if (s.label === "Tech Stack used") {
+      return { ...s, value: techCount };
+    }
+    return s;
+  });
+
   return (
     <section className="py-24 relative overflow-hidden bg-background">
       {/* Mesh and Scanline effect */}
@@ -110,7 +143,7 @@ const Stats = () => {
           transition={{ duration: 0.6 }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
           
-          {stats.map((s, i) => {
+          {dynamicStats.map((s, i) => {
             const Icon = s.icon;
             return (
               <motion.div key={s.label}

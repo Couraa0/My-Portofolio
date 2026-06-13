@@ -180,6 +180,11 @@ export default function Achievements() {
               ))}
             </div>
           </div>
+
+          <div className="mb-8 text-sm text-muted-foreground font-medium flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+            Showing {filteredData.length} {t("achievements") || "achievements"}
+          </div>
         </AnimatedSection>
 
         {/* Loading */}
@@ -230,13 +235,31 @@ export default function Achievements() {
                       )}
 
                       <div className="flex items-start gap-3 w-full">
-                        {/* Index Indicator */}
-                        <span className="font-mono text-[10px] text-slate-400 font-bold bg-muted px-1.5 py-0.5 rounded border border-border/40 shrink-0">
-                          LOG_{index + 1}
-                        </span>
+                        {/* Thumbnail Image */}
+                        <div className="flex-shrink-0 w-11 h-11 rounded-lg overflow-hidden bg-white dark:bg-slate-950 flex items-center justify-center border border-border shadow-sm">
+                          {item.images && item.images.length > 0 ? (
+                            <img 
+                              src={item.images[0]} 
+                              alt={item.title} 
+                              className="object-cover w-full h-full"
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                                const parent = e.currentTarget.parentElement;
+                                const fallback = parent?.querySelector('.fallback-icon');
+                                if (fallback) {
+                                  (fallback as HTMLElement).classList.remove('hidden');
+                                  (fallback as HTMLElement).classList.add('flex');
+                                }
+                              }}
+                            />
+                          ) : null}
+                          <Award 
+                            className={`text-slate-400 dark:text-slate-600 w-5 h-5 fallback-icon ${item.images && item.images.length > 0 ? 'hidden' : 'flex'}`} 
+                          />
+                        </div>
                         
                         {/* Title Info */}
-                        <div className="flex-1 min-w-0">
+                        <div className="flex-1 min-w-0 text-left">
                           <h4 className="font-heading font-bold text-foreground text-sm leading-snug group-hover:text-blue-500 transition-colors line-clamp-2">
                             {item.title}
                           </h4>

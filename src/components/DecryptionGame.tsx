@@ -198,7 +198,7 @@ export default function DecryptionGame() {
   const [usedBracketIds, setUsedBracketIds] = useState<Set<string>>(new Set());
   const [removedWordIds, setRemovedWordIds] = useState<Set<string>>(new Set());
   const [showHelp, setShowHelp] = useState(false);
-  
+
   const logContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -212,13 +212,13 @@ export default function DecryptionGame() {
       const scrollToBottom = () => {
         container.scrollTop = container.scrollHeight;
       };
-      
+
       scrollToBottom();
-      
+
       // Defer scrolling to handle layout shifts and framer-motion animations
       const timer1 = setTimeout(scrollToBottom, 50);
       const timer2 = setTimeout(scrollToBottom, 150);
-      
+
       return () => {
         clearTimeout(timer1);
         clearTimeout(timer2);
@@ -232,10 +232,10 @@ export default function DecryptionGame() {
     const shuffled = [...WORD_LIST].sort(() => 0.5 - Math.random());
     const selectedWords = shuffled.slice(0, 8);
     const chosenSecret = selectedWords[Math.floor(Math.random() * selectedWords.length)];
-    
+
     // Log for developer debugging / bypass cheat
     console.log("[DEBUG] Decryptor Secret Word:", chosenSecret);
-    
+
     setWords(selectedWords);
     setSecretWord(chosenSecret);
     setTries(4);
@@ -260,10 +260,10 @@ export default function DecryptionGame() {
     selectedWords.forEach((word) => {
       let placed = false;
       const wordId = `word-${word}`;
-      
+
       while (!placed) {
         const startIdx = Math.floor(Math.random() * (totalSize - 10));
-        
+
         // Check fit: no overlapping, no line-wrapping inside the word
         let fits = true;
         for (let j = 0; j < word.length; j++) {
@@ -304,7 +304,7 @@ export default function DecryptionGame() {
       const bracketId = `bracket-${b}`;
       const brPair = bracketTypes[Math.floor(Math.random() * bracketTypes.length)];
       const bracketLen = Math.floor(Math.random() * 3) + 3; // Length 3, 4, or 5
-      
+
       while (!placed) {
         const startIdx = Math.floor(Math.random() * (totalSize - 10));
         let fits = true;
@@ -364,10 +364,10 @@ export default function DecryptionGame() {
     if (item.type === "word") {
       // If word is removed, ignore
       if (removedWordIds.has(item.id)) return;
-      
+
       synth.playClick();
       const guessedWord = item.value;
-      
+
       // Calculate Likeness
       let likeness = 0;
       for (let i = 0; i < guessedWord.length; i++) {
@@ -388,8 +388,8 @@ export default function DecryptionGame() {
         toast.success(
           isIndonesian ? "Akses Diberikan!" : "Access Granted!",
           {
-            description: isIndonesian 
-              ? "Uplink berhasil diamankan." 
+            description: isIndonesian
+              ? "Uplink berhasil diamankan."
               : "Uplink successfully secured.",
           }
         );
@@ -404,9 +404,9 @@ export default function DecryptionGame() {
         const remainingTries = tries - 1;
         setTries(remainingTries);
         synth.playError();
-        
+
         toast.error(
-          isIndonesian 
+          isIndonesian
             ? `Akses Ditolak! Kesamaan: ${likeness}/${secretWord.length}`
             : `Access Denied! Likeness: ${likeness}/${secretWord.length}`,
           {
@@ -460,13 +460,13 @@ export default function DecryptionGame() {
           synth.playDudRemoved();
           const targetDud = remainingDuds[Math.floor(Math.random() * remainingDuds.length)];
           const targetDudId = `word-${targetDud}`;
-          
+
           setRemovedWordIds((prev) => new Set([...prev, targetDudId]));
-          
+
           toast.success(
             isIndonesian ? "Script Dijalankan" : "Script Executed",
             {
-              description: isIndonesian 
+              description: isIndonesian
                 ? `Kata salah "${targetDud}" telah disingkirkan.`
                 : `Incorrect option "${targetDud}" removed.`,
             }
@@ -530,7 +530,7 @@ export default function DecryptionGame() {
       setHoveredValue(null);
       return;
     }
-    
+
     // Ignore hovering on used/removed
     if (item.type === "bracket" && usedBracketIds.has(item.id)) return;
     if (item.type === "word" && removedWordIds.has(item.id)) return;
@@ -557,7 +557,7 @@ export default function DecryptionGame() {
             const isHovered = hoveredTokenId === charObj.id;
             const isDudRemoved = charObj.type === "word" && removedWordIds.has(charObj.id);
             const isBracketUsed = charObj.type === "bracket" && usedBracketIds.has(charObj.id);
-            
+
             let colorClass = "text-emerald";
             if (isHovered) {
               colorClass = "bg-emerald text-slate-950 font-bold";
@@ -586,7 +586,7 @@ export default function DecryptionGame() {
   return (
     <section className="py-24 bg-background relative z-10 text-left border-t border-border/40">
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
-        
+
         {/* Title Section */}
         <AnimatedSection>
           <div className="mb-10 pb-6 border-b border-border/60 text-center">
@@ -603,7 +603,7 @@ export default function DecryptionGame() {
         {/* Terminal Case Screen */}
         <AnimatedSection delay={0.1}>
           <div className="terminal-theme w-full rounded-2xl border border-emerald/30 bg-slate-950 p-2.5 sm:p-6 shadow-[0_0_40px_rgba(16,185,129,0.04)] relative overflow-hidden group">
-            
+
             {/* Phosphor Glowing overlay */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.06)_0%,transparent_80%)] pointer-events-none" />
             <div className="absolute inset-0 bg-scanlines pointer-events-none opacity-[0.08]" />
@@ -614,7 +614,7 @@ export default function DecryptionGame() {
                 <span className="w-2 h-2 rounded-full bg-emerald animate-pulse" />
                 <span>SYSTEM: SECURITY_OVERRIDE_UPLINK</span>
               </div>
-              
+
               <div className="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end">
                 <div className="flex items-center gap-2">
                   <span>TRIES_REMAINING:</span>
@@ -672,11 +672,11 @@ export default function DecryptionGame() {
 
                     <div className="font-mono text-xs leading-relaxed space-y-3">
                       <p className="text-emerald/90 font-bold">
-                        {isIndonesian 
+                        {isIndonesian
                           ? "Sistem ini menggunakan perlindungan keamanan berbasis password. Tugas Anda adalah menebak kata sandi rahasia yang benar."
                           : "This system is protected by a password firewall. Your task is to decrypt the correct secret passcode."}
                       </p>
-                      
+
                       <div className="space-y-2 border border-emerald/10 p-3 rounded bg-emerald/5 text-left">
                         <span className="text-emerald font-extrabold block text-[11px] tracking-wider">
                           1. {isIndonesian ? "NADA KESAMAAN (LIKENESS SCORE)" : "LIKENESS SCORE MECHANICS"}
@@ -743,7 +743,7 @@ export default function DecryptionGame() {
                 {/* Double column grid block */}
                 {gridChars.length > 0 && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 bg-slate-950 border border-emerald/10 p-2.5 sm:p-4 rounded-xl shadow-inner shadow-black/80">
-                    
+
                     {/* Left Column Rows */}
                     <div className="flex flex-col gap-1.5">
                       {Array.from({ length: 16 }).map((_, idx) => (
@@ -776,7 +776,7 @@ export default function DecryptionGame() {
 
               {/* RIGHT LOG SHEET: TRANSCEIVER SCRIPTS (5 cols) */}
               <div className="lg:col-span-5 flex flex-col h-full min-h-[300px] lg:min-h-[380px] border-t lg:border-t-0 lg:border-l border-emerald/20 pt-6 lg:pt-0 lg:pl-6">
-                
+
                 {/* Console text log */}
                 <div ref={logContainerRef} className="h-[200px] lg:h-[260px] max-h-[200px] lg:max-h-[260px] flex flex-col gap-2 overflow-y-auto terminal-log-container bg-black/40 p-4 rounded-xl border border-emerald/10 shadow-inner pr-2">
                   <AnimatePresence>
@@ -786,13 +786,12 @@ export default function DecryptionGame() {
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.15 }}
-                        className={`text-xs sm:text-[11px] leading-relaxed break-words text-left ${
-                          log.includes("Access Granted") 
+                        className={`text-xs sm:text-[11px] leading-relaxed break-words text-left ${log.includes("Access Granted")
                             ? "text-emerald font-extrabold"
                             : log.includes("ERROR") || log.includes("Denied")
-                            ? "text-rose font-bold"
-                            : "text-emerald/80"
-                        }`}
+                              ? "text-rose font-bold"
+                              : "text-emerald/80"
+                          }`}
                       >
                         {log}
                       </motion.div>
@@ -819,10 +818,10 @@ export default function DecryptionGame() {
                           UPLINK SECURITY SECURED
                         </span>
                       </div>
-                      
+
                       {/* Reward button */}
                       <a
-                        href="https://drive.google.com/file/d/1JHdnHLOJfDU3Wf3jK1hrfgMrzbeGfQdT/view?usp=drive_link"
+                        href="https://drive.google.com/file/d/11IWyd4FVIs1QjJGyMLBSaVOV83W-2fwe/view?usp=sharing"
                         target="_blank"
                         rel="noreferrer"
                         className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs font-mono font-bold bg-emerald/10 hover:bg-emerald/20 text-emerald border border-emerald/30 transition-all hover:scale-[1.01]"
@@ -840,7 +839,7 @@ export default function DecryptionGame() {
                           HOSTILE SYSTEM LOCKOUT
                         </span>
                       </div>
-                      
+
                       <button
                         onClick={initGame}
                         className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs font-mono font-bold bg-rose/10 hover:bg-rose/20 text-rose border border-rose/30 transition-all hover:scale-[1.01]"
