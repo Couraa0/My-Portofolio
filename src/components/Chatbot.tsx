@@ -26,6 +26,28 @@ export default function Chatbot() {
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [showHighlight, setShowHighlight] = useState(false);
+
+  useEffect(() => {
+    const hasSeen = localStorage.getItem("hasSeenChatbotHighlight");
+    if (!hasSeen && !open) {
+      const timer = setTimeout(() => {
+        setShowHighlight(true);
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
+  const handleToggleOpen = () => {
+    setOpen(prev => {
+      const next = !prev;
+      if (next) {
+        setShowHighlight(false);
+        localStorage.setItem("hasSeenChatbotHighlight", "true");
+      }
+      return next;
+    });
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -111,17 +133,101 @@ export default function Chatbot() {
 
   return (
     <>
-      {/* ── Floating Action Button ── */}
-      <motion.button
-        onClick={() => setOpen(prev => !prev)}
-        whileHover={{ scale: 1.08 }}
-        whileTap={{ scale: 0.92 }}
-        className="fixed bottom-6 right-6 z-50 p-4 rounded-full text-white shadow-xl shadow-blue-500/25 transition-shadow hover:shadow-blue-500/40"
-        style={{ background: "linear-gradient(135deg, hsl(215 100% 55%), hsl(196 100% 47%))" }}
-        aria-label="Open AI Chatbot"
-      >
-        <Bot size={24} />
-      </motion.button>
+      {/* ── Welcome speech bubble ── */}
+      <AnimatePresence>
+        {showHighlight && !open && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 15, scale: 0.8 }}
+            transition={{ type: "spring", damping: 15, stiffness: 200 }}
+            onClick={() => {
+              setOpen(true);
+              setShowHighlight(false);
+              localStorage.setItem("hasSeenChatbotHighlight", "true");
+            }}
+            className="fixed bottom-24 right-4 sm:right-6 z-50 max-w-[280px] sm:max-w-[320px] cursor-pointer"
+          >
+            {/* The speech bubble body */}
+            <motion.div
+              animate={{ y: [0, -6, 0] }}
+              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+              className="relative p-4 rounded-2xl border border-blue-500/30 shadow-2xl shadow-blue-500/20 bg-background/90 backdrop-blur-md flex items-start gap-3 select-none hover:border-blue-500/50 transition-colors"
+            >
+              {/* Avatar Icon */}
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white shrink-0 shadow-sm"
+                style={{ background: "linear-gradient(135deg, hsl(215 100% 55%), hsl(196 100% 47%))" }}
+              >
+                <Sparkles size={14} className="animate-pulse" />
+              </div>
+
+              {/* Text */}
+              <div className="flex-1 pr-3">
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <span className="font-heading font-bold text-xs text-foreground">Coura ✨</span>
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-500 animate-ping" />
+                </div>
+                <p className="text-[11px] leading-relaxed text-muted-foreground font-medium">
+                  {t("Chatbot Highlight Message")}
+                </p>
+              </div>
+
+              {/* Close Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowHighlight(false);
+                  localStorage.setItem("hasSeenChatbotHighlight", "true");
+                }}
+                className="absolute top-3 right-3 p-1 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Dismiss message"
+              >
+                <X size={12} />
+              </button>
+
+              {/* Triangle Tail of Speech Bubble */}
+              <div className="absolute -bottom-1.5 right-[24px] w-3 h-3 bg-background border-r border-b border-blue-500/30 transform rotate-45" />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Floating Action Button & Glow Aura ── */}
+      <div className="fixed bottom-6 right-6 z-50 flex items-center justify-center">
+        <AnimatePresence>
+          {showHighlight && !open && (
+            <>
+              {/* Pulsing Aura Rings */}
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0.5 }}
+                animate={{ scale: 2.2, opacity: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ repeat: Infinity, duration: 2, ease: "easeOut" }}
+                className="absolute w-14 h-14 rounded-full bg-blue-500 pointer-events-none"
+              />
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0.3 }}
+                animate={{ scale: 2.8, opacity: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ repeat: Infinity, duration: 2, delay: 0.6, ease: "easeOut" }}
+                className="absolute w-14 h-14 rounded-full bg-cyan-400 pointer-events-none"
+              />
+            </>
+          )}
+        </AnimatePresence>
+
+        <motion.button
+          onClick={handleToggleOpen}
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.92 }}
+          className="relative p-4 rounded-full text-white shadow-xl shadow-blue-500/25 transition-shadow hover:shadow-blue-500/40"
+          style={{ background: "linear-gradient(135deg, hsl(215 100% 55%), hsl(196 100% 47%))" }}
+          aria-label="Open AI Chatbot"
+        >
+          <Bot size={24} />
+        </motion.button>
+      </div>
 
       {/* ── Chat Panel ── */}
       <AnimatePresence>

@@ -248,7 +248,8 @@ const resources = {
       "Access Classified Dossier": "Access Classified Dossier",
       "Send Private Email": "Send Private Email",
       "Email Form Desc": "Got a question, collaboration offer, or professional inquiry? Use this form to send a message that goes straight privately to my email inbox.",
-      "Guestbook Subtitle": "Leave your message, impression, or greeting here! It will be displayed publicly on the website."
+      "Guestbook Subtitle": "Leave your message, impression, or greeting here! It will be displayed publicly on the website.",
+      "Chatbot Highlight Message": "Hi! I'm Coura, Rakha's AI assistant. Ask me anything about Rakha here! 👋"
     }
   },
   id: {
@@ -492,7 +493,8 @@ const resources = {
       "Access Classified Dossier": "Akses Berkas Rahasia",
       "Send Private Email": "Kirim Email Privat",
       "Email Form Desc": "Punya pertanyaan, tawaran kerja sama, atau keperluan profesional? Gunakan form ini untuk mengirim pesan yang akan langsung masuk secara privat ke inbox email saya.",
-      "Guestbook Subtitle": "Tinggalkan pesan, kesan, atau sapaan Anda di sini! Pesan ini akan tampil secara publik di website."
+      "Guestbook Subtitle": "Tinggalkan pesan, kesan, atau sapaan Anda di sini! Pesan ini akan tampil secara publik di website.",
+      "Chatbot Highlight Message": "Halo! Saya Coura, AI assistant Rakha. Tanyakan apa saja tentang Rakha di sini! 👋"
     }
   }
 };
