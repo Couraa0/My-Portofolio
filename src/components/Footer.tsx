@@ -3,6 +3,7 @@ import { Github, Linkedin, Mail, ArrowUp, Instagram, MessageCircle, Heart, Exter
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { useCVLink } from "@/hooks/useCVLink";
 
 const socials = [
   { href: "https://www.linkedin.com/in/rakha05/", icon: <Linkedin size={16} />, label: "LinkedIn", color: "hsl(196 100% 36%)", bg: "hsl(196 100% 47% / 0.08)", border: "hsl(196 100% 47% / 0.2)" },
@@ -23,6 +24,7 @@ const quickLinks = [
 
 const Footer = () => {
   const { t } = useTranslation();
+  const { cvLink } = useCVLink();
   const [clicks, setClicks] = useState(0);
 
   const handleBrandClick = () => {
@@ -117,7 +119,7 @@ const Footer = () => {
             </div>
             {/* Resume link */}
             <a
-              href="https://drive.google.com/file/d/11IWyd4FVIs1QjJGyMLBSaVOV83W-2fwe/view?usp=sharing"
+              href={cvLink}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"

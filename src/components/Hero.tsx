@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
 import { Github, Linkedin, ArrowDown, Sparkles, Briefcase, Instagram, MessageCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useCVLink } from "@/hooks/useCVLink";
 
 const container: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.15 } } };
 const fadeUp: Variants = {
@@ -13,6 +14,7 @@ const typingRoles = ["IT Project Manager", "Product Manager", "Software Develope
 
 const Hero = () => {
   const { t } = useTranslation();
+  const { cvLink } = useCVLink();
   const [roleIndex, setRoleIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -130,7 +132,7 @@ const Hero = () => {
               {t("View My Projects")}
             </button>
             <div className="relative inline-flex items-center gap-4">
-              <a href="https://drive.google.com/file/d/1JHdnHLOJfDU3Wf3jK1hrfgMrzbeGfQdT/view?usp=drive_link"
+              <a href={cvLink}
                 target="_blank" rel="noopener noreferrer"
                 className="rounded-full border px-5 py-3 sm:px-7 sm:py-3.5 text-[13px] sm:text-sm font-semibold transition-all duration-300 hover:scale-105 border-border text-foreground hover:bg-secondary/80 flex items-center gap-2"
               >

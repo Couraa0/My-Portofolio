@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import AnimatedSection from "./AnimatedSection";
 import { GraduationCap, Briefcase, Rocket, Download, Terminal, Settings, ShieldCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useCVLink } from "@/hooks/useCVLink";
 
 const cards = [
   {
@@ -35,6 +36,7 @@ const bars = [
 
 const About = () => {
   const { t } = useTranslation();
+  const { cvLink } = useCVLink();
 
   const stats = [
     { value: "3.97", label: t("GPA"), from: "hsl(215 100% 55%)", to: "hsl(196 100% 47%)" },
@@ -130,7 +132,7 @@ const About = () => {
 
               {/* Download CV */}
               <motion.a
-                href="https://drive.google.com/file/d/11IWyd4FVIs1QjJGyMLBSaVOV83W-2fwe/view?usp=sharing"
+                href={cvLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.02 }}

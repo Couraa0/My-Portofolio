@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Terminal, ShieldAlert, CheckCircle, RefreshCw, Volume2, VolumeX, ShieldCheck, HelpCircle } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
 import { toast } from "sonner";
+import { useCVLink } from "@/hooks/useCVLink";
 
 // Web Audio API Sound Synthesizer
 class SoundSynth {
@@ -185,6 +186,7 @@ interface GridChar {
 
 export default function DecryptionGame() {
   const { t, i18n } = useTranslation();
+  const { cvLink } = useCVLink();
   const isIndonesian = i18n.language?.startsWith('id');
   const [muted, setMuted] = useState(false);
   const [words, setWords] = useState<string[]>([]);
@@ -821,7 +823,7 @@ export default function DecryptionGame() {
 
                       {/* Reward button */}
                       <a
-                        href="https://drive.google.com/file/d/11IWyd4FVIs1QjJGyMLBSaVOV83W-2fwe/view?usp=sharing"
+                        href={cvLink}
                         target="_blank"
                         rel="noreferrer"
                         className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs font-mono font-bold bg-emerald/10 hover:bg-emerald/20 text-emerald border border-emerald/30 transition-all hover:scale-[1.01]"

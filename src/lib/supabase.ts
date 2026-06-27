@@ -287,3 +287,62 @@ export const deleteImage = async (
   if (!filePath) return;
   await supabase.storage.from(bucket).remove([filePath]);
 };
+
+// ===================== CV SETTINGS =====================
+
+export interface CVSettings {
+  id: string;
+  url: string;
+  description?: string;
+  updated_at?: string;
+}
+
+export const getCVSettings = async (): Promise<CVSettings[]> => {
+  const { data, error } = await supabase
+    .from('cv_settings')
+    .select('*');
+  if (error) throw error;
+  return data || [];
+};
+
+export const updateCVSettings = async (id: string, url: string): Promise<CVSettings> => {
+  const { data, error } = await supabase
+    .from('cv_settings')
+    .update({ url, updated_at: new Date().toISOString() })
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
+
+export const uploadCV = async (
+  file: File,
+  fileName: string
+): Promise<string> => {
+  const fileExt = file.name.split('.').pop();
+  const filePath = `cv/${fileName}-${Date.now()}.${fileExt}`;
+
+  const { error } = await supabase.storage
+    .from('achievements')
+    .upload(filePath, file, { upsert: true });
+
+  if (error) throw error;
+
+  const { data } = supabase.storage.from('achievements').getPublicUrl(filePath);
+  return data.publicUrl;
+};
+
+export const deleteCVFile = async (url: string): Promise<void> => {
+  if (!url || !url.includes('/storage/v1/object/public/achievements/cv/')) return;
+  const parts = url.split('/public/achievements/');
+  if (parts.length < 2) return;
+  const filePath = parts[1];
+  try {
+    await supabase.storage.from('achievements').remove([filePath]);
+  } catch (e) {
+    console.error('Error deleting old CV file:', e);
+  }
+};
+
+

@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
+import { useCVLink } from "@/hooks/useCVLink";
 
 const Skills = lazy(() => import("@/components/Skills"));
 const SectionPreview = lazy(() => import("@/components/SectionPreview"));
@@ -78,6 +79,7 @@ const TypingRoles = ({ roles }: { roles: string[] }) => {
 
 const Index = () => {
   const { t, i18n } = useTranslation();
+  const { cvLink } = useCVLink();
   const context = useOutletContext<{ layoutMode: string }>();
   const layoutMode = context?.layoutMode || "navbar";
   const [activeTab, setActiveTab] = useState<"code" | "roadmap" | "metrics">("code");
@@ -198,7 +200,7 @@ const Index = () => {
 
                 <div className="flex items-center gap-3 w-full sm:w-auto">
                   <a
-                    href="https://drive.google.com/file/d/11IWyd4FVIs1QjJGyMLBSaVOV83W-2fwe/view?usp=sharing"
+                    href={cvLink}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rounded-full border px-6 py-3 text-sm font-semibold transition-all duration-300 hover:scale-[1.03] bg-background/50 backdrop-blur-md border-border text-foreground hover:text-blue-500 hover:border-blue-500 hover:bg-blue-500/10 flex items-center justify-center gap-2 flex-1 sm:flex-initial"

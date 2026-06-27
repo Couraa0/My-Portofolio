@@ -13,6 +13,7 @@ import {
   User,
   GraduationCap,
   MessageSquare,
+  FileText,
 } from 'lucide-react';
 
 const navItems = [
@@ -23,6 +24,7 @@ const navItems = [
   { to: '/admin/experience', icon: Briefcase, label: 'Experience' },
   { to: '/admin/education', icon: GraduationCap, label: 'Education' },
   { to: '/admin/guestbook', icon: MessageSquare, label: 'Guestbook' },
+  { to: '/admin/cv', icon: FileText, label: 'CV / Resume' },
 ];
 
 export default function AdminLayout() {
