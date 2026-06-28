@@ -48,6 +48,16 @@ export interface Achievement {
   created_at?: string;
 }
 
+export interface Competition {
+  title: string;
+  role: string;
+  award: string;
+  project: string;
+  skills: string[];
+  what_was_built: string;
+  impact_achievements: string[];
+}
+
 export interface Experience {
   id?: string;
   company: string;
@@ -59,6 +69,7 @@ export interface Experience {
   tools?: string[];
   sort_order?: number;
   created_at?: string;
+  competitions?: Competition[];
 }
 
 export interface Education {

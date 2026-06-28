@@ -1,8 +1,32 @@
 import { motion } from "framer-motion";
 import AnimatedSection from "./AnimatedSection";
-import { GraduationCap, Briefcase, Rocket, Download, Terminal, Settings, ShieldCheck } from "lucide-react";
+import { GraduationCap, Briefcase, Rocket, Download, Terminal, Settings, ShieldCheck, Loader2, MapPin, Calendar } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useCVLink } from "@/hooks/useCVLink";
+import { useEffect, useState } from "react";
+import { getEducation, type Education as DBEdu } from "@/lib/supabase";
+
+interface Education {
+  id: string;
+  degree: string;
+  school: string;
+  location: string;
+  period: string;
+  gpa: string;
+  logo?: string;
+}
+
+function adaptEdu(e: DBEdu): Education {
+  return {
+    id: e.id!,
+    degree: e.degree,
+    school: e.school,
+    location: e.location,
+    period: e.period,
+    gpa: e.gpa,
+    logo: e.logo_url,
+  };
+}
 
 const cards = [
   {
@@ -37,6 +61,18 @@ const bars = [
 const About = () => {
   const { t } = useTranslation();
   const { cvLink } = useCVLink();
+  const [education, setEducation] = useState<Education[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    getEducation()
+      .then((data) => {
+        setEducation(data.map(adaptEdu));
+      })
+      .catch((e) => setError(e.message))
+      .finally(() => setLoading(false));
+  }, []);
 
   const stats = [
     { value: "3.97", label: t("GPA"), from: "hsl(215 100% 55%)", to: "hsl(196 100% 47%)" },
@@ -239,6 +275,102 @@ const About = () => {
             </div>
           </AnimatedSection>
         </div>
+
+        {/* === PENDIDIKAN (EDUCATION) === */}
+        {loading && (
+          <div className="flex items-center justify-center gap-3 py-12 text-muted-foreground mt-10">
+            <Loader2 size={20} className="animate-spin text-blue-500" />
+            <span className="text-xs">{t("Loading data...")}</span>
+          </div>
+        )}
+
+        {!loading && error && (
+          <div className="flex items-center justify-center py-10 text-muted-foreground text-xs mt-10">
+            {t("Failed to load data")}: {error}
+          </div>
+        )}
+
+        {!loading && !error && education.length > 0 && (
+          <div className="mt-20">
+            <AnimatedSection>
+              <div className="text-center mb-16">
+                <span className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold mb-4 border"
+                  style={{ background: "hsl(215 100% 55% / 0.08)", borderColor: "hsl(215 100% 55% / 0.2)", color: "hsl(215 100% 50%)" }}>
+                  <GraduationCap size={12} className="text-sky-500" />
+                  {t("Education")}
+                </span>
+                <h2 className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+                  {t("Education")}
+                </h2>
+                <p className="text-muted-foreground text-sm max-w-2xl mx-auto mt-3">
+                  {t("Education Subtitle")}
+                </p>
+              </div>
+            </AnimatedSection>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+              {education.map((edu, index) => (
+                <AnimatedSection key={edu.id} delay={index * 0.1}>
+                  <motion.div
+                    whileHover={{ y: -3 }}
+                    className="group p-5 rounded-2xl bg-card border border-border/60 shadow-sm flex items-start gap-4 h-full transition-all hover:border-blue-500/20 hover:shadow-md hover:shadow-blue-500/5"
+                  >
+                    {/* School Logo */}
+                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-white dark:bg-slate-950 flex items-center justify-center p-2 border border-border shadow-sm">
+                      {edu.logo ? (
+                        <img 
+                          src={edu.logo} 
+                          alt={edu.school} 
+                          className="object-contain w-full h-full"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            const parent = e.currentTarget.parentElement;
+                            const fallback = parent?.querySelector('.fallback-icon');
+                            if (fallback) {
+                              (fallback as HTMLElement).classList.remove('hidden');
+                              (fallback as HTMLElement).classList.add('flex');
+                            }
+                          }}
+                        />
+                      ) : null}
+                      <GraduationCap 
+                        className={`text-slate-400 dark:text-slate-600 w-6 h-6 fallback-icon ${edu.logo ? 'hidden' : 'flex'}`} 
+                      />
+                    </div>
+
+                    <div className="flex-1 flex flex-col min-w-0 text-left">
+                      <div className="flex justify-between items-start gap-2 mb-1">
+                        <h3 className="font-heading font-bold text-base text-foreground group-hover:text-blue-500 transition-colors line-clamp-2 leading-snug">
+                          {edu.school}
+                        </h3>
+                        {edu.gpa && (
+                          <span className="font-mono text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-500/5 px-2 py-0.5 border border-blue-500/10 rounded shrink-0">
+                            {parseFloat(edu.gpa) > 4.0 ? `Grade: ${edu.gpa}` : `GPA: ${edu.gpa}`}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
+                        {edu.degree}
+                      </p>
+                      
+                      <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 font-mono mt-auto pt-2 border-t border-border/30 w-full">
+                        <span className="flex items-center gap-1">
+                          <MapPin size={12} />
+                          {edu.location}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Calendar size={12} />
+                          {edu.period}
+                        </span>
+                      </div>
+                    </div>
+                  </motion.div>
+                </AnimatedSection>
+              ))}
+            </div>
+          </div>
+        )}
+
       </div>
     </section>
   );

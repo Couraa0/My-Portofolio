@@ -39,8 +39,8 @@ const AboutPage = () => {
       </Helmet>
       <div className="page-enter bg-background pb-16">
         <About />
-        <Stats />
         <GithubStats />
+        <Stats />
       </div>
     </>
   );
