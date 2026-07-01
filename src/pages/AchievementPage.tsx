@@ -10,8 +10,8 @@ const AchievementPage = () => {
         <meta name="keywords" content="Muhammad Rakha Syamputra Achievements, Sertfikasi Muhammad Rakha Syamputra, Prestasi Muhammad Rakha Syamputra, Penghargaan Muhammad Rakha Syamputra, IT Certifications, Sertifikasi IT, Software Developer Awards, Penghargaan Pengembang Perangkat Lunak, Product Manager Certifications, Sertifikasi Manajer Produk, Tech Accomplishments, Prestasi Teknologi" />
         <meta property="og:title" content="Achievements & Awards - Muhammad Rakha Syamputra" />
         <meta property="og:description" content="Check out my professional certifications, honors, and awards in the technology industry." />
-        <meta property="og:url" content="https://mrakha.my.id/achievements" />
-        <link rel="canonical" href="https://mrakha.my.id/achievements" />
+        <meta property="og:url" content="https://www.mrakha.my.id/achievements" />
+        <link rel="canonical" href="https://www.mrakha.my.id/achievements" />
         <script type="application/ld+json">
           {`
             {
@@ -19,7 +19,7 @@ const AchievementPage = () => {
               "@type": "ProfilePage",
               "name": "Achievements of Muhammad Rakha Syamputra",
               "description": "Awards and certifications of Muhammad Rakha Syamputra.",
-              "url": "https://mrakha.my.id/achievements",
+              "url": "https://www.mrakha.my.id/achievements",
               "mainEntity": {
                 "@type": "Person",
                 "name": "Muhammad Rakha Syamputra",

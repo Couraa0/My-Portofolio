@@ -10,8 +10,8 @@ const ExperiencePage = () => {
         <meta name="keywords" content="Muhammad Rakha Syamputra Experience, Pengalaman Kerja Muhammad Rakha Syamputra, Pengalaman IT Project Manager, Software Developer Experience, Pengalaman Pengembang Perangkat Lunak, Tech Leader Career, Karir Pemimpin Teknologi, Product Manager History, Riwayat Manajer Produk" />
         <meta property="og:title" content="Experience & Work History - Muhammad Rakha Syamputra" />
         <meta property="og:description" content="Discover my professional journey, roles, and responsibilities in the tech industry." />
-        <meta property="og:url" content="https://mrakha.my.id/experience" />
-        <link rel="canonical" href="https://mrakha.my.id/experience" />
+        <meta property="og:url" content="https://www.mrakha.my.id/experience" />
+        <link rel="canonical" href="https://www.mrakha.my.id/experience" />
         <script type="application/ld+json">
           {`
             {
@@ -19,7 +19,7 @@ const ExperiencePage = () => {
               "@type": "ProfilePage",
               "name": "Professional Experience of Muhammad Rakha Syamputra",
               "description": "Work history and professional experience in IT Project Management and Software Development.",
-              "url": "https://mrakha.my.id/experience",
+              "url": "https://www.mrakha.my.id/experience",
               "mainEntity": {
                 "@type": "Person",
                 "name": "Muhammad Rakha Syamputra",

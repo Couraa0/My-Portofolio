@@ -245,7 +245,7 @@ Other Languages:
 Email: [muhammadrakhasyamputra@gmail.com](mailto:muhammadrakhasyamputra@gmail.com)
 LinkedIn: https://www.linkedin.com/in/rakha05/
 GitHub: https://github.com/Couraa0
-Website: mrakha.my.id
+Website: www.mrakha.my.id
 
 ## INTERNAL NAVIGATION LINKS
 

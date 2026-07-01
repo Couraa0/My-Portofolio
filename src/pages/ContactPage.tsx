@@ -10,8 +10,8 @@ const ContactPage = () => {
         <meta name="keywords" content="Contact Muhammad Rakha Syamputra, Hubungi Muhammad Rakha Syamputra, Kontak Muhammad Rakha Syamputra, Hire IT Project Manager, Pekerjakan Manajer Proyek IT, Hire Software Developer, Jasa Pembuatan Website, Jasa Web Developer, Hire Product Manager, IT Consultant Indonesia, Konsultan IT Indonesia, Freelance Web Developer" />
         <meta property="og:title" content="Contact Muhammad Rakha Syamputra - Let's Work Together" />
         <meta property="og:description" content="Get in touch for IT Project Management, Software Development, and Product Management opportunities." />
-        <meta property="og:url" content="https://mrakha.my.id/contact" />
-        <link rel="canonical" href="https://mrakha.my.id/contact" />
+        <meta property="og:url" content="https://www.mrakha.my.id/contact" />
+        <link rel="canonical" href="https://www.mrakha.my.id/contact" />
         <script type="application/ld+json">
           {`
             {
@@ -19,12 +19,12 @@ const ContactPage = () => {
               "@type": "ContactPage",
               "name": "Contact Muhammad Rakha Syamputra",
               "description": "Get in touch with Muhammad Rakha Syamputra for IT Project Management and Software Development opportunities.",
-              "url": "https://mrakha.my.id/contact",
+              "url": "https://www.mrakha.my.id/contact",
               "mainEntity": {
                 "@type": "Person",
                 "name": "Muhammad Rakha Syamputra",
                 "email": "muhammadrakhasyamputra@gmail.com",
-                "url": "https://mrakha.my.id/",
+                "url": "https://www.mrakha.my.id/",
                 "jobTitle": "IT Project Manager & Software Developer",
                 "sameAs": [
                   "https://www.linkedin.com/in/rakha05/",
