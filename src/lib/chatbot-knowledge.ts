@@ -74,6 +74,40 @@ Tagline:
    * 2018 to 2019
    * Managed internal scientific research programs.
 
+6. Builder Fellow – AI Track at Blockdev.id
+
+   * Terpilih sebagai Builder Fellow dalam Jalur Kecerdasan Buatan (Artificial Intelligence Track) di Program Builder BlockDevId.
+   * Berpartisipasi dalam lokakarya AI praktik langsung yang berfokus pada dasar-dasar AI, pengembangan model, prompt engineering, dan implementasi AI di dunia nyata.
+   * Memperkuat keterampilan praktis dalam membangun solusi berbasis AI melalui pendampingan, sesi teknis, dan kolaborasi dengan sesama pengembang.
+   * Compiled Skills: Artificial Intelligence, LLM, RAG.
+   * Juni 2026 - Juli 2026
+   
+## COMPETITIVE EXPERIENCE
+
+1. Project Manager — Hackathon X Digdaya: Bank Indonesia (2026)
+
+   * Achievement: Top 20% Nasional
+   * Project: SatuTani
+   * Description: Platform digital berbasis ekosistem terintegrasi yang dirancang untuk mengoptimalkan rantai pasok pertanian (agri-tech supply chain), memangkas jalur distribusi, serta menghadirkan transparansi harga dari petani langsung ke pasar atau stakeholders terkait. Proyek ini dikembangkan menggunakan pendekatan berbasis data untuk mendukung keberlanjutan sektor pangan dan memberikan dampak sosial nyata bagi komunitas lokal.
+   * Highlights: Merancang arsitektur & roadmap platform SatuTani, menyusun strategi optimalisasi rantai pasok, memimpin tim merumuskan MVP berbasis kebutuhan komunitas, dan mempresentasikan solusi di hadapan juri/mentor industri.
+   * Compiled Skills: Agri-Tech, Supply Chain Management, Project Management, Agile Scrum.
+
+2. Project Manager & Fullstack Developer — AI Impact Challenge: Dicoding × Microsoft Azure (2026)
+
+   * Achievement: Top 10 Nasional
+   * Project: InvestAI
+   * Description: Solusi fintech berbasis kecerdasan buatan (AI-driven) yang dirancang untuk melakukan analisis pasar saham secara komprehensif, menggabungkan riset fundamental mendalam dan indikator teknikal secara real-time. Dikembangkan menggunakan arsitektur on-premise LLM untuk menjamin keamanan data finansial yang sensitif.
+   * Highlights: Membawa tim meraih Top 10 Nasional dari ribuan peserta se-Indonesia, memimpin koordinasi lintas fungsi (AI engineering, product design, business strategy), mengakselerasi pengembangan produk, dan menggunakan Microsoft Azure Web App Services sebagai hosting frontend, backend, dan AI.
+   * Compiled Skills: Artificial Intelligence, Fintech, Fundamental Analysis, Technical Research.
+
+3. Project Manager — National Business Competition: Nexora Society (2026)
+
+   * Achievement: Juara 1 — 1st Place (Kategori Bisnis Syariah)
+   * Project: SatuHalal
+   * Description: Rancangan strategi bisnis syariah yang mengintegrasikan value-driven entrepreneurship, financial sustainability, dan inovasi digital dalam ekosistem bisnis modern, menggabungkan prinsip ekonomi Islam dengan pendekatan startup era digital.
+   * Highlights: Merancang model bisnis yang berkelanjutan secara finansial dengan prinsip syariah, mengintegrasikan inovasi digital & value-driven entrepreneurship, serta mendemonstrasikan kemampuan berpikir strategis dan presentasi bisnis di hadapan juri nasional.
+   * Compiled Skills: Business Innovation, Syariah, Entrepreneurship, Strategy, National Winner.
+
 ## ACHIEVEMENTS AND CERTIFICATIONS
 
 * 1st Place in the Islamic Sharia Business Competition, Nexora Business Society, Apr 2026
@@ -182,6 +216,16 @@ Rakha has 19 listed projects:
     * AI-integrated stock market education and simulator platform.
     * Includes paper trading, real-time market data, AI prediction signals, and virtual AI mentor.
 
+20. PopOwn
+
+    * AI-powered video search and interactive browser extension platform.
+    * Enables instant Q&A, automatic summarization, scene searching, and brand mention tracking with interactive timestamps.
+
+21. Website Desa Telukambulu
+
+    * Official village digital portal and central administration system for Telukambulu Village developed during KKN UNSIKA 2026
+    * Features a custom CMS dashboard for managing village profiles, demographic data, local potential, gallery, and online public services without coding
+      
 ## TECH STACK AND SKILLS
 
 Soft Skills and Management:
