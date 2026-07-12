@@ -26,28 +26,62 @@ export default function Chatbot() {
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [showHighlight, setShowHighlight] = useState(false);
+  // "popup" = popup besar, "mini" = pill kecil, "hidden" = tidak ada
+  const [notifMode, setNotifMode] = useState<"popup" | "mini" | "hidden">("hidden");
+  const loopTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const isMobile = () => typeof window !== "undefined" && window.innerWidth < 1024;
+
+  const clearLoop = () => {
+    if (loopTimerRef.current) clearTimeout(loopTimerRef.current);
+  };
+
+  // Pertama buka halaman → 1.5 detik → cek mobile
+  // Mobile: popup besar hanya sekali (pakai localStorage), lalu langsung mini
+  // Desktop: popup besar → dismiss → mini → 30 detik → popup lagi (loop)
   useEffect(() => {
-    const hasSeen = localStorage.getItem("hasSeenChatbotHighlight");
-    if (!hasSeen && !open) {
-      const timer = setTimeout(() => {
-        setShowHighlight(true);
-      }, 2500);
-      return () => clearTimeout(timer);
+    loopTimerRef.current = setTimeout(() => {
+      if (isMobile()) {
+        const hasSeenPopup = localStorage.getItem("chatbot_popup_seen_mobile");
+        if (hasSeenPopup) {
+          // Sudah pernah lihat popup besar → langsung mini
+          setNotifMode("mini");
+        } else {
+          setNotifMode("popup");
+        }
+      } else {
+        setNotifMode("popup");
+      }
+    }, 1500);
+    return clearLoop;
+  }, []);
+
+  // Ketika popup ditutup (X)
+  const handleDismissPopup = () => {
+    setNotifMode("mini");
+    clearLoop();
+    if (isMobile()) {
+      // Mobile: simpan ke localStorage, tidak loop popup lagi
+      localStorage.setItem("chatbot_popup_seen_mobile", "true");
+    } else {
+      // Desktop: loop popup setelah 30 detik
+      loopTimerRef.current = setTimeout(() => setNotifMode("popup"), 60000);
     }
-  }, [open]);
+  };
 
   const handleToggleOpen = () => {
     setOpen(prev => {
       const next = !prev;
       if (next) {
-        setShowHighlight(false);
-        localStorage.setItem("hasSeenChatbotHighlight", "true");
+        setNotifMode("hidden");
+        clearLoop();
       }
       return next;
     });
   };
+
+  const showHighlight = notifMode === "popup";
+  const showMini = notifMode === "mini";
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -137,95 +171,168 @@ export default function Chatbot() {
       <AnimatePresence>
         {showHighlight && !open && (
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.8 }}
+            initial={{ opacity: 0, y: 16, scale: 0.85 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 15, scale: 0.8 }}
-            transition={{ type: "spring", damping: 15, stiffness: 200 }}
+            exit={{ opacity: 0, y: 12, scale: 0.88 }}
+            transition={{ type: "spring", damping: 18, stiffness: 220 }}
             onClick={() => {
               setOpen(true);
-              setShowHighlight(false);
-              localStorage.setItem("hasSeenChatbotHighlight", "true");
+              setNotifMode("hidden");
+              clearLoop();
             }}
-            className="fixed bottom-24 right-4 sm:right-6 z-50 max-w-[280px] sm:max-w-[320px] cursor-pointer"
+            className="fixed bottom-[88px] right-4 sm:right-6 z-50 w-[272px] sm:w-[300px] cursor-pointer"
           >
-            {/* The speech bubble body */}
             <motion.div
-              animate={{ y: [0, -6, 0] }}
-              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-              className="relative p-4 rounded-2xl border border-blue-500/30 shadow-2xl shadow-blue-500/20 bg-background/90 backdrop-blur-md flex items-start gap-3 select-none hover:border-blue-500/50 transition-colors"
+              animate={{ y: [0, -5, 0] }}
+              transition={{ repeat: Infinity, duration: 3.5, ease: "easeInOut" }}
+              className="relative rounded-2xl border border-blue-500/25 shadow-2xl shadow-blue-500/15 bg-background/95 backdrop-blur-md overflow-hidden select-none hover:border-blue-500/50 hover:shadow-blue-500/25 transition-all duration-300"
             >
-              {/* Avatar Icon */}
-              <div
-                className="w-8 h-8 rounded-full flex items-center justify-center text-white shrink-0 shadow-sm"
-                style={{ background: "linear-gradient(135deg, hsl(215 100% 55%), hsl(196 100% 47%))" }}
-              >
-                <Sparkles size={14} className="animate-pulse" />
-              </div>
+              {/* Top gradient accent bar */}
+              <div className="h-0.5 w-full" style={{ background: "linear-gradient(90deg, hsl(215 100% 55%), hsl(196 100% 47%), hsl(215 100% 55%))" }} />
 
-              {/* Text */}
-              <div className="flex-1 pr-3">
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <span className="font-heading font-bold text-xs text-foreground">Coura ✨</span>
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-500 animate-ping" />
+              <div className="p-3.5 flex items-start gap-3">
+                {/* Avatar video */}
+                <div className="relative shrink-0">
+                  <div
+                    className="w-10 h-10 rounded-full overflow-hidden shadow-md"
+                    style={{ boxShadow: "0 0 0 2px hsl(215 100% 55% / 0.3), 0 4px 12px hsl(215 100% 55% / 0.2)" }}
+                  >
+                    <video
+                      src="/Coura-Gif.mp4"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  {/* Online dot */}
+                  <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-500 border-2 border-background shadow-sm" />
                 </div>
-                <p className="text-[11px] leading-relaxed text-muted-foreground font-medium">
-                  {t("Chatbot Highlight Message")}
-                </p>
+
+                {/* Content */}
+                <div className="flex-1 min-w-0 pr-5">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <span className="font-heading font-bold text-[11px] text-foreground tracking-wide">Coura</span>
+                    <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full text-white"
+                      style={{ background: "linear-gradient(135deg, hsl(215 100% 55%), hsl(196 100% 47%))" }}>
+                      AI
+                    </span>
+                  </div>
+
+                  {/* Message lines with typing feel */}
+                  <p className="text-[11px] font-semibold text-foreground leading-snug mb-0.5">
+                    👋 Hello! Welcome to
+                  </p>
+                  <p className="text-[11px] font-bold leading-snug mb-1.5"
+                    style={{ background: "linear-gradient(90deg, hsl(215 100% 55%), hsl(196 100% 47%))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                    Rakha's Portfolio ✨
+                  </p>
+                  <p className="text-[10px] text-muted-foreground leading-relaxed">
+                    Click me to ask anything about Rakha!
+                  </p>
+                </div>
+
+                {/* Close Button */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDismissPopup();
+                  }}
+                  className="absolute top-2.5 right-2.5 p-1 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="Dismiss"
+                >
+                  <X size={11} />
+                </button>
               </div>
 
-              {/* Close Button */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowHighlight(false);
-                  localStorage.setItem("hasSeenChatbotHighlight", "true");
-                }}
-                className="absolute top-3 right-3 p-1 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="Dismiss message"
-              >
-                <X size={12} />
-              </button>
-
-              {/* Triangle Tail of Speech Bubble */}
-              <div className="absolute -bottom-1.5 right-[24px] w-3 h-3 bg-background border-r border-b border-blue-500/30 transform rotate-45" />
+              {/* Triangle tail pointing down-right toward button */}
+              <div
+                className="absolute -bottom-[7px] right-7 w-3.5 h-3.5 border-r border-b border-blue-500/25 bg-background"
+                style={{ transform: "rotate(45deg)" }}
+              />
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Mini "Ask me" label — tampil setelah popup ditutup ── */}
+      <AnimatePresence>
+        {showMini && !open && !showHighlight && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 6 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 6 }}
+            transition={{ type: "spring", damping: 18, stiffness: 260 }}
+            onClick={() => { setOpen(true); setNotifMode("hidden"); clearLoop(); }}
+            className="fixed bottom-[88px] right-6 z-50 cursor-pointer"
+          >
+            <div
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11px] font-semibold text-white shadow-lg select-none whitespace-nowrap"
+              style={{
+                background: "linear-gradient(135deg, hsl(215 100% 55%), hsl(196 100% 47%))",
+                borderColor: "hsl(215 100% 55% / 0.4)",
+                boxShadow: "0 4px 14px hsl(215 100% 55% / 0.35)",
+              }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-white/80 animate-pulse" />
+              Ask me anything ✨
+            </div>
+            {/* Ekor kecil menunjuk ke tombol */}
+            <div
+              className="absolute -bottom-[5px] right-5 w-2.5 h-2.5 border-r border-b"
+              style={{
+                background: "hsl(196 100% 47%)",
+                borderColor: "hsl(215 100% 55% / 0.4)",
+                transform: "rotate(45deg)",
+              }}
+            />
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* ── Floating Action Button & Glow Aura ── */}
       <div className="fixed bottom-6 right-6 z-50 flex items-center justify-center">
-        <AnimatePresence>
-          {showHighlight && !open && (
-            <>
-              {/* Pulsing Aura Rings */}
+
+        {/* Smooth persistent pulse rings — always visible when chat is closed */}
+        {!open && (
+          <>
+            {[0, 1.125].map((delay) => (
               <motion.div
-                initial={{ scale: 0.8, opacity: 0.5 }}
-                animate={{ scale: 2.2, opacity: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ repeat: Infinity, duration: 2, ease: "easeOut" }}
-                className="absolute w-14 h-14 rounded-full bg-blue-500 pointer-events-none"
+                key={delay}
+                animate={{ scale: [1, 2.6], opacity: [0.4, 0] }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 2.25,
+                  delay,
+                  ease: [0.15, 0.5, 0.4, 1],
+                  repeatDelay: 0,
+                }}
+                className="absolute w-14 h-14 rounded-full pointer-events-none"
+                style={{
+                  background: "radial-gradient(circle, hsl(215 100% 55% / 0.7), hsl(196 100% 47% / 0.3) 60%, transparent 100%)",
+                }}
               />
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0.3 }}
-                animate={{ scale: 2.8, opacity: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ repeat: Infinity, duration: 2, delay: 0.6, ease: "easeOut" }}
-                className="absolute w-14 h-14 rounded-full bg-cyan-400 pointer-events-none"
-              />
-            </>
-          )}
-        </AnimatePresence>
+            ))}
+          </>
+        )}
 
         <motion.button
           onClick={handleToggleOpen}
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.92 }}
-          className="relative p-4 rounded-full text-white shadow-xl shadow-blue-500/25 transition-shadow hover:shadow-blue-500/40"
+          className="relative rounded-full text-white shadow-xl shadow-blue-500/25 transition-shadow hover:shadow-blue-500/40 overflow-hidden"
           style={{ background: "linear-gradient(135deg, hsl(215 100% 55%), hsl(196 100% 47%))" }}
           aria-label="Open AI Chatbot"
         >
-          <Bot size={24} />
+          <video
+            src="/Coura-Gif.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-14 h-14 object-cover rounded-full"
+          />
         </motion.button>
       </div>
 
@@ -246,10 +353,17 @@ export default function Chatbot() {
             >
               <div className="flex items-center gap-3">
                 <div
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-white shadow-md shadow-blue-500/20"
+                  className="w-9 h-9 rounded-full overflow-hidden shadow-md shadow-blue-500/20 shrink-0"
                   style={{ background: "linear-gradient(135deg, hsl(215 100% 55%), hsl(196 100% 47%))" }}
                 >
-                  <Sparkles size={16} />
+                  <video
+                    src="/Coura-Gif.mp4"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div>
                   <h3 className="font-heading font-bold text-sm text-foreground">Coura ✨</h3>
@@ -279,10 +393,17 @@ export default function Chatbot() {
                   className="flex flex-col items-center text-center pt-4 pb-2"
                 >
                   <div
-                    className="w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg shadow-blue-500/20 mb-4"
+                    className="w-14 h-14 rounded-full overflow-hidden shadow-lg shadow-blue-500/20 mb-4"
                     style={{ background: "linear-gradient(135deg, hsl(215 100% 55%), hsl(196 100% 47%))" }}
                   >
-                    <Bot size={28} />
+                    <video
+                      src="/Coura-Gif.mp4"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <h4 className="font-heading font-bold text-base text-foreground mb-1">
                     Halo! Saya Coura 👋
@@ -325,10 +446,17 @@ export default function Chatbot() {
                 >
                   {m.role === "assistant" && (
                     <div
-                      className="w-6 h-6 rounded-full flex items-center justify-center text-white shrink-0 mr-2 mt-1 shadow-sm"
+                      className="w-6 h-6 rounded-full overflow-hidden shrink-0 mr-2 mt-1 shadow-sm"
                       style={{ background: "linear-gradient(135deg, hsl(215 100% 55%), hsl(196 100% 47%))" }}
                     >
-                      <Bot size={12} />
+                      <video
+                        src="/Coura-Gif.mp4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                   )}
                   <div
@@ -384,10 +512,17 @@ export default function Chatbot() {
                   className="flex justify-start"
                 >
                   <div
-                    className="w-6 h-6 rounded-full flex items-center justify-center text-white shrink-0 mr-2 mt-1"
+                    className="w-6 h-6 rounded-full overflow-hidden shrink-0 mr-2 mt-1"
                     style={{ background: "linear-gradient(135deg, hsl(215 100% 55%), hsl(196 100% 47%))" }}
                   >
-                    <Bot size={12} />
+                    <video
+                      src="/Coura-Gif.mp4"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <div className="rounded-2xl px-4 py-3 bg-card border border-border rounded-bl-sm flex items-center gap-1.5 shadow-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-blue-500/50 animate-bounce [animation-delay:0ms]" />

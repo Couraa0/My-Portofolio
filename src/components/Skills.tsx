@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import AnimatedSection from "./AnimatedSection";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { LayoutGrid, RefreshCw, Layers, Cpu, Award } from "lucide-react";
+import { LayoutGrid, RefreshCw, Layers, Cpu, Award, ChevronDown, ChevronUp } from "lucide-react";
 
 /* ── Icon Utilities ────────────────────────────────── */
 const getIconUrl = (slug: string, hex: string) => {
@@ -126,6 +126,9 @@ const Skills = () => {
   const { t } = useTranslation();
   const [activeCategory, setActiveCategory] = useState<"programming" | "tools" | "soft">("programming");
   const [viewMode, setViewMode] = useState<"grid" | "marquee">("grid");
+  const [showAll, setShowAll] = useState(false);
+
+  const GRID_ROW_LIMIT = 12; // 3 rows × 4 cols on desktop
 
   return (
     <section id="skills" className="py-24 bg-background relative overflow-hidden">
@@ -223,8 +226,9 @@ const Skills = () => {
                 transition={{ duration: 0.3 }}
               >
                 {viewMode === "grid" ? (
+                  <>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                    {programmingIcons.map((item, idx) => (
+                    {(showAll ? programmingIcons : programmingIcons.slice(0, GRID_ROW_LIMIT)).map((item, idx) => (
                       <motion.div
                         key={item.name}
                         initial={{ opacity: 0, y: 10 }}
@@ -271,6 +275,18 @@ const Skills = () => {
                       </motion.div>
                     ))}
                   </div>
+                  {programmingIcons.length > GRID_ROW_LIMIT && (
+                    <div className="flex justify-center mt-8">
+                      <button
+                        onClick={() => setShowAll(!showAll)}
+                        className="group flex items-center gap-2 px-6 py-2.5 rounded-full border border-border bg-card hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/5 transition-all duration-300 text-xs font-bold text-muted-foreground hover:text-blue-500"
+                      >
+                        {showAll ? t("Show Less") : t("View All")}
+                        {showAll ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      </button>
+                    </div>
+                  )}
+                  </>
                 ) : (
                   <MarqueeSection
                     title={t("Programming & Frameworks")}
@@ -291,8 +307,9 @@ const Skills = () => {
                 transition={{ duration: 0.3 }}
               >
                 {viewMode === "grid" ? (
+                  <>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                    {toolIcons.map((item, idx) => (
+                    {(showAll ? toolIcons : toolIcons.slice(0, GRID_ROW_LIMIT)).map((item, idx) => (
                       <motion.div
                         key={item.name}
                         initial={{ opacity: 0, y: 10 }}
@@ -339,6 +356,18 @@ const Skills = () => {
                       </motion.div>
                     ))}
                   </div>
+                  {toolIcons.length > GRID_ROW_LIMIT && (
+                    <div className="flex justify-center mt-8">
+                      <button
+                        onClick={() => setShowAll(!showAll)}
+                        className="group flex items-center gap-2 px-6 py-2.5 rounded-full border border-border bg-card hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/5 transition-all duration-300 text-xs font-bold text-muted-foreground hover:text-blue-500"
+                      >
+                        {showAll ? t("Show Less") : t("View All")}
+                        {showAll ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      </button>
+                    </div>
+                  )}
+                  </>
                 ) : (
                   <MarqueeSection
                     title={t("Tools & Environment")}

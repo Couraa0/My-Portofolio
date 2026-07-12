@@ -4,6 +4,7 @@ import {
   MessageSquare, Trash2, Reply, Search, RefreshCw, AlertCircle, X, Check, BadgeCheck
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { GenzAvatar, parseNameAndAvatar } from '@/components/GenzAvatars';
 
 interface GuestbookMessage {
   id: string;
@@ -97,10 +98,11 @@ export default function AdminGuestbook() {
     setReplyInput(msg.reply || '');
   };
 
-  const filteredMessages = messages.filter(m => 
-    m.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    m.text.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredMessages = messages.filter(m => {
+    const { name: cleanName } = parseNameAndAvatar(m.name);
+    return cleanName.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      m.text.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   return (
     <div className="admin-section">
@@ -163,12 +165,19 @@ export default function AdminGuestbook() {
                     </td>
                   </tr>
                 ) : (
-                  filteredMessages.map((msg) => (
-                    <tr key={msg.id}>
-                      <td className="whitespace-nowrap text-sm text-muted-foreground">
-                        {new Date(msg.created_at).toLocaleDateString()}
-                      </td>
-                      <td className="font-medium">{msg.name}</td>
+                  filteredMessages.map((msg) => {
+                    const { name: cleanName, avatarId } = parseNameAndAvatar(msg.name, msg.id);
+                    return (
+                      <tr key={msg.id}>
+                        <td className="whitespace-nowrap text-sm text-muted-foreground">
+                          {new Date(msg.created_at).toLocaleDateString()}
+                        </td>
+                        <td className="font-medium">
+                          <div className="flex items-center gap-2">
+                            <GenzAvatar avatarId={avatarId} size={24} className="rounded-full border border-border" />
+                            <span>{cleanName}</span>
+                          </div>
+                        </td>
                       <td>
                         <div className="text-sm max-w-sm">
                           <p className="line-clamp-2" title={msg.text}>{msg.text}</p>
@@ -206,7 +215,8 @@ export default function AdminGuestbook() {
                         </div>
                       </td>
                     </tr>
-                  ))
+                    );
+                  })
                 )}
               </tbody>
             </table>
@@ -221,7 +231,7 @@ export default function AdminGuestbook() {
             <div className="modal-header">
               <h3 className="modal-title flex items-center gap-2">
                 <Reply size={20} className="text-primary" />
-                Reply to {activeMessage.name}
+                Reply to {parseNameAndAvatar(activeMessage.name).name}
               </h3>
               <button 
                 onClick={() => setActiveMessage(null)}

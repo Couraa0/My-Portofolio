@@ -113,7 +113,9 @@ const Contact = () => {
           user_email: form.email,
           email: form.email,
           reply_to: form.email,
-          subject: form.subject,
+          subject: form.subject
+            ? `New message: ${form.subject}`
+            : "New message from your portfolio",
           message: form.message,
         },
         {

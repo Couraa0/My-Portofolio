@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import AnimatedSection from "./AnimatedSection";
 import { getProjects, getProjectCategories, type Project as DBProject } from "@/lib/supabase";
 
-interface Project {
+export interface Project {
   id: string;
   title: string;
   category: string[];
@@ -23,7 +23,7 @@ interface Project {
   projectOutput?: string[];
 }
 
-function adaptProject(p: DBProject): Project {
+export function adaptProject(p: DBProject): Project {
   return {
     id: p.id!,
     title: p.title,
@@ -42,7 +42,7 @@ function adaptProject(p: DBProject): Project {
   };
 }
 
-const colorMap: Record<string, { bg: string; text: string; border: string; hoverBorder: string; glow: string }> = {
+export const colorMap: Record<string, { bg: string; text: string; border: string; hoverBorder: string; glow: string }> = {
   emerald: { bg: "bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/10", text: "text-teal-600 dark:text-teal-400", border: "border-teal-500/10", hoverBorder: "hover:border-teal-500/40 hover:shadow-teal-500/5 hover:-translate-y-1", glow: "rgba(20, 184, 166, 0.2)" },
   cyan:    { bg: "bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/10", text: "text-sky-600 dark:text-sky-400", border: "border-sky-500/10", hoverBorder: "hover:border-sky-500/40 hover:shadow-sky-500/5 hover:-translate-y-1", glow: "rgba(6, 182, 212, 0.2)" },
   violet:  { bg: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/10", text: "text-indigo-600 dark:text-indigo-400", border: "border-indigo-500/10", hoverBorder: "hover:border-indigo-500/40 hover:shadow-indigo-500/5 hover:-translate-y-1", glow: "rgba(99, 102, 241, 0.2)" },
@@ -375,7 +375,7 @@ const Projects = () => {
   );
 };
 
-const ProjectCard = ({ project, index, onClick }: { project: Project; index: number; onClick: () => void }) => {
+export const ProjectCard = ({ project, index, onClick }: { project: Project; index: number; onClick: () => void }) => {
   const theme = colorMap[project.color || "default"] || colorMap["default"];
   
   return (

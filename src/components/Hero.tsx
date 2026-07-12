@@ -85,7 +85,7 @@ const Hero = () => {
 
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-8 lg:gap-16 items-center relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-8 lg:gap-16 items-center relative z-10 pb-4 lg:pb-0">
 
         {/* ── Left — text ── */}
         <motion.div variants={container} initial="hidden" animate="show" className="space-y-6 sm:space-y-8 text-center lg:text-left">
@@ -181,6 +181,71 @@ const Hero = () => {
               </a>
             ))}
           </motion.div>
+        </motion.div>
+
+        {/* ── Mobile Profile Card — visible only on small screens ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.5, ease: [0.25, 0.4, 0.25, 1] }}
+          className="flex lg:hidden justify-center items-center w-full"
+        >
+          <div className="relative w-full max-w-sm mx-auto">
+            {/* Soft glow */}
+            <div className="absolute inset-x-6 top-0 bottom-4 rounded-3xl pointer-events-none"
+              style={{ background: "radial-gradient(ellipse at 50% 40%, hsl(250 84% 60% / 0.12), transparent 70%)", filter: "blur(20px)" }} />
+
+            <div className="relative rounded-3xl bg-card border border-border shadow-lg overflow-hidden">
+              {/* Rainbow accent bar */}
+              <div className="absolute top-0 left-10 right-10 h-1 rounded-b-full z-0"
+                style={{ background: "linear-gradient(90deg, hsl(250 84% 60%), hsl(196 100% 47%), hsl(344 85% 60%), hsl(37 100% 50%))" }} />
+
+              {/* Photo */}
+              <div className="flex justify-center pt-8 pb-0 relative">
+                <div className="relative w-44 h-56">
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-4 rounded-full blur-xl"
+                    style={{ background: "hsl(250 84% 55% / 0.28)" }} />
+                  <img
+                    src="/Rakha-Formal-NoBg.png"
+                    alt="Muhammad Rakha Syamputra"
+                    className="w-full h-full object-contain object-bottom select-none"
+                    style={{
+                      filter: "drop-shadow(0 12px 28px hsl(250 84% 60% / 0.18)) contrast(1.02)",
+                    }}
+                    draggable={false}
+                  />
+                </div>
+              </div>
+
+              {/* Name / status */}
+              <div className="px-5 pb-5 pt-3 text-center">
+                <div className="h-px mb-3"
+                  style={{ background: "linear-gradient(90deg, transparent, hsl(var(--border)), transparent)" }} />
+                <p className="font-heading font-bold text-foreground text-base leading-tight">Muhammad Rakha Syamputra</p>
+                <p className="text-[11px] text-muted-foreground mt-1">IT Project + Product Manager · Software Developer</p>
+                <div className="flex items-center justify-center gap-2 mt-3 rounded-full px-4 py-1.5 mx-auto w-fit"
+                  style={{ background: "hsl(158 80% 42% / 0.09)", border: "1px solid hsl(158 80% 42% / 0.22)" }}>
+                  <span className="w-2 h-2 rounded-full flex-shrink-0"
+                    style={{ background: "hsl(158 80% 42%)", animation: "pulse 2s cubic-bezier(0.4,0,0.6,1) infinite" }} />
+                  <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-500">{t("Open to work")}</span>
+                </div>
+              </div>
+
+              {/* Mini stat badges row */}
+              <div className="grid grid-cols-3 gap-2 px-5 pb-5">
+                {[
+                  { label: t("GPA"), value: "3.97", color: "violet" },
+                  { label: t("Projects"), value: "10+", color: "rose" },
+                  { label: t("Yrs Exp"), value: "3+", color: "emerald" },
+                ].map((stat, i) => (
+                  <div key={i} className={`flex flex-col items-center justify-center rounded-xl py-2.5 border bg-${stat.color}-500/5 border-${stat.color}-500/15`}>
+                    <p className="font-heading text-base font-bold text-foreground leading-none">{stat.value}</p>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mt-1">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </motion.div>
 
         {/* ── Right — card AS background, photo overflows TOP only ── */}
