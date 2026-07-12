@@ -274,8 +274,6 @@ export default function GuestbookPopup() {
             {/* Avatar Trigger Button */}
             <div 
               className="relative shrink-0"
-              onMouseEnter={() => setShowSelector(true)}
-              onMouseLeave={() => setShowSelector(false)}
             >
               <button
                 type="button"
@@ -370,12 +368,12 @@ export default function GuestbookPopup() {
             <button
               type="submit"
               disabled={loading || !name.trim() || !text.trim()}
-              className="flex items-center justify-center gap-2 px-4 bg-blue-500 hover:bg-blue-600 text-white border border-blue-400 rounded font-mono text-xs font-bold transition-all disabled:opacity-50 shadow-md shadow-blue-500/30"
+              className="flex items-center justify-center gap-2 px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white border border-blue-400 rounded font-mono text-sm font-bold transition-all disabled:opacity-50 shadow-md shadow-blue-500/30"
             >
               {loading ? (
-                <Cpu size={14} className="animate-spin" />
+                <Cpu size={16} className="animate-spin" />
               ) : (
-                <Command size={14} />
+                <Command size={16} />
               )}
               <span className="hidden sm:inline">EXEC</span>
             </button>
