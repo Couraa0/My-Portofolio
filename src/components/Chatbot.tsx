@@ -353,16 +353,12 @@ export default function Chatbot() {
             >
               <div className="flex items-center gap-3">
                 <div
-                  className="w-9 h-9 rounded-full overflow-hidden shadow-md shadow-blue-500/20 shrink-0"
-                  style={{ background: "linear-gradient(135deg, hsl(215 100% 55%), hsl(196 100% 47%))" }}
+                  className="w-9 h-9 rounded-full overflow-hidden shadow-md shadow-blue-500/20 shrink-0 bg-card border border-border/80 flex items-center justify-center"
                 >
-                  <video
-                    src="/Coura-Gif.mp4"
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover"
+                  <img
+                    src="/Coura - Hmm.png"
+                    alt="Coura"
+                    className="w-7 h-7 object-contain"
                   />
                 </div>
                 <div>
@@ -393,16 +389,12 @@ export default function Chatbot() {
                   className="flex flex-col items-center text-center pt-4 pb-2"
                 >
                   <div
-                    className="w-14 h-14 rounded-full overflow-hidden shadow-lg shadow-blue-500/20 mb-4"
-                    style={{ background: "linear-gradient(135deg, hsl(215 100% 55%), hsl(196 100% 47%))" }}
+                    className="w-14 h-14 rounded-full overflow-hidden shadow-lg shadow-blue-500/20 mb-4 bg-card border border-border/80 flex items-center justify-center"
                   >
-                    <video
-                      src="/Coura-Gif.mp4"
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="w-full h-full object-cover"
+                    <img
+                      src="/Coura - Halo.png"
+                      alt="Coura"
+                      className="w-11 h-11 object-contain"
                     />
                   </div>
                   <h4 className="font-heading font-bold text-base text-foreground mb-1">
@@ -446,23 +438,19 @@ export default function Chatbot() {
                 >
                   {m.role === "assistant" && (
                     <div
-                      className="w-6 h-6 rounded-full overflow-hidden shrink-0 mr-2 mt-1 shadow-sm"
-                      style={{ background: "linear-gradient(135deg, hsl(215 100% 55%), hsl(196 100% 47%))" }}
+                      className="w-6 h-6 rounded-full overflow-hidden shrink-0 mr-2 mt-1 shadow-sm bg-card border border-border/80 flex items-center justify-center"
                     >
-                      <video
-                        src="/Coura-Gif.mp4"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="w-full h-full object-cover"
+                      <img
+                        src="/Coura.png"
+                        alt="Coura"
+                        className="w-5 h-5 object-contain"
                       />
                     </div>
                   )}
                   <div
                     className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-[13px] leading-relaxed break-words ${m.role === "user"
-                        ? "bg-blue-600 text-white rounded-br-sm shadow-md shadow-blue-600/15"
-                        : "bg-card border border-border text-foreground rounded-bl-sm shadow-sm"
+                      ? "bg-blue-600 text-white rounded-br-sm shadow-md shadow-blue-600/15"
+                      : "bg-card border border-border text-foreground rounded-bl-sm shadow-sm"
                       }`}
                   >
                     {m.role === "user" ? (
@@ -474,8 +462,8 @@ export default function Chatbot() {
                             const isInternal = props.href?.startsWith("/");
                             if (isInternal) {
                               return (
-                                <Link 
-                                  to={props.href!} 
+                                <Link
+                                  to={props.href!}
                                   className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-semibold underline underline-offset-2 transition-colors"
                                 >
                                   {props.children}
@@ -483,10 +471,10 @@ export default function Chatbot() {
                               );
                             }
                             return (
-                              <a 
-                                {...props} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
+                              <a
+                                {...props}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-semibold underline underline-offset-2 transition-colors"
                               />
                             );
@@ -512,16 +500,12 @@ export default function Chatbot() {
                   className="flex justify-start"
                 >
                   <div
-                    className="w-6 h-6 rounded-full overflow-hidden shrink-0 mr-2 mt-1"
-                    style={{ background: "linear-gradient(135deg, hsl(215 100% 55%), hsl(196 100% 47%))" }}
+                    className="w-6 h-6 rounded-full overflow-hidden shrink-0 mr-2 mt-1 bg-card border border-border/80 flex items-center justify-center shadow-sm"
                   >
-                    <video
-                      src="/Coura-Gif.mp4"
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="w-full h-full object-cover"
+                    <img
+                      src="/Coura.png"
+                      alt="Coura"
+                      className="w-5 h-5 object-contain"
                     />
                   </div>
                   <div className="rounded-2xl px-4 py-3 bg-card border border-border rounded-bl-sm flex items-center gap-1.5 shadow-sm">

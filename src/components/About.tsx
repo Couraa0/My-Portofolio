@@ -91,7 +91,7 @@ const About = () => {
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <AnimatedSection>
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 relative">
             <span className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold mb-4 border"
               style={{ background: "hsl(215 100% 55% / 0.08)", borderColor: "hsl(215 100% 55% / 0.2)", color: "hsl(215 100% 50%)" }}>
               <Terminal size={12} className="text-sky-500" />
@@ -100,6 +100,16 @@ const About = () => {
             <h2 className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
               {t("About Me").split(" ")[0]} <span className="bg-gradient-to-r from-blue-700 to-indigo-700 bg-clip-text text-transparent">{t("About Me").split(" ")[1]}</span>
             </h2>
+
+            {/* Coura Hmm mascot - thinking pose near title */}
+            <motion.img
+              src="/Coura - Hmm.png"
+              alt="Coura mascot thinking"
+              className="absolute -right-2 sm:right-4 lg:right-16 -top-4 w-16 sm:w-20 h-auto drop-shadow-md select-none hidden md:block pointer-events-none"
+              animate={{ y: [0, -6, 0], rotate: [0, -5, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              draggable={false}
+            />
           </div>
         </AnimatedSection>
 
@@ -293,7 +303,7 @@ const About = () => {
         {!loading && !error && education.length > 0 && (
           <div className="mt-20">
             <AnimatedSection>
-              <div className="text-center mb-16">
+              <div className="text-center mb-16 relative">
                 <span className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold mb-4 border"
                   style={{ background: "hsl(215 100% 55% / 0.08)", borderColor: "hsl(215 100% 55% / 0.2)", color: "hsl(215 100% 50%)" }}>
                   <GraduationCap size={12} className="text-sky-500" />
@@ -305,6 +315,16 @@ const About = () => {
                 <p className="text-muted-foreground text-sm max-w-2xl mx-auto mt-3">
                   {t("Education Subtitle")}
                 </p>
+
+                {/* Coura Peace mascot - near education title */}
+                <motion.img
+                  src="/Coura - Peace.png"
+                  alt="Coura mascot celebrating"
+                  className="absolute -right-2 sm:right-4 lg:right-16 -top-4 w-16 sm:w-20 h-auto drop-shadow-md select-none hidden md:block pointer-events-none"
+                  animate={{ y: [0, -6, 0], rotate: [0, 5, 0] }}
+                  transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+                  draggable={false}
+                />
               </div>
             </AnimatedSection>
 

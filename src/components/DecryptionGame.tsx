@@ -591,12 +591,20 @@ export default function DecryptionGame() {
 
         {/* Title Section */}
         <AnimatedSection>
-          <div className="mb-10 pb-6 border-b border-border/60 text-center">
-            <h2 className="font-heading text-2xl md:text-3xl font-bold flex items-center justify-center gap-3 mb-3 text-foreground">
+          <div className="mb-10 pb-6 border-b border-border/60 text-center relative flex flex-col items-center">
+            <h2 className="font-heading text-2xl md:text-3xl font-bold flex items-center gap-3 mb-3 text-foreground relative">
               <Terminal size={28} className="text-emerald animate-pulse" />
               {t("Terminal Uplink") || "Cyber Decryptor"}
+              <motion.img
+                src="/Coura - Hmm.png"
+                alt="Coura mascot thinking"
+                className="absolute -right-14 -top-3 w-12 h-auto drop-shadow-md select-none hidden sm:block pointer-events-none"
+                animate={{ y: [0, -4, 0], rotate: [0, -3, 3, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                draggable={false}
+              />
             </h2>
-            <p className="text-muted-foreground text-sm max-w-2xl mx-auto text-center">
+            <p className="text-muted-foreground text-sm max-w-2xl mx-auto text-center mt-3">
               {t("Terminal Subtitle") || "A retro hacking puzzle. Bypass the mainframe firewall by guessing the correct passcode. Match letter positions to decrypt classified files and unlock restricted dossier clearance."}
             </p>
           </div>

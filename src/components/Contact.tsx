@@ -8,6 +8,7 @@ import emailjs from "@emailjs/browser";
 import { EMAILJS_CONFIG, getRateLimitSecondsLeft, markSent } from "@/lib/emailjs";
 import { toast } from "sonner";
 import GuestbookFeed from "./GuestbookFeed";
+import { motion } from "framer-motion";
 
 const Contact = () => {
   const { t } = useTranslation();
@@ -147,7 +148,7 @@ const Contact = () => {
 
         {/* Header */}
         <AnimatedSection>
-          <div className="mb-10 pb-6 border-b border-border/60">
+          <div className="mb-10 pb-6 border-b border-border/60 relative">
             <h2 className="font-heading text-2xl md:text-3xl font-bold flex items-center gap-3 mb-3 text-foreground">
               <Mail size={28} className="text-blue-500" />
               {t("Contact")}
@@ -155,6 +156,18 @@ const Contact = () => {
             <p className="text-muted-foreground text-sm max-w-2xl">
               {t("Contact Subtitle")}
             </p>
+
+            {/* Coura Love mascot - love pose near contact */}
+            <motion.img
+              src="/Coura- Love.png"
+              alt="Coura mascot showing love"
+              className="absolute -right-2 sm:right-0 -top-6 w-16 sm:w-20 h-auto drop-shadow-md select-none hidden md:block pointer-events-none"
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              draggable={false}
+            />
           </div>
         </AnimatedSection>
 
@@ -227,10 +240,18 @@ const Contact = () => {
         {/* Email Form Section */}
         <AnimatedSection delay={0.2}>
           <div className="mt-16 pt-10 border-t border-border/50 max-w-4xl mx-auto">
-            <div className="mb-8 text-center">
-              <h3 className="font-heading text-2xl font-bold flex items-center justify-center gap-2 mb-2 text-foreground font-mono">
+            <div className="mb-8 text-center relative flex flex-col items-center">
+              <h3 className="font-heading text-2xl font-bold flex items-center justify-center gap-2 mb-2 text-foreground font-mono relative">
                 <Mail size={24} className="text-blue-500" />
                 {t("Send Private Email")}
+                <motion.img
+                  src="/Coura- Love.png"
+                  alt="Coura mascot showing love"
+                  className="absolute -right-14 -top-3 w-12 h-auto drop-shadow-md select-none hidden sm:block pointer-events-none"
+                  animate={{ y: [0, -4, 0], rotate: [0, -3, 3, 0] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                  draggable={false}
+                />
               </h3>
               <p className="text-muted-foreground text-sm max-w-xl mx-auto">
                 {t("Email Form Desc")}

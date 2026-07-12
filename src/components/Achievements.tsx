@@ -138,7 +138,7 @@ export default function Achievements() {
         
         {/* Title */}
         <AnimatedSection>
-          <div className="mb-10 pb-6 border-b border-border/60">
+          <div className="mb-10 pb-6 border-b border-border/60 relative">
             <h2 className="font-heading text-2xl md:text-3xl font-bold flex items-center gap-3 mb-3 text-foreground">
               <Award size={28} className="text-blue-500" />
               {t("Achievements Title Part2") || "Achievements"}
@@ -146,6 +146,18 @@ export default function Achievements() {
             <p className="text-muted-foreground text-sm max-w-2xl">
               {t("Achievements Subtitle")}
             </p>
+
+            {/* Coura mascot - standing proud near achievements */}
+            <motion.img
+              src="/Coura.png"
+              alt="Coura mascot"
+              className="absolute -right-2 sm:right-0 -top-6 w-16 sm:w-20 h-auto drop-shadow-md select-none hidden md:block pointer-events-none"
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              draggable={false}
+            />
           </div>
         </AnimatedSection>
 

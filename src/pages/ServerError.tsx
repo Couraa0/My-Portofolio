@@ -81,6 +81,25 @@ const ServerError = ({ error, resetErrorBoundary }: ServerErrorProps) => {
 
             {/* ── Content ── */}
             <div className="relative z-10 text-center px-6 max-w-lg mx-auto">
+
+                {/* Coura Yawn mascot - distressed on server error */}
+                <motion.div
+                    custom={0}
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="show"
+                    className="flex justify-center mb-4"
+                >
+                    <motion.img
+                        src="/Coura - Yawn.png"
+                        alt="Coura mascot distressed"
+                        className="w-28 sm:w-36 h-auto drop-shadow-xl select-none"
+                        animate={{ y: [0, -8, 0], rotate: [0, 3, 0] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                        draggable={false}
+                    />
+                </motion.div>
+
                 {/* Giant 500 */}
                 <motion.div
                     custom={0}

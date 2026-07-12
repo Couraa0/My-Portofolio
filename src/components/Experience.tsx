@@ -137,7 +137,7 @@ const Experience = () => {
 
         {/* === KARIER HEADING === */}
         <AnimatedSection>
-          <div className="mb-10 pb-6 border-b border-border/60">
+          <div className="mb-10 pb-6 border-b border-border/60 relative">
             <h2 className="font-heading text-2xl md:text-3xl font-bold flex items-center gap-3 mb-3 text-foreground">
               <Briefcase size={28} className="text-blue-500" />
               {t("Experience")}
@@ -145,6 +145,18 @@ const Experience = () => {
             <p className="text-muted-foreground text-sm max-w-2xl">
               {t("Experience Subtitle")}
             </p>
+
+            {/* Coura Peace mascot - celebrating near title */}
+            <motion.img
+              src="/Coura - Peace.png"
+              alt="Coura mascot celebrating"
+              className="absolute -right-2 sm:right-0 -top-6 w-16 sm:w-20 h-auto drop-shadow-md select-none hidden md:block pointer-events-none"
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              draggable={false}
+            />
           </div>
         </AnimatedSection>
 
@@ -258,7 +270,7 @@ const Experience = () => {
             {flattenedCompetitions.length > 0 && (
               <>
                 <AnimatedSection>
-                  <div className="mb-10 pt-6 border-t border-border/40">
+                  <div className="mb-10 pt-6 border-t border-border/40 relative">
                     <h2 className="font-heading text-2xl md:text-3xl font-bold flex items-center gap-3 mb-3 text-foreground">
                       <Trophy size={28} className="text-blue-500" />
                       {t("Competitive Experience") || "Competitive Experience"}
@@ -266,6 +278,16 @@ const Experience = () => {
                     <p className="text-muted-foreground text-sm max-w-2xl">
                       {t("Competitive Experience Subtitle") || "Inovasi dan pencapaian melalui kompetisi tingkat nasional."}
                     </p>
+
+                    {/* Coura Peace mascot - near competitive experience */}
+                    <motion.img
+                      src="/Coura - Peace.png"
+                      alt="Coura mascot celebrating"
+                      className="absolute -right-2 sm:right-0 -top-4 w-16 sm:w-20 h-auto drop-shadow-md select-none hidden md:block pointer-events-none"
+                      animate={{ y: [0, -6, 0], rotate: [0, 4, 0] }}
+                      transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+                      draggable={false}
+                    />
                   </div>
                 </AnimatedSection>
 

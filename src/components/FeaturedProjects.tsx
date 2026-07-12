@@ -47,7 +47,7 @@ export const FeaturedProjects = () => {
 
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
         <AnimatedSection>
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 relative">
             <span
               className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold mb-4 border"
               style={{
@@ -65,6 +65,16 @@ export const FeaturedProjects = () => {
             <p className="text-muted-foreground mt-3 text-sm max-w-md mx-auto">
               {t("Featured Projects Subtitle")}
             </p>
+
+            {/* Coura Peak mascot - peeking near featured projects title */}
+            <motion.img
+              src="/Coura - Peak.png"
+              alt="Coura mascot peeking"
+              className="absolute -right-2 sm:right-4 lg:right-16 -top-4 w-16 sm:w-20 h-auto drop-shadow-md select-none hidden md:block pointer-events-none"
+              animate={{ y: [0, -3, 0], x: [0, 4, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              draggable={false}
+            />
           </div>
         </AnimatedSection>
 

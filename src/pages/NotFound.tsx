@@ -101,6 +101,25 @@ const NotFound = () => {
 
       {/* ── Content ── */}
       <div className="relative z-10 text-center px-6 max-w-lg mx-auto">
+
+        {/* Coura Hmm mascot - confused/thinking on 404 */}
+        <motion.div
+          custom={0}
+          variants={fadeUp}
+          initial="hidden"
+          animate="show"
+          className="flex justify-center mb-4"
+        >
+          <motion.img
+            src="/Coura - Hmm.png"
+            alt="Coura mascot confused"
+            className="w-32 sm:w-40 h-auto drop-shadow-xl select-none"
+            animate={{ y: [0, -10, 0], rotate: [0, -3, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            draggable={false}
+          />
+        </motion.div>
+
         {/* Giant 404 */}
         <motion.div
           custom={0}

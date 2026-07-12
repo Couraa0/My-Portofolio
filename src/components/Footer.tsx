@@ -130,10 +130,18 @@ const Footer = () => {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4" style={{ borderTop: "1px solid hsl(var(--border))" }}>
+        <div className="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 relative" style={{ borderTop: "1px solid hsl(var(--border))" }}>
           <p className="text-xs text-muted-foreground flex items-center gap-1.5">
             © {new Date().getFullYear()} Muhammad Rakha Syamputra.
           </p>
+
+          {/* Coura Yawn mascot - sleepy at the bottom of page */}
+          <img
+            src="/Coura - Yawn.png"
+            alt="Coura mascot yawning"
+            className="w-12 sm:w-14 h-auto drop-shadow-sm select-none pointer-events-none opacity-60 hover:opacity-100 transition-opacity duration-300"
+            draggable={false}
+          />
         </div>
       </div>
     </footer>

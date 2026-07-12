@@ -298,6 +298,23 @@ const Index = () => {
             />
           </motion.div>
         </div>
+
+        {/* Coura Mascot - Floating wave decoration */}
+        <motion.div
+          initial={{ opacity: 0, y: -40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.2 }}
+          className="absolute top-28 right-6 sm:right-12 hidden md:block pointer-events-none z-20"
+        >
+          <motion.img
+            src="/Coura - Halo.png"
+            alt="Coura mascot waving hello"
+            className="w-20 lg:w-24 h-auto drop-shadow-lg select-none"
+            animate={{ y: [0, -8, 0], rotate: [0, 3, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            draggable={false}
+          />
+        </motion.div>
       </section>
 
       {/* ═══════════════ SKILLS (inline) ═══════════════ */}

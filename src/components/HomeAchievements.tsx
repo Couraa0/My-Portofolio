@@ -62,7 +62,7 @@ export const HomeAchievements = () => {
 
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
         <AnimatedSection>
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 relative">
             <span
               className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold mb-4 border"
               style={{
@@ -80,6 +80,16 @@ export const HomeAchievements = () => {
             <p className="text-muted-foreground mt-3 text-sm max-w-md mx-auto">
               {t("Achievements Subtitle")}
             </p>
+
+            {/* Coura mascot - near home achievements title */}
+            <motion.img
+              src="/Coura.png"
+              alt="Coura mascot standing proud"
+              className="absolute -right-2 sm:right-4 lg:right-16 -top-4 w-16 sm:w-20 h-auto drop-shadow-md select-none hidden md:block pointer-events-none"
+              animate={{ y: [0, -6, 0], rotate: [0, 3, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              draggable={false}
+            />
           </div>
         </AnimatedSection>
 

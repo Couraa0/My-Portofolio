@@ -122,7 +122,7 @@ const Projects = () => {
     <section id="projects" className="py-24 bg-background relative z-10 min-h-screen text-left">
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
         <AnimatedSection>
-          <div className="mb-10 pb-6 border-b border-border/60">
+          <div className="mb-10 pb-6 border-b border-border/60 relative">
             <h2 className="font-heading text-2xl md:text-3xl font-bold flex items-center gap-3 mb-3 text-foreground">
               <FolderKanban size={28} className="text-blue-500" />
               {t("Projects")}
@@ -130,6 +130,18 @@ const Projects = () => {
             <p className="text-muted-foreground text-sm max-w-2xl">
               {t("Projects Header Desc")}
             </p>
+
+            {/* Coura Peak mascot - peeking from the side */}
+            <motion.img
+              src="/Coura - Peak.png"
+              alt="Coura mascot peeking"
+              className="absolute -right-2 sm:right-0 -bottom-3 w-16 sm:w-20 h-auto drop-shadow-md select-none hidden md:block pointer-events-none"
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              draggable={false}
+            />
           </div>
         </AnimatedSection>
 

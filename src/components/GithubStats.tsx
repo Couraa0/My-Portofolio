@@ -37,7 +37,7 @@ export default function GithubStats() {
       
       {/* Header */}
       <AnimatedSection>
-        <div className="text-center mb-10">
+        <div className="text-center mb-10 relative">
           <span className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold mb-3 border border-border bg-muted/30 text-primary">
             <GitBranch size={13} className="text-blue-500 animate-pulse" />
             GitHub Analytics
@@ -45,6 +45,16 @@ export default function GithubStats() {
           <h3 className="font-heading text-xl sm:text-2xl font-extrabold text-foreground tracking-tight">
             {isIndonesian ? "Aktivitas & Kontribusi" : "Activity & Contribution"} <span className="bg-gradient-to-r from-blue-700 to-indigo-700 bg-clip-text text-transparent">GitHub</span>
           </h3>
+
+          {/* Coura Hmm mascot - GitHub Analytics title */}
+          <motion.img
+            src="/Coura - Hmm.png"
+            alt="Coura mascot thinking"
+            className="absolute -right-2 sm:right-4 lg:right-16 -top-4 w-16 sm:w-20 h-auto drop-shadow-md select-none hidden md:block pointer-events-none"
+            animate={{ y: [0, -5, 0], rotate: [0, -4, 0] }}
+            transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+            draggable={false}
+          />
         </div>
       </AnimatedSection>
 

@@ -90,10 +90,18 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
       <div className="container mx-auto flex items-center justify-between px-4 sm:px-6 py-4">
         <Link
           to="/"
-          className="font-heading text-xl font-bold tracking-tight"
+          className="font-heading text-xl font-bold tracking-tight flex items-center gap-1.5 group/logo"
         >
           <span className="text-gradient">Rakha</span>
           <span className="text-muted-foreground/50">.</span>
+          <motion.img
+            src="/Coura - Halo.png"
+            alt="Coura mini mascot"
+            className="w-7 h-7 object-contain drop-shadow-sm select-none opacity-80 group-hover/logo:opacity-100 transition-opacity"
+            animate={{ rotate: [0, 8, -8, 0], y: [0, -2, 2, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            draggable={false}
+          />
         </Link>
 
         {/* Desktop */}
