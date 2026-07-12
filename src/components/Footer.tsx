@@ -57,7 +57,7 @@ const Footer = () => {
 
           {/* Brand / About */}
           <div className="flex flex-col items-center md:items-start gap-4">
-            <Link to="/">
+            <Link to="/" className="flex items-center gap-2 group/footer-logo">
               <span 
                 onClick={handleBrandClick}
                 className="font-heading font-bold text-2xl text-gradient cursor-pointer select-none"
@@ -65,6 +65,12 @@ const Footer = () => {
               >
                 Rakha.
               </span>
+              <img
+                src="/Coura - Yawn.png"
+                alt="Coura mascot yawning"
+                className="w-12 h-auto drop-shadow-sm select-none pointer-events-none opacity-60 group-hover/footer-logo:opacity-100 transition-opacity duration-300"
+                draggable={false}
+              />
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs text-center md:text-left leading-relaxed">
               {t("Footer Description")}
@@ -134,14 +140,6 @@ const Footer = () => {
           <p className="text-xs text-muted-foreground flex items-center gap-1.5">
             © {new Date().getFullYear()} Muhammad Rakha Syamputra.
           </p>
-
-          {/* Coura Yawn mascot - sleepy at the bottom of page */}
-          <img
-            src="/Coura - Yawn.png"
-            alt="Coura mascot yawning"
-            className="w-12 sm:w-14 h-auto drop-shadow-sm select-none pointer-events-none opacity-60 hover:opacity-100 transition-opacity duration-300"
-            draggable={false}
-          />
         </div>
       </div>
     </footer>
