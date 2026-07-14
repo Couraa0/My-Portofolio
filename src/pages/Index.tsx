@@ -21,6 +21,8 @@ import { useCVLink } from "@/hooks/useCVLink";
 import { LaptopMockup } from "@/components/LaptopMockup";
 import { PhoneMockup } from "@/components/PhoneMockup";
 
+import SocialFeed from "@/components/SocialFeed";
+
 const Skills = lazy(() => import("@/components/Skills"));
 const FeaturedProjects = lazy(() => import("@/components/FeaturedProjects").then(module => ({ default: module.FeaturedProjects })));
 const HomeAchievements = lazy(() => import("@/components/HomeAchievements").then(module => ({ default: module.HomeAchievements })));
@@ -331,6 +333,9 @@ const Index = () => {
       <Suspense fallback={<div className="h-40" />}>
         <HomeAchievements />
       </Suspense>
+
+      {/* ═══════════════ SOCIAL FEED ═══════════════ */}
+      <SocialFeed />
 
       {/* ═══════════════ CYBER DECRYPTOR GAME ═══════════════ */}
       <Suspense fallback={<div className="h-40" />}>

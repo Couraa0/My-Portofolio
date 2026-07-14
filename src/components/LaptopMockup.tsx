@@ -17,11 +17,10 @@ export const LaptopMockup: React.FC = () => {
             key={tab.id}
             type="button"
             onClick={() => setActiveTab(tab.id as any)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold font-mono transition-all ${
-              activeTab === tab.id
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold font-mono transition-all ${activeTab === tab.id
                 ? "bg-primary text-white shadow-sm"
                 : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-slate-800/50"
-            }`}
+              }`}
           >
             {tab.icon}
             {tab.label}
@@ -113,7 +112,7 @@ export const LaptopMockup: React.FC = () => {
 
                   <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400">
                     <div className="text-blue-600 dark:text-blue-400 font-bold">$ npm run build</div>
-                    <div className="text-emerald-600 dark:text-green-400">✓ 15+ Projects compiled successfully.</div>
+                    <div className="text-emerald-600 dark:text-green-400">✓ 20+ Projects compiled successfully.</div>
                     <div className="text-slate-400 dark:text-slate-500">Listening on port 8080...</div>
                   </div>
                 </div>

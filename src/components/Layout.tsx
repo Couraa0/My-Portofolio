@@ -5,6 +5,7 @@ import Footer from "./Footer";
 import ScrollProgress from "./ScrollProgress";
 import CursorSpotlight from "./CursorSpotlight";
 import Chatbot from "./Chatbot";
+import MusicPopup from "./MusicPopup";
 
 const Layout = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -38,6 +39,7 @@ const Layout = () => {
       <ScrollProgress />
 
       <Navbar isPlaying={isPlaying} toggleAudio={toggleAudio} />
+      <MusicPopup isPlaying={isPlaying} toggleAudio={toggleAudio} />
 
       {/* Main Content Area */}
       <main className="relative z-10 flex-1 flex flex-col min-w-0 transition-all duration-300">

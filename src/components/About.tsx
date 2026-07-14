@@ -53,9 +53,9 @@ const cards = [
 ];
 
 const bars = [
-  { label: "Project + Product Management", pct: 90, color: "hsl(215 100% 55%)", trail: "hsl(215 100% 55% / 0.12)" },
-  { label: "Web Development", pct: 85, color: "hsl(196 100% 47%)", trail: "hsl(196 100% 47% / 0.12)" },
-  { label: "Team Leadership", pct: 92, color: "hsl(220 90% 56%)", trail: "hsl(220 90% 56% / 0.12)" },
+  { label: "Project + Product Management", pct: 90, color: "linear-gradient(90deg, hsl(215 100% 55%), hsl(196 100% 47%))", trail: "hsl(215 100% 55% / 0.12)" },
+  { label: "Web Development", pct: 85, color: "linear-gradient(90deg, hsl(196 100% 47%), hsl(158 80% 40%))", trail: "hsl(196 100% 47% / 0.12)" },
+  { label: "Team Leadership", pct: 92, color: "linear-gradient(90deg, hsl(270 90% 60%), hsl(220 90% 56%))", trail: "hsl(220 90% 56% / 0.12)" },
 ];
 
 const About = () => {
@@ -76,7 +76,7 @@ const About = () => {
 
   const stats = [
     { value: "3.97", label: t("GPA"), from: "hsl(215 100% 55%)", to: "hsl(196 100% 47%)" },
-    { value: "15+", label: t("Projects"), from: "hsl(220 90% 56%)", to: "hsl(196 100% 40%)" },
+    { value: "20+", label: t("Projects"), from: "hsl(220 90% 56%)", to: "hsl(196 100% 40%)" },
     { value: "3+", label: t("Yrs Exp"), from: "hsl(215 100% 50%)", to: "hsl(220 90% 56%)" },
   ];
 
@@ -84,7 +84,7 @@ const About = () => {
     <section id="about" className="py-24 bg-background relative overflow-hidden text-left">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[700px] h-px"
         style={{ background: "linear-gradient(90deg, transparent, hsl(215 100% 55% / 0.25), transparent)" }} />
-      
+
       {/* Glow Orbs */}
       <div className="absolute top-1/3 left-0 w-64 sm:w-96 h-64 sm:h-96 bg-blue-500/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-10 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none" />
@@ -119,10 +119,10 @@ const About = () => {
           {/* ── Photo column (Simulated Diagnostic Card) ── */}
           <AnimatedSection delay={0.05} className="w-full">
             <div className="flex flex-col items-center lg:sticky lg:top-32 gap-6 w-full">
-              
+
               {/* Photo frame */}
-              <div className="relative p-3.5 rounded-3xl border border-border bg-card shadow-sm w-full">
-                
+              <div className="relative p-3.5 rounded-3xl border border-border bg-card shadow-sm w-full transition-all duration-500 hover:shadow-[0_0_20px_rgba(59,130,246,0.12)]">
+
                 {/* Tech brackets for HUD look */}
                 <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-blue-500 rounded-tl" />
                 <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-blue-500 rounded-tr" />
@@ -131,6 +131,13 @@ const About = () => {
 
                 <div className="relative rounded-2xl overflow-hidden bg-muted aspect-[4/5] w-full"
                   style={{ boxShadow: "0 10px 30px hsl(215 100% 55% / 0.08)" }}>
+
+                  {/* Horizontal scanner glow animation */}
+                  <motion.div 
+                    className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-95 pointer-events-none z-20 shadow-[0_0_8px_rgba(59,130,246,0.9)]"
+                    animate={{ top: ["0%", "100%", "0%"] }}
+                    transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+                  />
 
                   {/* Photo */}
                   <img
@@ -166,7 +173,7 @@ const About = () => {
               {/* Mini stats */}
               <div className="flex gap-3.5 w-full justify-center">
                 {stats.map((s) => (
-                  <div key={s.label} className="flex-1 rounded-2xl p-3 text-center bg-card border border-border shadow-sm hover:border-blue-500/20 transition-all">
+                  <div key={s.label} className="flex-1 rounded-2xl p-3 text-center bg-card border border-border shadow-sm hover:border-blue-500/30 hover:shadow-md transition-all duration-300">
                     <p className="font-heading font-extrabold text-sm bg-clip-text text-transparent"
                       style={{ backgroundImage: `linear-gradient(135deg, ${s.from}, ${s.to})` }}>
                       {s.value}
@@ -190,28 +197,41 @@ const About = () => {
             </div>
           </AnimatedSection>
 
-          {/* ── Text + bars column (Simulated Terminal Terminal Console) ── */}
+          {/* ── Text + bars column (Simulated Terminal Console) ── */}
           <AnimatedSection delay={0.15} className="w-full">
             <div className="space-y-6">
-              
-              {/* Directory Bar */}
-              <div className="flex items-center justify-between font-mono text-[10px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/60 px-4 py-2.5 rounded-xl border border-border/50">
-                <span className="flex items-center gap-2"><Terminal size={12} className="text-blue-500" /> ~/profile/biography</span>
+
+              {/* Directory Bar with macOS buttons */}
+              <div className="flex items-center justify-between font-mono text-[10px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/60 px-4 py-2.5 rounded-xl border border-border/50 shadow-sm">
+                <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1 mr-2">
+                    <span className="w-2 h-2 rounded-full bg-[#ff5f56]" />
+                    <span className="w-2 h-2 rounded-full bg-[#ffbd2e]" />
+                    <span className="w-2 h-2 rounded-full bg-[#27c93f]" />
+                  </div>
+                  <span className="flex items-center gap-2"><Terminal size={12} className="text-blue-500" /> ~/profile/biography</span>
+                </div>
                 <span className="bg-blue-500/10 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded text-[8px] font-bold">utf-8</span>
               </div>
 
-              {/* Console Output */}
-              <div className="font-mono text-xs bg-slate-50 dark:bg-slate-900/40 p-5 rounded-2xl border border-border/50 space-y-4 leading-relaxed text-slate-600 dark:text-slate-300">
+              {/* Console Output with syntax coloring */}
+              <div className="font-mono text-xs bg-slate-50/50 dark:bg-slate-950/30 backdrop-blur-sm p-5 rounded-2xl border border-border/50 space-y-4 leading-relaxed text-slate-600 dark:text-slate-300 shadow-sm">
                 <p>
-                  <span className="text-blue-500 font-bold mr-2">&gt; [LOG] bio_init.sh:</span> 
+                  <span className="text-blue-500 font-bold mr-1">&gt;</span>
+                  <span className="text-emerald-500 dark:text-emerald-400 mr-1">[LOG]</span>
+                  <span className="text-yellow-600 dark:text-yellow-400 mr-2">bio_init.sh:</span>
                   {t("About Paragraph 1")}
                 </p>
                 <p>
-                  <span className="text-sky-500 font-bold mr-2">&gt; [LOG] load_competence.sh:</span> 
+                  <span className="text-blue-500 font-bold mr-1">&gt;</span>
+                  <span className="text-sky-500 mr-1">[LOG]</span>
+                  <span className="text-yellow-600 dark:text-yellow-400 mr-2">load_competence.sh:</span>
                   {t("About Paragraph 2")}
                 </p>
                 <p>
-                  <span className="text-indigo-500 font-bold mr-2">&gt; [LOG] exec_vision.sh:</span> 
+                  <span className="text-blue-500 font-bold mr-1">&gt;</span>
+                  <span className="text-indigo-500 mr-1">[LOG]</span>
+                  <span className="text-yellow-600 dark:text-yellow-400 mr-2">exec_vision.sh:</span>
                   {t("About Paragraph 3")}
                 </p>
               </div>
@@ -222,7 +242,7 @@ const About = () => {
                   <Settings size={12} className="text-slate-400 animate-spin" style={{ animationDuration: '4s' }} />
                   {t("Core Proficiencies")}
                 </p>
-                
+
                 {bars.map((s) => (
                   <div key={s.label} className="space-y-1.5">
                     <div className="flex justify-between text-xs">
@@ -245,18 +265,21 @@ const About = () => {
             </div>
           </AnimatedSection>
 
-          {/* ── Card column (Node Indicators) ── */}
+          {/* ── Card column (Node Indicators with vertical connector) ── */}
           <AnimatedSection delay={0.25} className="w-full">
-            <div className="space-y-4 w-full">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-5">
+            <div className="space-y-4 w-full relative">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-5 pl-1">
                 SYSTEM_NODES
               </p>
-              
+
+              {/* Vertical connector line between nodes */}
+              <div className="absolute left-[34px] top-[48px] bottom-[28px] w-0.5 border-l border-dashed border-border/40 pointer-events-none hidden lg:block" />
+
               {cards.map((item, i) => (
                 <motion.div key={i}
-                  initial={{ opacity: 0, y: 15 }} 
+                  initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }} 
+                  viewport={{ once: true }}
                   transition={{ delay: i * 0.08 }}
                   whileHover={{ x: -3 }}
                   className={`relative flex gap-4 items-start rounded-2xl p-4 bg-card border border-border transition-all duration-300 shadow-sm group overflow-hidden ${item.border}`}
@@ -267,12 +290,12 @@ const About = () => {
                   </span>
 
                   {/* Icon */}
-                  <div className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105"
+                  <div className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 z-10"
                     style={{ background: item.iconBg, color: item.iconColor }}>
                     {item.icon}
                   </div>
 
-                  <div className="text-left min-w-0 pr-6">
+                  <div className="text-left min-w-0 pr-6 z-10">
                     <p className="font-heading font-bold text-foreground text-xs leading-snug truncate">
                       {t(item.title)}
                     </p>
@@ -333,14 +356,14 @@ const About = () => {
                 <AnimatedSection key={edu.id} delay={index * 0.1}>
                   <motion.div
                     whileHover={{ y: -3 }}
-                    className="group p-5 rounded-2xl bg-card border border-border/60 shadow-sm flex items-start gap-4 h-full transition-all hover:border-blue-500/20 hover:shadow-md hover:shadow-blue-500/5"
+                    className="group p-5 rounded-2xl bg-card border border-border/60 shadow-sm flex items-start gap-4 h-full transition-all hover:border-blue-500/20 hover:shadow-md hover:shadow-blue-500/5 backdrop-blur-sm"
                   >
                     {/* School Logo */}
                     <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-white dark:bg-slate-950 flex items-center justify-center p-2 border border-border shadow-sm">
                       {edu.logo ? (
-                        <img 
-                          src={edu.logo} 
-                          alt={edu.school} 
+                        <img
+                          src={edu.logo}
+                          alt={edu.school}
                           className="object-contain w-full h-full"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
@@ -353,8 +376,8 @@ const About = () => {
                           }}
                         />
                       ) : null}
-                      <GraduationCap 
-                        className={`text-slate-400 dark:text-slate-600 w-6 h-6 fallback-icon ${edu.logo ? 'hidden' : 'flex'}`} 
+                      <GraduationCap
+                        className={`text-slate-400 dark:text-slate-600 w-6 h-6 fallback-icon ${edu.logo ? 'hidden' : 'flex'}`}
                       />
                     </div>
 
@@ -364,15 +387,15 @@ const About = () => {
                           {edu.school}
                         </h3>
                         {edu.gpa && (
-                          <span className="font-mono text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-500/5 px-2 py-0.5 border border-blue-500/10 rounded shrink-0">
-                            {parseFloat(edu.gpa) > 4.0 ? `Grade: ${edu.gpa}` : `GPA: ${edu.gpa}`}
+                          <span className="font-mono text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-500/5 dark:bg-blue-400/10 px-2 py-0.5 border border-blue-500/15 rounded-full shrink-0 shadow-sm">
+                            GPA: {edu.gpa}
                           </span>
                         )}
                       </div>
                       <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
                         {edu.degree}
                       </p>
-                      
+
                       <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 font-mono mt-auto pt-2 border-t border-border/30 w-full">
                         <span className="flex items-center gap-1">
                           <MapPin size={12} />
