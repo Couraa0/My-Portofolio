@@ -49,6 +49,7 @@ export interface Achievement {
 }
 
 export interface Competition {
+  id?: string;
   title: string;
   role: string;
   award: string;
@@ -56,6 +57,10 @@ export interface Competition {
   skills: string[];
   what_was_built: string;
   impact_achievements: string[];
+  period: string;
+  sort_order?: number;
+  created_at?: string;
+  logo_url?: string;
 }
 
 export interface Experience {
@@ -69,7 +74,7 @@ export interface Experience {
   tools?: string[];
   sort_order?: number;
   created_at?: string;
-  competitions?: Competition[];
+  competitions?: any[];
 }
 
 export interface Education {
@@ -230,6 +235,43 @@ export const updateExperience = async (id: string, exp: Partial<Experience>): Pr
 
 export const deleteExperience = async (id: string): Promise<void> => {
   const { error } = await supabase.from('experiences').delete().eq('id', id);
+  if (error) throw error;
+};
+
+// ===================== COMPETITIONS =====================
+
+export const getCompetitions = async (): Promise<Competition[]> => {
+  const { data, error } = await supabase
+    .from('competitions')
+    .select('*')
+    .order('sort_order', { ascending: true });
+  if (error) throw error;
+  return data || [];
+};
+
+export const createCompetition = async (comp: Omit<Competition, 'id' | 'created_at'>): Promise<Competition> => {
+  const { data, error } = await supabase
+    .from('competitions')
+    .insert([comp])
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
+
+export const updateCompetition = async (id: string, comp: Partial<Competition>): Promise<Competition> => {
+  const { data, error } = await supabase
+    .from('competitions')
+    .update(comp)
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
+
+export const deleteCompetition = async (id: string): Promise<void> => {
+  const { error } = await supabase.from('competitions').delete().eq('id', id);
   if (error) throw error;
 };
 

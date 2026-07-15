@@ -24,6 +24,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProjects from "./pages/admin/AdminProjects";
 import AdminAchievements from "./pages/admin/AdminAchievements";
 import AdminExperience from "./pages/admin/AdminExperience";
+import AdminCompetitions from "./pages/admin/AdminCompetitions";
 import AdminEducation from "./pages/admin/AdminEducation";
 import AdminGuestbook from "./pages/admin/AdminGuestbook";
 import AdminCategories from "./pages/admin/AdminCategories";
@@ -66,6 +67,7 @@ const App = () => (
                   <Route path="projects" element={<AdminProjects />} />
                   <Route path="achievements" element={<AdminAchievements />} />
                   <Route path="experience" element={<AdminExperience />} />
+                  <Route path="competitions" element={<AdminCompetitions />} />
                   <Route path="education" element={<AdminEducation />} />
                   <Route path="guestbook" element={<AdminGuestbook />} />
                   <Route path="cv" element={<AdminCV />} />

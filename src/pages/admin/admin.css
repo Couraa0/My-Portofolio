@@ -646,7 +646,7 @@
 /* Stats Grid */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
 }
 
@@ -674,6 +674,7 @@
 .card-amber::before  { background: linear-gradient(90deg, hsl(37 100% 50%), hsl(37 100% 42%)); }
 .card-emerald::before { background: linear-gradient(90deg, hsl(158 80% 42%), hsl(158 80% 35%)); }
 .card-cyan::before   { background: linear-gradient(90deg, hsl(196 100% 47%), hsl(196 100% 40%)); }
+.card-indigo::before { background: linear-gradient(90deg, hsl(230 84% 60%), hsl(230 84% 50%)); }
 
 .stat-card:hover {
   transform: translateY(-3px);
@@ -699,6 +700,7 @@
 .card-amber  .stat-icon-wrap { background: var(--a-amber-light);   color: var(--a-amber); }
 .card-emerald .stat-icon-wrap { background: var(--a-success-light); color: var(--a-success); }
 .card-cyan   .stat-icon-wrap { background: var(--a-cyan-light);    color: var(--a-cyan); }
+.card-indigo .stat-icon-wrap { background: hsl(230 84% 60% / 0.08); color: hsl(230 84% 60%); }
 
 .stat-label {
   font-size: 0.8rem;

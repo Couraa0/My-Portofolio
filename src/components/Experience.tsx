@@ -5,6 +5,7 @@ import AnimatedSection from "./AnimatedSection";
 import { useEffect, useState } from "react";
 import {
   getExperiences,
+  getCompetitions,
   type Experience as DBExp,
   type Competition,
 } from "@/lib/supabase";
@@ -47,6 +48,7 @@ interface FlattenedCompetition {
   what_was_built: string;
   impact_achievements: string[];
   period: string;
+  logo?: string;
 }
 
 const COMPETITION_THEMES = [
@@ -95,36 +97,27 @@ const Experience = () => {
   const [activeCompIndex, setActiveCompIndex] = useState<number>(0);
 
   useEffect(() => {
-    getExperiences()
-      .then((expData) => {
+    Promise.all([getExperiences(), getCompetitions()])
+      .then(([expData, compData]) => {
         const expMapped = expData.map(adaptExp);
-        const career = expMapped.filter(e => !e.competitions || e.competitions.length === 0);
-        const comp = expMapped.filter(e => e.competitions && e.competitions.length > 0);
+        setCareerExperiences(expMapped);
         
-        setCareerExperiences(career);
-        
-        const flatComps: FlattenedCompetition[] = [];
-        comp.forEach(exp => {
-          if (exp.competitions) {
-            exp.competitions.forEach((c, idx) => {
-              flatComps.push({
-                id: `${exp.id}-${idx}`,
-                parentExperienceId: exp.id,
-                title: c.title,
-                role: c.role,
-                award: c.award,
-                project: c.project,
-                skills: c.skills,
-                what_was_built: c.what_was_built,
-                impact_achievements: c.impact_achievements,
-                period: exp.period
-              });
-            });
-          }
-        });
+        const flatComps: FlattenedCompetition[] = compData.map((c) => ({
+          id: c.id!,
+          parentExperienceId: "",
+          title: c.title,
+          role: c.role,
+          award: c.award,
+          project: c.project,
+          skills: c.skills || [],
+          what_was_built: c.what_was_built || "",
+          impact_achievements: c.impact_achievements || [],
+          period: c.period,
+          logo: c.logo_url,
+        }));
         setFlattenedCompetitions(flatComps);
         
-        if (career.length > 0) setActiveCareerIndex(0);
+        if (expMapped.length > 0) setActiveCareerIndex(0);
         if (flatComps.length > 0) setActiveCompIndex(0);
       })
       .catch((e) => setError(e.message))
@@ -312,9 +305,13 @@ const Experience = () => {
                               }`}
                             >
                               <div className={`absolute -left-[23px] top-[26px] w-3 h-3 rounded-full border-2 transition-all ${isActive ? "bg-blue-600 border-background scale-110 shadow-md shadow-blue-500/50" : "bg-card border-border/60 group-hover:border-blue-500/30"}`} />
-                              <div className="flex items-start gap-3">
-                                <div className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center p-1.5 border shadow-sm ${theme.bg} ${theme.border}`}>
-                                  <Trophy className={`${theme.primary} w-5 h-5`} />
+                              <div className="flex items-center gap-3">
+                                <div className={`flex-shrink-0 w-10 h-10 rounded-xl bg-white dark:bg-slate-950 flex items-center justify-center border border-border shadow-sm overflow-hidden ${comp.logo ? 'p-0' : `p-1.5 ${theme.bg} ${theme.border}`}`}>
+                                  {comp.logo ? (
+                                    <img src={comp.logo} alt={comp.title} className="object-cover w-full h-full" />
+                                  ) : (
+                                    <Trophy className={`${theme.primary} w-5 h-5`} />
+                                  )}
                                 </div>
                                 <div className="min-w-0 flex-1 text-left">
                                   <span className="font-mono text-[9px] text-slate-400 block mb-0.5">{comp.period}</span>
@@ -454,9 +451,13 @@ const CompetitionDebrief = ({ comp, theme }: { comp: FlattenedCompetition; theme
     <div className="flex flex-col space-y-4 text-left w-full min-w-0">
 
       {/* Debrief Header */}
-      <div className="flex flex-row gap-3 pb-4 border-b border-border/50 items-start min-w-0">
-        <div className={`flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center p-2 border shadow-sm ${theme.bg} ${theme.border}`}>
-          <Trophy className={`${theme.primary} w-4 h-4`} />
+      <div className="flex flex-row gap-3 pb-4 border-b border-border/50 items-center min-w-0">
+        <div className={`flex-shrink-0 w-9 h-9 rounded-xl bg-white dark:bg-slate-950 flex items-center justify-center border border-border shadow-sm overflow-hidden ${comp.logo ? 'p-0' : `p-1.5 ${theme.bg} ${theme.border}`}`}>
+          {comp.logo ? (
+            <img src={comp.logo} alt={comp.title} className="object-cover w-full h-full" />
+          ) : (
+            <Trophy className={`${theme.primary} w-4 h-4`} />
+          )}
         </div>
         <div className="min-w-0 flex-1 overflow-hidden">
           <span className="font-mono text-[10px] text-blue-500 font-bold uppercase tracking-wider block leading-none mb-1">COMPETITION_DEBRIEF</span>

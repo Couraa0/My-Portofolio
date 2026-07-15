@@ -4,7 +4,7 @@ import {
 } from 'lucide-react';
 import {
   getExperiences, createExperience, updateExperience, deleteExperience,
-  uploadImage, Experience, Competition
+  uploadImage, Experience
 } from '@/lib/supabase';
 
 const emptyForm: Omit<Experience, 'id' | 'created_at'> = {
@@ -16,7 +16,6 @@ const emptyForm: Omit<Experience, 'id' | 'created_at'> = {
   description: [],
   tools: [],
   sort_order: 0,
-  competitions: [],
 };
 
 export default function AdminExperience() {
@@ -71,7 +70,6 @@ export default function AdminExperience() {
       description: exp.description || [],
       tools: exp.tools || [],
       sort_order: exp.sort_order || 0,
-      competitions: exp.competitions || [],
     });
     setEditId(exp.id!);
     setImageFile(null);
@@ -335,173 +333,6 @@ export default function AdminExperience() {
                       <button type="button" onClick={() => removeTool(t)}><X size={12} /></button>
                     </span>
                   ))}
-                </div>
-              </div>
-
-              {/* COMPETITIONS EDITOR */}
-              <div className="form-group border-t border-border/40 pt-4 mt-4 text-left">
-                <div className="flex justify-between items-center mb-3">
-                  <label className="form-label font-bold text-slate-800 dark:text-slate-200">
-                    Lomba / Kompetisi (Competitive Experience)
-                  </label>
-                  <button
-                    type="button"
-                    className="btn-secondary btn-sm flex items-center gap-1"
-                    onClick={() => {
-                      setForm((f) => ({
-                        ...f,
-                        competitions: [
-                          ...(f.competitions || []),
-                          {
-                            title: '',
-                            role: '',
-                            award: '',
-                            project: '',
-                            skills: [],
-                            what_was_built: '',
-                            impact_achievements: []
-                          }
-                        ]
-                      }));
-                    }}
-                  >
-                    <Plus size={14} /> Tambah Kompetisi
-                  </button>
-                </div>
-
-                <div className="flex flex-col gap-4">
-                  {(form.competitions || []).map((comp, idx) => (
-                    <div key={idx} className="p-4 rounded-xl border border-border bg-slate-50/50 dark:bg-slate-900/30 flex flex-col gap-3 relative">
-                      <button
-                        type="button"
-                        className="absolute top-2 right-2 p-1 text-slate-400 hover:text-red-500 transition-colors"
-                        onClick={() => {
-                          setForm((f) => ({
-                            ...f,
-                            competitions: (f.competitions || []).filter((_, i) => i !== idx)
-                          }));
-                        }}
-                        title="Hapus Kompetisi"
-                      >
-                        <Trash2 size={15} />
-                      </button>
-
-                      <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">
-                        Kompetisi #{idx + 1}
-                      </h4>
-
-                      <div className="form-grid-2">
-                        <div className="form-group mb-0">
-                          <label className="form-label text-[11px] mb-1">Nama Lomba *</label>
-                          <input
-                            className="form-input text-xs"
-                            value={comp.title}
-                            onChange={(e) => {
-                              const updated = [...(form.competitions || [])];
-                              updated[idx] = { ...updated[idx], title: e.target.value };
-                              setForm((f) => ({ ...f, competitions: updated }));
-                            }}
-                            placeholder="e.g. Hackathon X Digdaya — Bank Indonesia"
-                          />
-                        </div>
-                        <div className="form-group mb-0">
-                          <label className="form-label text-[11px] mb-1">Role / Peran *</label>
-                          <input
-                            className="form-input text-xs"
-                            value={comp.role}
-                            onChange={(e) => {
-                              const updated = [...(form.competitions || [])];
-                              updated[idx] = { ...updated[idx], role: e.target.value };
-                              setForm((f) => ({ ...f, competitions: updated }));
-                            }}
-                            placeholder="e.g. Generative AI Engineer"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="form-grid-2">
-                        <div className="form-group mb-0">
-                          <label className="form-label text-[11px] mb-1">Award / Badge *</label>
-                          <input
-                            className="form-input text-xs"
-                            value={comp.award}
-                            onChange={(e) => {
-                              const updated = [...(form.competitions || [])];
-                              updated[idx] = { ...updated[idx], award: e.target.value };
-                              setForm((f) => ({ ...f, competitions: updated }));
-                            }}
-                            placeholder="e.g. Top 20% Nasional"
-                          />
-                        </div>
-                        <div className="form-group mb-0">
-                          <label className="form-label text-[11px] mb-1">Project Name</label>
-                          <input
-                            className="form-input text-xs"
-                            value={comp.project}
-                            onChange={(e) => {
-                              const updated = [...(form.competitions || [])];
-                              updated[idx] = { ...updated[idx], project: e.target.value };
-                              setForm((f) => ({ ...f, competitions: updated }));
-                            }}
-                            placeholder="e.g. Solusi Generative AI QRIS Ecosystem"
-                          />
-                        </div>
-                      </div>
-
-                      {/* What was built */}
-                      <div className="form-group mb-0">
-                        <label className="form-label text-[11px] mb-1">What Was Built (Deskripsi Ringkas)</label>
-                        <textarea
-                          className="form-input text-xs min-h-[60px] py-2 resize-y"
-                          value={comp.what_was_built}
-                          onChange={(e) => {
-                            const updated = [...(form.competitions || [])];
-                            updated[idx] = { ...updated[idx], what_was_built: e.target.value };
-                            setForm((f) => ({ ...f, competitions: updated }));
-                          }}
-                          placeholder="Jelaskan kontribusi / apa yang dibangun dalam kompetisi ini..."
-                        />
-                      </div>
-
-                      {/* Skills / Tech Tags */}
-                      <div className="form-group mb-0">
-                        <label className="form-label text-[11px] mb-1">Skills (Pisahkan dengan koma)</label>
-                        <input
-                          className="form-input text-xs"
-                          value={(comp.skills || []).join(', ')}
-                          onChange={(e) => {
-                            const list = e.target.value.split(',').map(s => s.trim()).filter(s => s !== '');
-                            const updated = [...(form.competitions || [])];
-                            updated[idx] = { ...updated[idx], skills: list };
-                            setForm((f) => ({ ...f, competitions: updated }));
-                          }}
-                          placeholder="e.g. Generative AI, Fintech, QRIS"
-                        />
-                      </div>
-
-                      {/* Impact & Achievements bullet points */}
-                      <div className="form-group mb-0">
-                        <label className="form-label text-[11px] mb-1">Impact & Achievements (Satu per baris)</label>
-                        <textarea
-                          className="form-input text-xs min-h-[80px] py-2 resize-y font-mono"
-                          value={(comp.impact_achievements || []).join('\n')}
-                          onChange={(e) => {
-                            const list = e.target.value.split('\n').map(s => s.trim()).filter(s => s !== '');
-                            const updated = [...(form.competitions || [])];
-                            updated[idx] = { ...updated[idx], impact_achievements: list };
-                            setForm((f) => ({ ...f, competitions: updated }));
-                          }}
-                          placeholder="Masukkan poin pencapaian, pisahkan dengan baris baru..."
-                        />
-                      </div>
-
-                    </div>
-                  ))}
-                  {(form.competitions || []).length === 0 && (
-                    <p className="text-xs text-muted-foreground text-center py-4 border border-dashed border-border rounded-xl">
-                      Belum ada data kompetisi ditambahkan
-                    </p>
-                  )}
                 </div>
               </div>
 

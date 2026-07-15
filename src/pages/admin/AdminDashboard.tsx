@@ -10,30 +10,33 @@ import {
   Database,
   Activity,
 } from 'lucide-react';
-import { getProjects, getAchievements, getExperiences } from '@/lib/supabase';
+import { getProjects, getAchievements, getExperiences, getCompetitions } from '@/lib/supabase';
 
 interface Stats {
   projects: number;
   achievements: number;
   experiences: number;
+  competitions: number;
 }
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<Stats>({ projects: 0, achievements: 0, experiences: 0 });
+  const [stats, setStats] = useState<Stats>({ projects: 0, achievements: 0, experiences: 0, competitions: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [projects, achievements, experiences] = await Promise.all([
+        const [projects, achievements, experiences, competitions] = await Promise.all([
           getProjects(),
           getAchievements(),
           getExperiences(),
+          getCompetitions(),
         ]);
         setStats({
           projects: projects.length,
           achievements: achievements.length,
           experiences: experiences.length,
+          competitions: competitions.length,
         });
       } catch (err) {
         console.error('Error fetching stats:', err);
@@ -70,8 +73,16 @@ export default function AdminDashboard() {
       gradient: 'from-emerald-500 to-teal-500',
     },
     {
+      label: 'Competitions',
+      value: stats.competitions,
+      icon: Trophy,
+      color: 'card-indigo',
+      link: '/admin/competitions',
+      gradient: 'from-indigo-500 to-blue-500',
+    },
+    {
       label: 'Total Data',
-      value: stats.projects + stats.achievements + stats.experiences,
+      value: stats.projects + stats.achievements + stats.experiences + stats.competitions,
       icon: Database,
       color: 'card-cyan',
       link: '#',
@@ -83,6 +94,7 @@ export default function AdminDashboard() {
     { label: 'Tambah Project', to: '/admin/projects', icon: FolderOpen, color: '#8b5cf6' },
     { label: 'Tambah Achievement', to: '/admin/achievements', icon: Trophy, color: '#f59e0b' },
     { label: 'Tambah Experience', to: '/admin/experience', icon: Briefcase, color: '#10b981' },
+    { label: 'Tambah Kompetisi', to: '/admin/competitions', icon: Trophy, color: '#6366f1' },
   ];
 
   return (

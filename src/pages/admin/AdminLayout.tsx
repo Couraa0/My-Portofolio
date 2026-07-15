@@ -22,6 +22,7 @@ const navItems = [
   { to: '/admin/projects', icon: FolderOpen, label: 'Projects' },
   { to: '/admin/achievements', icon: Trophy, label: 'Achievements' },
   { to: '/admin/experience', icon: Briefcase, label: 'Experience' },
+  { to: '/admin/competitions', icon: Trophy, label: 'Competitions' },
   { to: '/admin/education', icon: GraduationCap, label: 'Education' },
   { to: '/admin/guestbook', icon: MessageSquare, label: 'Guestbook' },
   { to: '/admin/cv', icon: FileText, label: 'CV / Resume' },
