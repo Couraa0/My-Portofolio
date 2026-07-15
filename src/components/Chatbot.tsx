@@ -69,15 +69,32 @@ export default function Chatbot() {
     }
   };
 
-  const handleToggleOpen = () => {
-    setOpen(prev => {
-      const next = !prev;
-      if (next) {
-        setNotifMode("hidden");
-        clearLoop();
+  const handleOpenChat = () => {
+    setOpen(true);
+    setNotifMode("hidden");
+    clearLoop();
+  };
+
+  const handleCloseChat = () => {
+    setOpen(false);
+    if (isMobile()) {
+      const hasSeenPopup = localStorage.getItem("chatbot_popup_seen_mobile");
+      if (hasSeenPopup) {
+        setNotifMode("mini");
+      } else {
+        setNotifMode("popup");
       }
-      return next;
-    });
+    } else {
+      setNotifMode("popup");
+    }
+  };
+
+  const handleToggleOpen = () => {
+    if (open) {
+      handleCloseChat();
+    } else {
+      handleOpenChat();
+    }
   };
 
   const showHighlight = notifMode === "popup";
@@ -175,11 +192,7 @@ export default function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.88 }}
             transition={{ type: "spring", damping: 18, stiffness: 220 }}
-            onClick={() => {
-              setOpen(true);
-              setNotifMode("hidden");
-              clearLoop();
-            }}
+            onClick={handleOpenChat}
             className="fixed bottom-[88px] right-4 sm:right-6 z-50 w-[272px] sm:w-[300px] cursor-pointer"
           >
             <motion.div
@@ -264,7 +277,7 @@ export default function Chatbot() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 6 }}
             transition={{ type: "spring", damping: 18, stiffness: 260 }}
-            onClick={() => { setOpen(true); setNotifMode("hidden"); clearLoop(); }}
+            onClick={handleOpenChat}
             className="fixed bottom-[88px] right-6 z-50 cursor-pointer"
           >
             <div
@@ -370,7 +383,7 @@ export default function Chatbot() {
                 </div>
               </div>
               <button
-                onClick={() => setOpen(false)}
+                onClick={handleCloseChat}
                 className="p-1.5 rounded-full hover:bg-blue-500/10 text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="Close chatbot"
               >
