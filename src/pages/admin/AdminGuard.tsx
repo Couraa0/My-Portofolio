@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom';
 import { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase, ADMIN_PATH } from '@/lib/supabase';
 
 interface AdminGuardProps {
   children: ReactNode;
@@ -52,7 +52,7 @@ export default function AdminGuard({ children }: AdminGuardProps) {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/admin" replace />;
+    return <Navigate to={`/${ADMIN_PATH}`} replace />;
   }
 
   return <>{children}</>;

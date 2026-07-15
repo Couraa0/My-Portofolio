@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/lib/supabase';
+import { supabase, ADMIN_PATH } from '@/lib/supabase';
 import { Eye, EyeOff, Lock, Mail, Shield } from 'lucide-react';
 
 export default function AdminLogin() {
@@ -31,7 +31,7 @@ export default function AdminLogin() {
       } else if (data.session) {
         localStorage.setItem('admin_authenticated', 'true');
         localStorage.setItem('admin_email', data.user?.email || email);
-        navigate('/admin/dashboard');
+        navigate(`/${ADMIN_PATH}/dashboard`);
       }
     } catch {
       setError('Terjadi kesalahan tidak terduga. Silakan coba lagi.');

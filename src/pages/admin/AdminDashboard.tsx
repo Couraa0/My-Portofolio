@@ -10,7 +10,7 @@ import {
   Database,
   Activity,
 } from 'lucide-react';
-import { getProjects, getAchievements, getExperiences, getCompetitions } from '@/lib/supabase';
+import { getProjects, getAchievements, getExperiences, getCompetitions, ADMIN_PATH } from '@/lib/supabase';
 
 interface Stats {
   projects: number;
@@ -53,7 +53,7 @@ export default function AdminDashboard() {
       value: stats.projects,
       icon: FolderOpen,
       color: 'card-violet',
-      link: '/admin/projects',
+      link: `/${ADMIN_PATH}/projects`,
       gradient: 'from-violet-500 to-purple-600',
     },
     {
@@ -61,7 +61,7 @@ export default function AdminDashboard() {
       value: stats.achievements,
       icon: Trophy,
       color: 'card-amber',
-      link: '/admin/achievements',
+      link: `/${ADMIN_PATH}/achievements`,
       gradient: 'from-amber-500 to-orange-500',
     },
     {
@@ -69,7 +69,7 @@ export default function AdminDashboard() {
       value: stats.experiences,
       icon: Briefcase,
       color: 'card-emerald',
-      link: '/admin/experience',
+      link: `/${ADMIN_PATH}/experience`,
       gradient: 'from-emerald-500 to-teal-500',
     },
     {
@@ -77,7 +77,7 @@ export default function AdminDashboard() {
       value: stats.competitions,
       icon: Trophy,
       color: 'card-indigo',
-      link: '/admin/competitions',
+      link: `/${ADMIN_PATH}/competitions`,
       gradient: 'from-indigo-500 to-blue-500',
     },
     {
@@ -91,10 +91,10 @@ export default function AdminDashboard() {
   ];
 
   const quickActions = [
-    { label: 'Tambah Project', to: '/admin/projects', icon: FolderOpen, color: '#8b5cf6' },
-    { label: 'Tambah Achievement', to: '/admin/achievements', icon: Trophy, color: '#f59e0b' },
-    { label: 'Tambah Experience', to: '/admin/experience', icon: Briefcase, color: '#10b981' },
-    { label: 'Tambah Kompetisi', to: '/admin/competitions', icon: Trophy, color: '#6366f1' },
+    { label: 'Tambah Project', to: `/${ADMIN_PATH}/projects`, icon: FolderOpen, color: '#8b5cf6' },
+    { label: 'Tambah Achievement', to: `/${ADMIN_PATH}/achievements`, icon: Trophy, color: '#f59e0b' },
+    { label: 'Tambah Experience', to: `/${ADMIN_PATH}/experience`, icon: Briefcase, color: '#10b981' },
+    { label: 'Tambah Kompetisi', to: `/${ADMIN_PATH}/competitions`, icon: Trophy, color: '#6366f1' },
   ];
 
   return (

@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import {
   getProjects, createProject, updateProject, deleteProject,
-  uploadImage, Project, getProjectCategories, ProjectCategory
+  uploadImage, Project, getProjectCategories, ProjectCategory, ADMIN_PATH
 } from '@/lib/supabase';
 
 const COLOR_OPTIONS = ['violet', 'rose', 'emerald', 'amber', 'cyan', 'indigo'] as const;
@@ -218,7 +218,7 @@ export default function AdminProjects() {
           <p className="section-desc">{projects.length} project tersimpan di database</p>
         </div>
         <div style={{ display: 'flex', gap: '12px' }}>
-          <Link to="/admin/categories" className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
+          <Link to={`/${ADMIN_PATH}/categories`} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
             <FolderOpen size={18} /> Kelola Kategori
           </Link>
           <button id="add-project-btn" className="btn-primary" onClick={openCreate}>

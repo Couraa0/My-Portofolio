@@ -30,6 +30,7 @@ import AdminGuestbook from "./pages/admin/AdminGuestbook";
 import AdminCategories from "./pages/admin/AdminCategories";
 import AdminCV from "./pages/admin/AdminCV";
 import "./pages/admin/admin.css";
+import { ADMIN_PATH } from "./lib/supabase";
 
 const queryClient = new QueryClient();
 
@@ -53,9 +54,9 @@ const App = () => (
                 </Route>
 
                 {/* Admin Routes */}
-                <Route path="/admin" element={<AdminLogin />} />
+                <Route path={`/${ADMIN_PATH}`} element={<AdminLogin />} />
                 <Route
-                  path="/admin"
+                  path={`/${ADMIN_PATH}`}
                   element={
                     <AdminGuard>
                       <AdminLayout />

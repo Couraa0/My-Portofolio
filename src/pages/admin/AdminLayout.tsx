@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase, ADMIN_PATH } from '@/lib/supabase';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -17,15 +17,15 @@ import {
 } from 'lucide-react';
 
 const navItems = [
-  { to: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/admin/categories', icon: FolderOpen, label: 'Categories' },
-  { to: '/admin/projects', icon: FolderOpen, label: 'Projects' },
-  { to: '/admin/achievements', icon: Trophy, label: 'Achievements' },
-  { to: '/admin/experience', icon: Briefcase, label: 'Experience' },
-  { to: '/admin/competitions', icon: Trophy, label: 'Competitions' },
-  { to: '/admin/education', icon: GraduationCap, label: 'Education' },
-  { to: '/admin/guestbook', icon: MessageSquare, label: 'Guestbook' },
-  { to: '/admin/cv', icon: FileText, label: 'CV / Resume' },
+  { to: `/${ADMIN_PATH}/dashboard`, icon: LayoutDashboard, label: 'Dashboard' },
+  { to: `/${ADMIN_PATH}/categories`, icon: FolderOpen, label: 'Categories' },
+  { to: `/${ADMIN_PATH}/projects`, icon: FolderOpen, label: 'Projects' },
+  { to: `/${ADMIN_PATH}/achievements`, icon: Trophy, label: 'Achievements' },
+  { to: `/${ADMIN_PATH}/experience`, icon: Briefcase, label: 'Experience' },
+  { to: `/${ADMIN_PATH}/competitions`, icon: Trophy, label: 'Competitions' },
+  { to: `/${ADMIN_PATH}/education`, icon: GraduationCap, label: 'Education' },
+  { to: `/${ADMIN_PATH}/guestbook`, icon: MessageSquare, label: 'Guestbook' },
+  { to: `/${ADMIN_PATH}/cv`, icon: FileText, label: 'CV / Resume' },
 ];
 
 export default function AdminLayout() {
@@ -49,7 +49,7 @@ export default function AdminLayout() {
     }
     localStorage.removeItem('admin_authenticated');
     localStorage.removeItem('admin_email');
-    navigate('/admin');
+    navigate(`/${ADMIN_PATH}`);
   };
 
   const getPageTitle = () => {

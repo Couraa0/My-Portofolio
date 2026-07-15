@@ -9,6 +9,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+export const ADMIN_PATH = import.meta.env.VITE_ADMIN_PATH || 'admin';
+
 // ===================== TYPES =====================
 
 export interface Project {
