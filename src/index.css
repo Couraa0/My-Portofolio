@@ -575,5 +575,104 @@
   .terminal-log-container::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--emerald) / 0.6) !important;
   }
+
+  /* ── Carousel Progress Bar ── */
+  .carousel-progress-bar {
+    height: 3px;
+    background: hsl(var(--border));
+    border-radius: 99px;
+    overflow: hidden;
+    position: relative;
+  }
+  .carousel-progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, hsl(215 100% 55%), hsl(196 100% 47%));
+    transition: width 0.3s ease;
+  }
+  @keyframes carousel-autoplay-progress {
+    from { width: 0%; }
+    to { width: 100%; }
+  }
+  .carousel-autoplay-animate {
+    animation: carousel-autoplay-progress var(--autoplay-duration, 5s) linear forwards;
+  }
+
+  /* ── Carousel Dot Indicator ── */
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 99px;
+    background: hsl(var(--muted-foreground) / 0.25);
+    border: none;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .carousel-dot:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+  .carousel-dot.active {
+    width: 28px;
+    background: linear-gradient(90deg, hsl(215 100% 55%), hsl(196 100% 47%));
+  }
+
+  /* ── Glass Card Premium ── */
+  .glass-card-premium {
+    background: hsl(var(--card) / 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--border) / 0.5);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .glass-card-premium:hover {
+    background: hsl(var(--card) / 0.8);
+    border-color: hsl(215 100% 55% / 0.3);
+    box-shadow: 0 8px 32px hsl(215 100% 55% / 0.08), 0 0 0 1px hsl(215 100% 55% / 0.05);
+  }
+
+  /* ── Perspective 3D Tilt ── */
+  .perspective-container {
+    perspective: 1200px;
+  }
+  .perspective-card-tilt {
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+  }
+  .perspective-card-tilt:hover {
+    transform: rotateY(-2deg) rotateX(1deg) scale(1.01);
+  }
+
+  /* ── Slide Peek (for showing partial next/prev slides) ── */
+  .carousel-peek-container {
+    overflow: hidden;
+    margin: 0 -16px;
+    padding: 0 16px;
+  }
+
+  /* ── Highlight shimmer on card entry ── */
+  .entry-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .entry-shimmer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      110deg,
+      transparent 30%,
+      hsl(215 100% 55% / 0.06) 45%,
+      transparent 60%
+    );
+    background-size: 250% 100%;
+    animation: entry-shimmer-sweep 2s ease-out 0.5s 1 forwards;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+  }
+  @keyframes entry-shimmer-sweep {
+    0% { opacity: 1; background-position: 200% 0; }
+    100% { opacity: 0; background-position: -200% 0; }
+  }
 }
 

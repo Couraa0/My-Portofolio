@@ -18,13 +18,12 @@ import {
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { useCVLink } from "@/hooks/useCVLink";
-import { LaptopMockup } from "@/components/LaptopMockup";
-import { PhoneMockup } from "@/components/PhoneMockup";
-
+import { HeroBanner } from "@/components/HeroBanner";
 import SocialFeed from "@/components/SocialFeed";
 
+import { FeaturedProjects } from "@/components/FeaturedProjects";
+
 const Skills = lazy(() => import("@/components/Skills"));
-const FeaturedProjects = lazy(() => import("@/components/FeaturedProjects").then(module => ({ default: module.FeaturedProjects })));
 const HomeAchievements = lazy(() => import("@/components/HomeAchievements").then(module => ({ default: module.HomeAchievements })));
 const DecryptionGame = lazy(() => import("@/components/DecryptionGame"));
 
@@ -269,17 +268,18 @@ const Index = () => {
               </motion.div>
             </motion.div>
 
-            {/* ═════ RIGHT: HIGH-TECH DEVICE WORK BENCH ═════ */}
+            {/* ═════ RIGHT: HERO SLIDE BANNER (PROJECT & ACHIEVEMENT HIGHLIGHTS) ═════ */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.25, ease: [0.25, 0.4, 0.25, 1] }}
-              className={`hidden lg:flex relative flex-col items-center justify-center -translate-y-8 lg:-translate-y-12 ${layoutMode === "navbar" ? "lg:col-span-6 xl:col-span-7" : "w-full max-w-2xl mx-auto mt-12"}`}
+              className={`flex relative flex-col items-center justify-center -translate-y-4 lg:-translate-y-8 ${
+                layoutMode === "navbar"
+                  ? "lg:col-span-6 xl:col-span-7"
+                  : "w-full max-w-2xl mx-auto mt-12"
+              }`}
             >
-              <div className="relative w-full max-w-[500px] xl:max-w-[550px] aspect-[16/10] px-3 pb-16">
-                <LaptopMockup />
-                <PhoneMockup />
-              </div>
+              <HeroBanner />
             </motion.div>
           </div>
         </div>

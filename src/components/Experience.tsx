@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Briefcase, Loader2, MapPin, Terminal, Calendar, ChevronRight, Trophy } from "lucide-react";
+import { Briefcase, Loader2, MapPin, Terminal, Calendar, ChevronRight, Trophy, Sparkles, Layers, Cpu, Building2, Wrench, ArrowRight, Award } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import AnimatedSection from "./AnimatedSection";
 import { useEffect, useState } from "react";
@@ -93,15 +93,24 @@ const Experience = () => {
   const [flattenedCompetitions, setFlattenedCompetitions] = useState<FlattenedCompetition[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"career" | "competitions" | "all">("career");
   const [activeCareerIndex, setActiveCareerIndex] = useState<number>(0);
   const [activeCompIndex, setActiveCompIndex] = useState<number>(0);
+
+  const totalRoles = careerExperiences.length;
+  const uniqueCompanies = new Set(careerExperiences.map((e) => e.company)).size;
+  const totalCompetitions = flattenedCompetitions.length;
+  const totalTools = new Set([
+    ...careerExperiences.flatMap((e) => e.tools || []),
+    ...flattenedCompetitions.flatMap((c) => c.skills || []),
+  ]).size;
 
   useEffect(() => {
     Promise.all([getExperiences(), getCompetitions()])
       .then(([expData, compData]) => {
         const expMapped = expData.map(adaptExp);
         setCareerExperiences(expMapped);
-        
+
         const flatComps: FlattenedCompetition[] = compData.map((c) => ({
           id: c.id!,
           parentExperienceId: "",
@@ -116,7 +125,7 @@ const Experience = () => {
           logo: c.logo_url,
         }));
         setFlattenedCompetitions(flatComps);
-        
+
         if (expMapped.length > 0) setActiveCareerIndex(0);
         if (flatComps.length > 0) setActiveCompIndex(0);
       })
@@ -130,7 +139,18 @@ const Experience = () => {
 
         {/* === KARIER HEADING === */}
         <AnimatedSection>
-          <div className="mb-10 pb-6 border-b border-border/60 relative">
+          <div className="mb-8 pb-6 border-b border-border/60 relative">
+            <span
+              className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1 text-xs font-semibold mb-3 border"
+              style={{
+                background: "hsl(215 100% 55% / 0.08)",
+                borderColor: "hsl(215 100% 55% / 0.25)",
+                color: "hsl(215 100% 50%)",
+              }}
+            >
+              <Sparkles size={13} className="text-sky-500" />
+              CAREER & COMPETITION TRACK
+            </span>
             <h2 className="font-heading text-2xl md:text-3xl font-bold flex items-center gap-3 mb-3 text-foreground">
               <Briefcase size={28} className="text-blue-500" />
               {t("Experience")}
@@ -139,7 +159,7 @@ const Experience = () => {
               {t("Experience Subtitle")}
             </p>
 
-            {/* Coura Peace mascot - celebrating near title */}
+            {/* Coura Peace mascot */}
             <motion.img
               src="/Coura - Peace.png"
               alt="Coura mascot celebrating"
@@ -169,144 +189,174 @@ const Experience = () => {
         )}
 
         {/* Content */}
-        {!loading && !error && (careerExperiences.length > 0 || flattenedCompetitions.length > 0) && (
+        {!loading && !error && (
           <>
-            {/* === INTERACTIVE TIMELINE WORKSPACE === */}
-            <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 max-w-5xl mx-auto items-stretch mb-12 lg:mb-24">
-              
-              <div className="lg:col-span-5 flex flex-col gap-3.5 pr-1">
-                <h3 className="font-mono text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-1">
-                  CAREER_NODE_DIRECTORY
-                </h3>
+            {/* === SECTION 1: PROFESSIONAL EXPERIENCE === */}
+            {careerExperiences.length > 0 && (
+              <div className="mb-20">
 
-                <div className="flex flex-col gap-3 relative pl-4 border-l-2 border-border/50">
-                  {careerExperiences.map((exp, idx) => {
-                    const isActive = activeCareerIndex === idx;
-                    
-                    return (
-                      <AnimatedSection key={exp.id} delay={idx * 0.05} className="w-full">
-                        <div
-                          onClick={() => setActiveCareerIndex(idx)}
-                          className={`relative p-4 rounded-xl border transition-all duration-300 cursor-pointer flex flex-col group ${
-                            isActive
-                              ? "bg-slate-50 dark:bg-slate-900 border-blue-500/30 shadow-[0_4px_20px_rgba(37,99,235,0.03)]"
-                              : "bg-card border-border/60 hover:border-blue-500/20"
-                          }`}
-                        >
-                          <div 
-                            className={`absolute -left-[23px] top-[26px] w-3 h-3 rounded-full border-2 transition-all ${
-                              isActive ? "bg-blue-600 border-background scale-110 shadow-md shadow-blue-500/50" : "bg-card border-border/60 group-hover:border-blue-500/30"
-                            }`} 
-                          />
-                          <div className="flex items-center gap-3">
-                            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-white dark:bg-slate-950 flex items-center justify-center p-1.5 border border-border shadow-sm overflow-hidden">
-                              {exp.logo ? <img src={exp.logo} alt={exp.company} className="object-contain w-full h-full" /> : <Briefcase className="text-slate-400 dark:text-slate-600 w-5 h-5" />}
-                            </div>
-                            <div className="min-w-0 flex-1 text-left">
-                              <h4 className="font-heading font-bold text-sm text-foreground group-hover:text-blue-500 transition-colors truncate leading-snug">
-                                {exp.role}
-                              </h4>
-                              <p className="text-xs text-muted-foreground mt-0.5 truncate font-semibold">
-                                {exp.company}
-                              </p>
-                            </div>
-                            <ChevronRight size={14} className={`text-slate-400 shrink-0 transition-transform duration-300 ${isActive ? "translate-x-0 text-blue-500" : "-translate-x-1 opacity-0 group-hover:opacity-100"}`} />
-                          </div>
-                        </div>
+                {/* Professional Experience Workspace */}
+                <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 max-w-5xl mx-auto items-stretch">
+                  {/* Left Column: Work Cards (5 cols) - Scrollable without clipping */}
+                  <div className="lg:col-span-5 flex flex-col gap-3.5 text-left max-h-[580px] overflow-y-auto px-2 py-1">
+                    <h3 className="font-mono text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-1 flex items-center gap-1.5 sticky top-0 bg-background/95 backdrop-blur-sm py-1 z-20">
+                      <Sparkles size={12} className="text-blue-500" />
+                      CAREER_NODES ({careerExperiences.length})
+                    </h3>
 
-                        {/* Mobile detail panel — shown inline below active card */}
-                        <AnimatePresence>
-                          {isActive && (
-                            <motion.div
-                              key={`career-detail-${idx}`}
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: "auto" }}
-                              exit={{ opacity: 0, height: 0 }}
-                              transition={{ duration: 0.3 }}
-                              className="lg:hidden overflow-hidden mt-2"
+                    <div className="flex flex-col gap-3 relative pl-4 ml-3 border-l-2 border-border/50">
+                      {careerExperiences.map((exp, idx) => {
+                        const isActive = activeCareerIndex === idx;
+
+                        return (
+                          <AnimatedSection key={exp.id} delay={idx * 0.05} className="w-full">
+                            <div
+                              onClick={() => setActiveCareerIndex(idx)}
+                              className={`group relative p-4 rounded-2xl glass-card-premium transition-all duration-300 cursor-pointer flex flex-col ${isActive
+                                ? "border-blue-500 ring-2 ring-blue-500/20 shadow-lg shadow-blue-500/10 scale-[1.01]"
+                                : "hover:border-blue-500/40"
+                                }`}
                             >
-                              <div className="rounded-xl border border-border bg-slate-50/80 dark:bg-slate-900/30 p-4 relative overflow-hidden">
-                                <div className="absolute inset-0 bg-grid opacity-[0.06] pointer-events-none" />
-                                <div className="relative z-10">
-                                  <MissionDebrief exp={careerExperiences[activeCareerIndex]} t={t} />
+                              {/* HUD Corners */}
+                              <div className="absolute top-1 left-1 w-2.5 h-2.5 border-t border-l border-blue-500/0 group-hover:border-blue-500/50 transition-colors duration-300 z-10" />
+                              <div className="absolute top-1 right-1 w-2.5 h-2.5 border-t border-r border-blue-500/0 group-hover:border-blue-500/50 transition-colors duration-300 z-10" />
+                              <div className="absolute bottom-1 left-1 w-2.5 h-2.5 border-b border-l border-blue-500/0 group-hover:border-blue-500/50 transition-colors duration-300 z-10" />
+                              <div className="absolute bottom-1 right-1 w-2.5 h-2.5 border-b border-r border-blue-500/0 group-hover:border-blue-500/50 transition-colors duration-300 z-10" />
+
+                              <div
+                                className={`absolute -left-[23px] top-[26px] w-3.5 h-3.5 rounded-full border-2 transition-all ${isActive ? "bg-blue-600 border-background scale-125 shadow-lg shadow-blue-500/60" : "bg-card border-border/60 group-hover:border-blue-500/40"
+                                  }`}
+                              />
+
+                              <div className="flex items-center gap-3">
+                                <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-white dark:bg-slate-950 flex items-center justify-center p-1.5 border border-border shadow-sm overflow-hidden group-hover:scale-105 transition-transform">
+                                  {exp.logo ? <img src={exp.logo} alt={exp.company} className="object-contain w-full h-full" /> : <Briefcase className="text-slate-400 dark:text-slate-600 w-5 h-5" />}
                                 </div>
+                                <div className="min-w-0 flex-1 text-left">
+                                  <span className="font-mono text-[9px] text-blue-500 font-bold block mb-0.5">{exp.period}</span>
+                                  <h4 className="font-heading font-extrabold text-sm text-foreground group-hover:text-blue-500 transition-colors truncate leading-snug">
+                                    {exp.role}
+                                  </h4>
+                                  <p className="text-xs text-muted-foreground mt-0.5 truncate font-medium">
+                                    {exp.company} • {exp.location}
+                                  </p>
+                                </div>
+                                <ChevronRight size={14} className={`text-slate-400 shrink-0 transition-transform duration-300 ${isActive ? "translate-x-0 text-blue-500" : "-translate-x-1 opacity-0 group-hover:opacity-100"}`} />
                               </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </AnimatedSection>
-                    );
-                  })}
+
+                              {/* Tools tags */}
+                              {exp.tools && exp.tools.length > 0 && (
+                                <div className="flex flex-wrap gap-1 mt-3 pt-2 border-t border-border/30">
+                                  {exp.tools.slice(0, 3).map((t) => (
+                                    <span key={t} className="px-1.5 py-0.5 rounded text-[8px] font-mono font-bold bg-secondary text-muted-foreground">
+                                      {t}
+                                    </span>
+                                  ))}
+                                  {exp.tools.length > 3 && (
+                                    <span className="text-[8px] font-mono text-muted-foreground font-bold self-center">
+                                      +{exp.tools.length - 3}
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Mobile detail panel */}
+                            <AnimatePresence>
+                              {isActive && (
+                                <motion.div
+                                  key={`career-detail-${idx}`}
+                                  initial={{ opacity: 0, height: 0 }}
+                                  animate={{ opacity: 1, height: "auto" }}
+                                  exit={{ opacity: 0, height: 0 }}
+                                  transition={{ duration: 0.3 }}
+                                  className="lg:hidden overflow-hidden mt-2"
+                                >
+                                  <div className="rounded-2xl border border-border bg-slate-50/80 dark:bg-slate-900/30 p-4 relative overflow-hidden">
+                                    <div className="absolute inset-0 bg-grid opacity-[0.06] pointer-events-none" />
+                                    <div className="relative z-10">
+                                      <MissionDebrief exp={careerExperiences[activeCareerIndex]} t={t} />
+                                    </div>
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </AnimatedSection>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Right Column: Work Debrief Console (7 cols) */}
+                  <div className="hidden lg:block lg:col-span-7 h-full">
+                    <div className="sticky top-24 h-full min-h-[520px] rounded-3xl border border-border bg-slate-50/50 dark:bg-slate-900/10 backdrop-blur-md p-6 relative overflow-hidden shadow-inner flex flex-col justify-between">
+                      <div className="absolute inset-0 bg-grid opacity-[0.08] pointer-events-none" />
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={`work-console-${activeCareerIndex}`}
+                          initial={{ opacity: 0, scale: 0.98 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.98 }}
+                          transition={{ duration: 0.25 }}
+                          className="flex-grow flex flex-col justify-between h-full relative z-10"
+                        >
+                          <MissionDebrief exp={careerExperiences[activeCareerIndex]} t={t} />
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
+                  </div>
                 </div>
               </div>
+            )}
 
-              <div className="hidden lg:block lg:col-span-7 h-full">
-                <div className="h-full rounded-2xl border border-border bg-slate-50/50 dark:bg-slate-900/10 backdrop-blur-sm p-6 relative overflow-hidden shadow-inner flex flex-col justify-between">
-                  <div className="absolute inset-0 bg-grid opacity-[0.08] pointer-events-none" />
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={activeCareerIndex}
-                      initial={{ opacity: 0, scale: 0.98 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.98 }}
-                      transition={{ duration: 0.25 }}
-                      className="flex-grow flex flex-col justify-between h-full relative z-10"
-                    >
-                      <MissionDebrief exp={careerExperiences[activeCareerIndex]} t={t} />
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
-              </div>
-            </div>
-
-            {/* === COMPETITIVE EXPERIENCE HEADING === */}
+            {/* === SECTION 2: COMPETITIVE EXPERIENCE === */}
             {flattenedCompetitions.length > 0 && (
-              <>
+              <div>
                 <AnimatedSection>
-                  <div className="mb-10 pt-6 border-t border-border/40 relative">
-                    <h2 className="font-heading text-2xl md:text-3xl font-bold flex items-center gap-3 mb-3 text-foreground">
-                      <Trophy size={28} className="text-blue-500" />
+                  <div className="flex items-center justify-between mb-6 pb-3 border-b border-border/50">
+                    <h3 className="font-heading text-xl font-extrabold flex items-center gap-2.5 text-foreground">
+                      <Trophy size={22} className="text-amber-500" />
                       {t("Competitive Experience") || "Competitive Experience"}
-                    </h2>
-                    <p className="text-muted-foreground text-sm max-w-2xl">
-                      {t("Competitive Experience Subtitle") || "Inovasi dan pencapaian melalui kompetisi tingkat nasional."}
-                    </p>
-
-                    {/* Coura Peace mascot - near competitive experience */}
-                    <motion.img
-                      src="/Coura - Peace.png"
-                      alt="Coura mascot celebrating"
-                      className="absolute -right-2 sm:right-0 -top-4 w-16 sm:w-20 h-auto drop-shadow-md select-none hidden md:block pointer-events-none"
-                      animate={{ y: [0, -6, 0], rotate: [0, 4, 0] }}
-                      transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-                      draggable={false}
-                    />
+                    </h3>
+                    <span className="text-xs font-mono font-bold text-muted-foreground bg-amber-500/10 text-amber-600 dark:text-amber-400 px-3 py-1 rounded-full border border-amber-500/20">
+                      {flattenedCompetitions.length} MILESTONES
+                    </span>
                   </div>
                 </AnimatedSection>
 
-                  {/* === INTERACTIVE TIMELINE WORKSPACE FOR COMPETITIONS === */}
-                <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 max-w-5xl mx-auto items-stretch mb-12 lg:mb-24">
-                  <div className="lg:col-span-5 flex flex-col gap-3.5 lg:pr-1 w-full min-w-0">
-                    <h3 className="font-mono text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-1">
-                      COMPETITION_NODE_DIRECTORY
+                {/* Competitive Experience Workspace */}
+                <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 max-w-5xl mx-auto items-stretch">
+                  {/* Left Column: Competition Cards (5 cols) - Scrollable without clipping */}
+                  <div className="lg:col-span-5 flex flex-col gap-3.5 text-left max-h-[580px] overflow-y-auto px-2 py-1">
+                    <h3 className="font-mono text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-1 flex items-center gap-1.5 sticky top-0 bg-background/95 backdrop-blur-sm py-1 z-20">
+                      <Sparkles size={12} className="text-amber-500" />
+                      COMPETITION_NODES ({flattenedCompetitions.length})
                     </h3>
-                    <div className="flex flex-col gap-3 relative pl-4 border-l-2 border-border/50 overflow-hidden">
+
+                    <div className="flex flex-col gap-3 relative pl-4 ml-3 border-l-2 border-border/50">
                       {flattenedCompetitions.map((comp, idx) => {
                         const isActive = activeCompIndex === idx;
                         const theme = COMPETITION_THEMES[idx % COMPETITION_THEMES.length];
+
                         return (
-                          <AnimatedSection key={comp.id} delay={idx * 0.05} className="w-full min-w-0">
+                          <AnimatedSection key={comp.id} delay={idx * 0.05} className="w-full">
                             <div
                               onClick={() => setActiveCompIndex(idx)}
-                              className={`relative p-4 rounded-xl border transition-all duration-300 cursor-pointer flex flex-col group w-full min-w-0 overflow-hidden ${
-                                isActive
-                                  ? "bg-slate-50 dark:bg-slate-900 border-blue-500/30 shadow-[0_4px_20px_rgba(37,99,235,0.03)]"
-                                  : "bg-card border-border/60 hover:border-blue-500/20"
-                              }`}
+                              className={`group relative p-4 rounded-2xl glass-card-premium transition-all duration-300 cursor-pointer flex flex-col w-full min-w-0 overflow-hidden ${isActive
+                                ? "border-amber-500 ring-2 ring-amber-500/20 shadow-lg shadow-amber-500/10 scale-[1.01]"
+                                : "hover:border-amber-500/40"
+                                }`}
                             >
-                              <div className={`absolute -left-[23px] top-[26px] w-3 h-3 rounded-full border-2 transition-all ${isActive ? "bg-blue-600 border-background scale-110 shadow-md shadow-blue-500/50" : "bg-card border-border/60 group-hover:border-blue-500/30"}`} />
+                              {/* HUD Corners */}
+                              <div className="absolute top-1 left-1 w-2.5 h-2.5 border-t border-l border-amber-500/0 group-hover:border-amber-500/50 transition-colors duration-300 z-10" />
+                              <div className="absolute top-1 right-1 w-2.5 h-2.5 border-t border-r border-amber-500/0 group-hover:border-amber-500/50 transition-colors duration-300 z-10" />
+                              <div className="absolute bottom-1 left-1 w-2.5 h-2.5 border-b border-l border-amber-500/0 group-hover:border-amber-500/50 transition-colors duration-300 z-10" />
+                              <div className="absolute bottom-1 right-1 w-2.5 h-2.5 border-b border-r border-amber-500/0 group-hover:border-amber-500/50 transition-colors duration-300 z-10" />
+
+                              <div className={`absolute -left-[23px] top-[26px] w-3.5 h-3.5 rounded-full border-2 transition-all ${isActive ? "bg-amber-500 border-background scale-125 shadow-lg shadow-amber-500/60" : "bg-card border-border/60 group-hover:border-amber-500/40"}`} />
+
                               <div className="flex items-center gap-3">
-                                <div className={`flex-shrink-0 w-10 h-10 rounded-xl bg-white dark:bg-slate-950 flex items-center justify-center border border-border shadow-sm overflow-hidden ${comp.logo ? 'p-0' : `p-1.5 ${theme.bg} ${theme.border}`}`}>
+                                <div className={`flex-shrink-0 w-11 h-11 rounded-xl bg-white dark:bg-slate-950 flex items-center justify-center border border-border shadow-sm overflow-hidden group-hover:scale-105 transition-transform ${comp.logo ? 'p-0' : `p-1.5 ${theme.bg} ${theme.border}`}`}>
                                   {comp.logo ? (
                                     <img src={comp.logo} alt={comp.title} className="object-cover w-full h-full" />
                                   ) : (
@@ -314,24 +364,25 @@ const Experience = () => {
                                   )}
                                 </div>
                                 <div className="min-w-0 flex-1 text-left">
-                                  <span className="font-mono text-[9px] text-slate-400 block mb-0.5">{comp.period}</span>
-                                  <h4 className="font-heading font-bold text-sm text-foreground group-hover:text-blue-500 transition-colors truncate leading-snug">
+                                  <span className="font-mono text-[9px] text-amber-500 font-bold block mb-0.5">{comp.period}</span>
+                                  <h4 className="font-heading font-extrabold text-sm text-foreground group-hover:text-amber-500 transition-colors truncate leading-snug">
                                     {comp.role}
                                   </h4>
-                                  <p className="text-xs text-muted-foreground mt-0.5 truncate font-semibold">
+                                  <p className="text-xs text-muted-foreground mt-0.5 truncate font-medium">
                                     {comp.title}
                                   </p>
                                 </div>
-                                <ChevronRight size={14} className={`text-slate-400 shrink-0 transition-transform duration-300 ${isActive ? "translate-x-0 text-blue-500" : "-translate-x-1 opacity-0 group-hover:opacity-100"}`} />
+                                <ChevronRight size={14} className={`text-slate-400 shrink-0 transition-transform duration-300 ${isActive ? "translate-x-0 text-amber-500" : "-translate-x-1 opacity-0 group-hover:opacity-100"}`} />
                               </div>
+
                               <div className="flex flex-wrap gap-1 mt-2.5">
-                                <span className={`px-2 py-0.5 rounded text-[8px] font-extrabold tracking-wide flex items-center gap-0.5 ${theme.pill}`}>
+                                <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-extrabold tracking-wide flex items-center gap-1 shadow-sm ${theme.pill}`}>
                                   🏆 {comp.award}
                                 </span>
                               </div>
                             </div>
 
-                            {/* Mobile detail panel — shown inline below active card */}
+                            {/* Mobile detail panel */}
                             <AnimatePresence>
                               {isActive && (
                                 <motion.div
@@ -342,7 +393,7 @@ const Experience = () => {
                                   transition={{ duration: 0.3 }}
                                   className="lg:hidden overflow-hidden mt-2 w-full max-w-full"
                                 >
-                                  <div className="rounded-xl border border-border bg-slate-50/80 dark:bg-slate-900/30 p-3 w-full max-w-full overflow-hidden">
+                                  <div className="rounded-2xl border border-border bg-slate-50/80 dark:bg-slate-900/30 p-4 w-full max-w-full overflow-hidden">
                                     <CompetitionDebrief comp={flattenedCompetitions[activeCompIndex]} theme={COMPETITION_THEMES[activeCompIndex % COMPETITION_THEMES.length]} />
                                   </div>
                                 </motion.div>
@@ -354,12 +405,13 @@ const Experience = () => {
                     </div>
                   </div>
 
+                  {/* Right Column: Competition Debrief Console (7 cols) */}
                   <div className="hidden lg:block lg:col-span-7 h-full">
-                    <div className="h-full rounded-2xl border border-border bg-slate-50/50 dark:bg-slate-900/10 backdrop-blur-sm p-6 relative overflow-hidden shadow-inner flex flex-col justify-between">
+                    <div className="sticky top-24 h-full min-h-[520px] rounded-3xl border border-border bg-slate-50/50 dark:bg-slate-900/10 backdrop-blur-md p-6 relative overflow-hidden shadow-inner flex flex-col justify-between">
                       <div className="absolute inset-0 bg-grid opacity-[0.08] pointer-events-none" />
                       <AnimatePresence mode="wait">
                         <motion.div
-                          key={activeCompIndex}
+                          key={`comp-console-${activeCompIndex}`}
                           initial={{ opacity: 0, scale: 0.98 }}
                           animate={{ opacity: 1, scale: 1 }}
                           exit={{ opacity: 0, scale: 0.98 }}
@@ -372,7 +424,7 @@ const Experience = () => {
                     </div>
                   </div>
                 </div>
-              </>
+              </div>
             )}
           </>
         )}
@@ -486,7 +538,7 @@ const CompetitionDebrief = ({ comp, theme }: { comp: FlattenedCompetition; theme
       {comp.what_was_built && (
         <div className="space-y-1.5 min-w-0">
           <h4 className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="22" x2="18" y1="12" y2="12"/><line x1="6" x2="2" y1="12" y2="12"/><line x1="12" x2="12" y1="6" y2="2"/><line x1="12" x2="12" y1="22" y2="18"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="22" x2="18" y1="12" y2="12" /><line x1="6" x2="2" y1="12" y2="12" /><line x1="12" x2="12" y1="6" y2="2" /><line x1="12" x2="12" y1="22" y2="18" /></svg>
             WHAT_WAS_BUILT
           </h4>
           <div className={`p-2.5 rounded-lg border text-[11px] leading-relaxed text-slate-600 dark:text-slate-300 font-medium break-words overflow-hidden ${theme.boxBg}`}>
@@ -499,7 +551,7 @@ const CompetitionDebrief = ({ comp, theme }: { comp: FlattenedCompetition; theme
       {comp.impact_achievements && comp.impact_achievements.length > 0 && (
         <div className="space-y-1.5 min-w-0">
           <h4 className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
             IMPACT_AND_ACHIEVEMENTS
           </h4>
           <ul className="space-y-2 text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">

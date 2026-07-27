@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import AnimatedSection from "./AnimatedSection";
-import { Search, ExternalLink, QrCode, Loader2, ChevronLeft, ChevronRight, Award, ShieldAlert, CheckCircle2, X } from "lucide-react";
+import { Search, ExternalLink, QrCode, Loader2, ChevronLeft, ChevronRight, Award, ShieldAlert, CheckCircle2, X, Trophy, Medal, ArrowRight, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getAchievements, type Achievement as DBAchievement } from "@/lib/supabase";
 
@@ -161,40 +161,90 @@ export default function Achievements() {
           </div>
         </AnimatedSection>
 
-        {/* Search & Filters */}
+        {/* Dynamic Stats Counter Bar for All Categories */}
+        {!loading && !error && achievementsData.length > 0 && (
+          <AnimatedSection delay={0.03}>
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-4 mb-8">
+              {Array.from(
+                achievementsData.reduce((map, item) => {
+                  const key = item.type || "Certification";
+                  map.set(key, (map.get(key) || 0) + 1);
+                  return map;
+                }, new Map<string, number>())
+              ).map(([type, count]) => {
+                const lower = type.toLowerCase();
+                let emoji = "🏅";
+                if (lower.includes("award")) emoji = "🏆";
+                else if (lower.includes("certif")) emoji = "📜";
+                else if (lower.includes("course")) emoji = "🎓";
+                else if (lower.includes("pro")) emoji = "⭐";
+
+                return (
+                  <div
+                    key={type}
+                    className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-card border border-border/60 shadow-sm transition-transform hover:scale-105"
+                  >
+                    <span className="text-lg">{emoji}</span>
+                    <div className="text-left">
+                      <span className="text-base font-extrabold text-foreground leading-none">
+                        {count}
+                      </span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-1.5 font-mono">
+                        {type}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </AnimatedSection>
+        )}
+
+        {/* Search & Redesigned Type Filters */}
         <AnimatedSection delay={0.05}>
-          <div className="grid md:grid-cols-12 gap-4 items-center mb-8">
-            <div className="md:col-span-6 relative group">
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 mb-8">
+            {/* Search Input */}
+            <div className="relative flex-1 group">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-blue-500 transition-colors" size={16} />
               <input
                 type="text"
                 placeholder="Search credentials directory..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-card border border-border/60 rounded-xl outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10 text-sm h-11 transition-all"
+                className="w-full pl-10 pr-4 py-2 bg-card border border-border/60 rounded-2xl outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10 text-xs font-medium h-11 transition-all shadow-sm"
               />
             </div>
 
-            {/* Type Filters */}
-            <div className="md:col-span-6 flex flex-wrap items-center gap-1.5 md:justify-end">
+            {/* Sliding Pill Type Filters */}
+            <div className="relative flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl bg-secondary/50 border border-border/60 backdrop-blur-sm shadow-sm justify-center sm:justify-start">
               {types.map((type) => (
                 <button
                   key={type}
                   onClick={() => setSelectedType(type)}
-                  className={`px-3.5 py-1.5 rounded-lg text-[10px] font-bold transition-all duration-200 border ${
+                  className={`relative flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-colors duration-300 ${
                     selectedType === type
-                      ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/10 scale-102"
-                      : "bg-card text-muted-foreground border-border/60 hover:border-slate-300 dark:hover:border-slate-800 hover:text-foreground"
+                      ? "text-white"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  {type.toUpperCase()}
+                  {selectedType === type && (
+                    <motion.div
+                      layoutId="achievementTypePill"
+                      className="absolute inset-0 rounded-xl bg-blue-600 shadow-md shadow-blue-500/20 z-0"
+                      transition={{ type: "spring", stiffness: 400, damping: 35 }}
+                    />
+                  )}
+                  <span className="relative z-10 flex items-center gap-1">
+                    {type.toLowerCase() === "award" ? <Trophy size={12} /> : <Medal size={12} />}
+                    {type.toUpperCase()}
+                  </span>
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="mb-8 text-sm text-muted-foreground font-medium flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+          <div className="mb-6 text-xs text-muted-foreground font-mono font-bold flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-blue-500 animate-ping" />
             Showing {filteredData.length} {t("achievements") || "achievements"}
           </div>
         </AnimatedSection>
@@ -223,7 +273,9 @@ export default function Achievements() {
             <div className="lg:col-span-5 flex flex-col gap-3 max-h-[750px] overflow-y-auto pr-1">
               {filteredData.map((item, index) => {
                 const isActive = activeItem?.id === item.id;
-                
+                const isAward = item.type?.toLowerCase() === "award";
+                const iconEmoji = isAward ? "🏆" : "🏅";
+
                 return (
                   <AnimatedSection key={item.id} delay={0.04 * (index % 6)}>
                     <div
@@ -235,58 +287,90 @@ export default function Achievements() {
                           setCurrentImageIndex(0);
                         }
                       }}
-                      className={`relative p-4 rounded-xl border transition-all duration-350 cursor-pointer flex flex-col gap-3 group ${
+                      className={`group relative flex flex-col rounded-2xl glass-card-premium overflow-hidden cursor-pointer transition-all duration-300 entry-shimmer ${
                         isActive
-                          ? "bg-slate-50 dark:bg-slate-900 border-blue-500/30 shadow-[0_4px_25px_rgba(37,99,235,0.04)]"
-                          : "bg-card border-border/60 hover:border-blue-500/20"
+                          ? "border-blue-500 ring-2 ring-blue-500/20 shadow-lg shadow-blue-500/10"
+                          : "hover:border-blue-500/40 hover:shadow-md"
                       }`}
                     >
-                      {/* Active indicator bar */}
+                      {/* HUD corners */}
+                      <div className="absolute top-1 left-1 w-2.5 h-2.5 border-t border-l border-blue-500/0 group-hover:border-blue-500/50 transition-colors duration-300 z-10" />
+                      <div className="absolute top-1 right-1 w-2.5 h-2.5 border-t border-r border-blue-500/0 group-hover:border-blue-500/50 transition-colors duration-300 z-10" />
+                      <div className="absolute bottom-1 left-1 w-2.5 h-2.5 border-b border-l border-blue-500/0 group-hover:border-blue-500/50 transition-colors duration-300 z-10" />
+                      <div className="absolute bottom-1 right-1 w-2.5 h-2.5 border-b border-r border-blue-500/0 group-hover:border-blue-500/50 transition-colors duration-300 z-10" />
+
+                      {/* Active indicator indicator */}
                       {isActive && (
-                        <div className="absolute left-0 top-3 bottom-3 w-1 rounded-r bg-blue-500" />
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 z-30" />
                       )}
 
-                      <div className="flex items-start gap-3 w-full">
-                        {/* Thumbnail Image */}
-                        <div className="flex-shrink-0 w-11 h-11 rounded-lg overflow-hidden bg-white dark:bg-slate-950 flex items-center justify-center border border-border shadow-sm">
-                          {item.images && item.images.length > 0 ? (
-                            <img 
-                              src={item.images[0]} 
-                              alt={item.title} 
-                              className="object-cover w-full h-full"
-                              onError={(e) => {
-                                e.currentTarget.style.display = 'none';
-                                const parent = e.currentTarget.parentElement;
-                                const fallback = parent?.querySelector('.fallback-icon');
-                                if (fallback) {
-                                  (fallback as HTMLElement).classList.remove('hidden');
-                                  (fallback as HTMLElement).classList.add('flex');
-                                }
-                              }}
-                            />
-                          ) : null}
-                          <Award 
-                            className={`text-slate-400 dark:text-slate-600 w-5 h-5 fallback-icon ${item.images && item.images.length > 0 ? 'hidden' : 'flex'}`} 
+                      {/* Cover Image Area */}
+                      <div className="relative h-36 overflow-hidden bg-muted flex items-center justify-center">
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none z-10" />
+                        {item.images && item.images.length > 0 ? (
+                          <img
+                            src={item.images[0]}
+                            alt={item.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
+                        ) : (
+                          <Award size={40} className="text-slate-300 dark:text-slate-700" />
+                        )}
+
+                        {/* Type badge - glassmorphism */}
+                        <div className="absolute top-2.5 right-2.5 z-20">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-extrabold text-white bg-blue-600/80 backdrop-blur-sm border border-blue-500/20 shadow-md">
+                            {isAward ? <Trophy size={9} /> : <Medal size={9} />}
+                            {item.type}
+                          </span>
                         </div>
-                        
-                        {/* Title Info */}
-                        <div className="flex-1 min-w-0 text-left">
-                          <h4 className="font-heading font-bold text-foreground text-sm leading-snug group-hover:text-blue-500 transition-colors line-clamp-2">
-                            {item.title}
-                          </h4>
-                          <p className="text-xs text-muted-foreground mt-0.5 truncate font-medium">
-                            {item.issuer}
-                          </p>
+
+                        {/* Category badge bottom-left */}
+                        <div className="absolute bottom-2.5 left-2.5 z-20">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold text-white/90 bg-white/10 backdrop-blur-sm border border-white/10">
+                            {item.category}
+                          </span>
                         </div>
                       </div>
 
-                      {/* Meta Tags Footer */}
-                      <div className="flex justify-between items-center text-[10px] border-t border-border/30 pt-2 mt-1">
-                        <span className="font-mono text-slate-400">ISSUED: {item.issueDate}</span>
-                        <span className="px-2 py-0.5 rounded-md bg-blue-500/5 text-blue-600 font-bold border border-blue-500/5 uppercase">
-                          {item.type}
-                        </span>
+                      {/* Content */}
+                      <div className="p-4 flex flex-col flex-grow text-left">
+                        <div className="flex items-start gap-2.5 mb-2">
+                          <span className="text-xl flex-shrink-0 mt-0.5">{iconEmoji}</span>
+                          <div className="min-w-0">
+                            <h4 className="font-heading font-extrabold text-sm text-card-foreground group-hover:text-blue-500 transition-colors line-clamp-2 leading-snug">
+                              {item.title}
+                            </h4>
+                            <p className="text-xs text-muted-foreground mt-0.5 font-medium truncate">
+                              {item.issuer}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex-1" />
+
+                        {/* Footer Meta */}
+                        <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/40 text-[10px]">
+                          <span className="font-mono text-slate-400">
+                            {item.issueDate}
+                          </span>
+                          {item.credentialUrl && item.credentialUrl !== "#" ? (
+                            <a
+                              href={item.credentialUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="font-bold text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              Verify
+                              <ArrowRight size={10} />
+                            </a>
+                          ) : (
+                            <span className="font-bold text-blue-500 uppercase">
+                              {item.type}
+                            </span>
+                          )}
+                        </div>
                       </div>
 
                       {/* Expandable sub-diagnostics scanner (ONLY displayed on mobile/tablet screens) */}
@@ -294,10 +378,10 @@ export default function Achievements() {
                         {isActive && (
                           <motion.div
                             initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1, marginTop: "12px" }}
+                            animate={{ height: "auto", opacity: 1, marginTop: "0px" }}
                             exit={{ height: 0, opacity: 0, marginTop: 0 }}
                             transition={{ duration: 0.25, ease: "easeInOut" }}
-                            className="lg:hidden w-full overflow-hidden border-t border-border/50 pt-4"
+                            className="lg:hidden w-full overflow-hidden border-t border-border/50 p-4"
                             onClick={(e) => e.stopPropagation()}
                           >
                             <DiagnosticPanel 

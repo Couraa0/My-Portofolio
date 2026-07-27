@@ -5,6 +5,7 @@ import { ExternalLink, Github, FolderKanban, Star, ChevronLeft, Loader2, Cpu, Te
 import { useTranslation } from "react-i18next";
 import AnimatedSection from "./AnimatedSection";
 import { getProjects, getProjectCategories, type Project as DBProject } from "@/lib/supabase";
+import { FeaturedProjects } from "./FeaturedProjects";
 
 export interface Project {
   id: string;
@@ -121,8 +122,9 @@ const Projects = () => {
   return (
     <section id="projects" className="py-24 bg-background relative z-10 min-h-screen text-left">
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
+        {/* Main Projects Page Title Header */}
         <AnimatedSection>
-          <div className="mb-10 pb-6 border-b border-border/60 relative">
+          <div className="mb-8 pb-6 border-b border-border/60 relative">
             <h2 className="font-heading text-2xl md:text-3xl font-bold flex items-center gap-3 mb-3 text-foreground">
               <FolderKanban size={28} className="text-blue-500" />
               {t("Projects")}
@@ -145,28 +147,46 @@ const Projects = () => {
           </div>
         </AnimatedSection>
 
-        {/* Filter */}
-        <AnimatedSection delay={0.1}>
-          <div className="flex flex-wrap items-center gap-3 mb-6">
-            <span className="text-xs font-bold tracking-widest text-slate-500 uppercase mr-2">{t("CATEGORY")}</span>
-            {categories.map((f) => (
-              <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={`rounded-full px-5 py-2 text-sm font-bold transition-all duration-300 border ${
-                  filter === f
-                    ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/20 scale-105"
-                    : "bg-card text-muted-foreground border-border/60 hover:border-slate-300 dark:hover:border-slate-800 hover:text-foreground"
-                }`}
-              >
-                {t(f)}
-              </button>
-            ))}
-          </div>
+        {/* Featured Projects Slide Banner (Without redundant section title) */}
+        <div className="mb-12">
+          <FeaturedProjects hideHeader={true} />
+        </div>
 
-          <div className="mb-8 text-sm text-muted-foreground font-medium flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-            Showing {filtered.length} {t("projects") || "projects"}
+        {/* Redesigned Interactive Category Filter */}
+        <AnimatedSection delay={0.1}>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 p-2 rounded-2xl bg-secondary/50 border border-border/60 backdrop-blur-sm shadow-sm">
+            {/* Category Filter Pills */}
+            <div className="relative flex flex-wrap items-center gap-1.5 w-full sm:w-auto justify-center sm:justify-start">
+              {categories.map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-colors duration-300 ${
+                    filter === f
+                      ? "text-white"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {filter === f && (
+                    <motion.div
+                      layoutId="projectFilterPill"
+                      className="absolute inset-0 rounded-xl bg-blue-600 shadow-md shadow-blue-500/20 z-0"
+                      transition={{ type: "spring", stiffness: 400, damping: 35 }}
+                    />
+                  )}
+                  <span className="relative z-10 flex items-center gap-1.5">
+                    {f === "All" ? <Sparkles size={13} /> : <FolderKanban size={13} />}
+                    {t(f)}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* Results counter badge */}
+            <div className="text-xs text-muted-foreground font-mono font-bold flex items-center gap-2 px-3.5 py-2 rounded-xl bg-background border border-border/60 shrink-0">
+              <span className="w-2 h-2 rounded-full bg-sky-400 animate-ping" />
+              <span>Showing {filtered.length} {t("projects") || "projects"}</span>
+            </div>
           </div>
         </AnimatedSection>
 
