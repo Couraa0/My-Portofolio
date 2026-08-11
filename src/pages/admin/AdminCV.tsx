@@ -11,6 +11,7 @@ import {
   RefreshCw,
   Copy,
   Upload,
+  ExternalLink,
 } from 'lucide-react';
 
 export default function AdminCV() {
@@ -57,7 +58,6 @@ export default function AdminCV() {
     e.preventDefault();
     setSaving(true);
     try {
-      // Perform updates for both IDs
       await Promise.all([
         updateCVSettings('cv_en', links.cv_en),
         updateCVSettings('cv_id', links.cv_id),
@@ -65,7 +65,6 @@ export default function AdminCV() {
       toast.success('Link CV berhasil diperbarui!');
       fetchCVLinks();
     } catch (err: any) {
-      console.error('Error saving CV links:', err);
       toast.error('Gagal menyimpan link CV: ' + err.message);
     } finally {
       setSaving(false);
@@ -87,28 +86,18 @@ export default function AdminCV() {
     try {
       const oldUrl = lang === 'en' ? links.cv_en : links.cv_id;
       const fileName = lang === 'en' ? 'cv-english' : 'cv-indonesia';
-      
       const newUrl = await uploadCV(file, fileName);
-      
-      // Delete old storage file if it exists and is on Supabase
-      if (oldUrl) {
-        await deleteCVFile(oldUrl);
-      }
-      
+      if (oldUrl) await deleteCVFile(oldUrl);
       setLinks(prev => ({
         ...prev,
-        [lang === 'en' ? 'cv_en' : 'cv_id']: newUrl
+        [lang === 'en' ? 'cv_en' : 'cv_id']: newUrl,
       }));
-      
       toast.success(`File CV (${lang === 'en' ? 'English' : 'Indonesia'}) berhasil diunggah!`);
     } catch (err: any) {
-      console.error('File upload error:', err);
       toast.error('Gagal mengunggah file CV: ' + err.message);
     } finally {
       if (lang === 'en') setUploadingEn(false);
       else setUploadingId(false);
-      
-      // Reset input element value to allow re-uploading same file
       e.target.value = '';
     }
   };
@@ -130,193 +119,179 @@ INSERT INTO cv_settings (id, url, description) VALUES
 ('cv_en', 'https://drive.google.com/file/d/11IWyd4FVIs1QjJGyMLBSaVOV83W-2fwe/view?usp=sharing', 'CV English / Default'),
 ('cv_id', 'https://drive.google.com/file/d/11IWyd4FVIs1QjJGyMLBSaVOV83W-2fwe/view?usp=sharing', 'CV Indonesia')
 ON CONFLICT (id) DO NOTHING;`;
-    
     navigator.clipboard.writeText(sql);
-    toast.success('Query SQL berhasil disalin ke clipboard!');
+    toast.success('Query SQL berhasil disalin!');
   };
 
   return (
     <div className="admin-section">
-      <div className="section-header">
-        <div>
-          <h2 className="section-heading">CV / Resume Settings</h2>
-          <p className="section-desc">Kelola link Google Drive atau unggah file CV Anda langsung untuk versi Bahasa Inggris dan Bahasa Indonesia</p>
+
+      {/* Page Hero Header */}
+      <div className="page-hero">
+        <div className="page-hero-inner">
+          <div className="page-hero-left">
+            <div className="page-hero-icon page-hero-icon-indigo">
+              <FileText size={24} />
+            </div>
+            <div>
+              <h2 className="page-hero-title">
+                CV / Resume Settings
+              </h2>
+              <p className="page-hero-desc">Kelola link dan file CV untuk versi Bahasa Inggris & Indonesia</p>
+            </div>
+          </div>
+          <div className="page-hero-actions">
+            <button className="btn-secondary" onClick={fetchCVLinks} disabled={loading}>
+              <RefreshCw size={16} className={loading ? 'spin' : ''} />
+              Refresh
+            </button>
+            <button
+              id="save-cv-btn"
+              className="btn-primary"
+              onClick={handleSave as any}
+              disabled={saving || uploadingEn || uploadingId}
+            >
+              {saving ? <Loader2 size={16} className="spin" /> : <Save size={16} />}
+              {saving ? 'Menyimpan...' : 'Simpan CV'}
+            </button>
+          </div>
         </div>
-        <button className="btn-secondary flex items-center gap-2" onClick={fetchCVLinks} disabled={loading}>
-          <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
-          Refresh
-        </button>
       </div>
 
+      {/* Content */}
       {loading ? (
-        <div className="loading-wrap">
-          <Loader2 size={32} className="spin" />
-        </div>
+        <div className="loading-wrap"><Loader2 size={32} className="spin" /></div>
       ) : tableMissing ? (
-        <div className="p-6 rounded-2xl bg-amber-500/10 border border-amber-500/20 max-w-3xl space-y-4">
-          <div className="flex gap-3 items-start">
-            <AlertTriangle className="text-amber-500 shrink-0 mt-1" size={24} />
+        <div className="table-wrap" style={{ padding: '1.5rem' }}>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', marginBottom: '1.25rem' }}>
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: 'hsl(37 100% 50% / 0.1)', color: 'hsl(37 100% 44%)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <AlertTriangle size={22} />
+            </div>
             <div>
-              <h3 className="text-base font-bold text-foreground">Tabel Database Belum Dibuat</h3>
-              <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                Tabel <code className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs">cv_settings</code> tidak ditemukan di database Supabase Anda. Anda perlu membuatnya terlebih dahulu di dashboard Supabase.
+              <h3 style={{ fontFamily: 'var(--a-font-head)', fontSize: '0.95rem', fontWeight: 700, color: 'var(--a-text)', margin: '0 0 0.375rem' }}>Tabel Database Belum Dibuat</h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--a-text-sub)', margin: 0 }}>
+                Tabel <code style={{ padding: '2px 6px', borderRadius: 4, background: 'var(--a-surface2)', fontFamily: 'monospace', fontSize: '0.8em' }}>cv_settings</code> tidak ditemukan. Buat terlebih dahulu di Supabase SQL Editor.
               </p>
             </div>
           </div>
-
-          <div className="space-y-2 pt-2">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">SQL QUERY UNTUK SUPABASE SQL EDITOR</p>
-            <div className="relative rounded-xl overflow-hidden border border-border bg-slate-950 p-4 font-mono text-[11px] text-slate-300 leading-normal select-all">
-              <button 
-                onClick={copySQL}
-                className="absolute top-2.5 right-2.5 p-2 rounded-lg bg-slate-900 border border-slate-800 hover:bg-slate-800 transition-all text-slate-400 hover:text-foreground"
-                title="Salin Query"
-              >
-                <Copy size={14} />
-              </button>
-              <pre style={{ margin: 0, overflowX: 'auto' }}>{`CREATE TABLE IF NOT EXISTS cv_settings (
+          <p style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--a-text-light)', marginBottom: '0.625rem' }}>SQL Query untuk Supabase</p>
+          <div style={{ position: 'relative', borderRadius: 10, overflow: 'hidden', border: '1px solid var(--a-border)', background: '#0f172a', padding: '1rem' }}>
+            <button onClick={copySQL} style={{ position: 'absolute', top: 10, right: 10, padding: '6px 8px', borderRadius: 8, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', color: '#94a3b8', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem' }}>
+              <Copy size={14} /> Salin
+            </button>
+            <pre style={{ margin: 0, color: '#e2e8f0', fontFamily: 'monospace', fontSize: '0.8rem', overflowX: 'auto', whiteSpace: 'pre-wrap' }}>{`CREATE TABLE IF NOT EXISTS cv_settings (
   id VARCHAR(50) PRIMARY KEY,
   url TEXT NOT NULL,
-  description TEXT,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 ALTER TABLE cv_settings ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read" ON cv_settings FOR SELECT USING (true);
+CREATE POLICY "Allow auth all"    ON cv_settings FOR ALL TO authenticated USING (true);
 
-CREATE POLICY "Allow public read access" ON cv_settings FOR SELECT USING (true);
-CREATE POLICY "Allow authenticated all" ON cv_settings FOR ALL TO authenticated USING (true);
-
-INSERT INTO cv_settings (id, url, description) VALUES
-('cv_en', 'https://drive.google.com/file/d/11IWyd4FVIs1QjJGyMLBSaVOV83W-2fwe/view?usp=sharing', 'CV English / Default'),
-('cv_id', 'https://drive.google.com/file/d/11IWyd4FVIs1QjJGyMLBSaVOV83W-2fwe/view?usp=sharing', 'CV Indonesia')
+INSERT INTO cv_settings (id, url) VALUES
+  ('cv_en', 'https://your-cv-link-en'),
+  ('cv_id', 'https://your-cv-link-id')
 ON CONFLICT (id) DO NOTHING;`}</pre>
-            </div>
-            <p className="text-[11px] text-muted-foreground italic">
-              * Silakan salin query di atas, buka dashboard Supabase Anda, masuk ke menu <strong>SQL Editor</strong>, buat query baru, paste query tersebut, lalu jalankan (run). Setelah itu, klik tombol <strong>Refresh</strong> di halaman ini.
-            </p>
           </div>
         </div>
       ) : (
-        <div className="max-w-3xl">
-          {error && <div className="form-error mb-4">{error}</div>}
+        <form onSubmit={handleSave}>
+          {error && <div className="form-error">{error}</div>}
 
-          <form onSubmit={handleSave} className="space-y-6">
+          {/* 2-Column CV Grid */}
+          <div className="cv-page-grid">
+
             {/* English CV Card */}
-            <div className="p-6 rounded-2xl bg-card border border-border shadow-sm space-y-4 hover:border-blue-500/20 transition-all">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
-                  <Globe size={20} />
+            <div className="cv-card">
+              <div className="cv-card-header">
+                <div className="cv-card-icon cv-card-icon-blue">
+                  <Globe size={22} />
                 </div>
-                <div className="text-left">
-                  <h3 className="text-sm font-bold text-foreground">CV / Resume Link (English / Default)</h3>
-                  <p className="text-xs text-muted-foreground">Tautan ini akan digunakan ketika pengunjung memilih bahasa Inggris atau sebagai opsi default.</p>
+                <div>
+                  <h3 className="cv-card-title">CV (English / Default)</h3>
+                  <p className="cv-card-desc">Digunakan saat pengunjung memilih bahasa Inggris</p>
                 </div>
               </div>
 
-              <div className="form-group text-left">
-                <label className="form-label font-semibold">Tautan URL CV *</label>
+              <div className="form-group">
+                <label className="form-label">Tautan URL CV *</label>
                 <input
                   type="url"
                   className="form-input"
                   value={links.cv_en}
                   onChange={(e) => setLinks(prev => ({ ...prev, cv_en: e.target.value }))}
-                  placeholder="https://drive.google.com/file/d/.../view?usp=sharing"
+                  placeholder="https://drive.google.com/file/d/.../view"
                   required
                 />
+                {links.cv_en && (
+                  <a href={links.cv_en} target="_blank" rel="noreferrer" className="link-btn" style={{ marginTop: 6, width: 'auto', padding: '4px 10px', gap: 6, fontSize: '0.78rem', borderRadius: 6 }}>
+                    <ExternalLink size={13} /> Buka Link
+                  </a>
+                )}
               </div>
 
-              <div className="form-group text-left mt-2 pt-2 border-t border-border/40">
-                <label className="form-label font-semibold text-xs text-muted-foreground block mb-2">Atau Unggah File CV Baru (PDF)</label>
-                <div className="flex items-center gap-3">
-                  <input
-                    type="file"
-                    accept=".pdf,application/pdf"
-                    id="file-upload-en"
-                    className="hidden"
-                    onChange={(e) => handleFileUpload(e, 'en')}
-                    disabled={uploadingEn}
-                  />
-                  <label
-                    htmlFor="file-upload-en"
-                    className="btn-secondary flex items-center gap-2 cursor-pointer text-xs font-semibold px-4 py-2 hover:bg-muted transition-all"
-                  >
-                    {uploadingEn ? <Loader2 size={14} className="spin" /> : <Upload size={14} />}
-                    {uploadingEn ? 'Mengunggah...' : 'Pilih File PDF'}
-                  </label>
-                  {links.cv_en && links.cv_en.includes('/storage/v1/object/public/') && (
-                    <span className="text-[11px] text-emerald-500 flex items-center gap-1 font-semibold">
-                      <Check size={14} /> Terunggah di Storage Supabase
-                    </span>
-                  )}
-                </div>
+              <div className="cv-upload-zone" onClick={() => document.getElementById('file-en')?.click()}>
+                {uploadingEn ? (
+                  <><Loader2 size={20} className="spin" style={{ color: 'var(--a-primary)' }} /><p>Sedang mengunggah...</p></>
+                ) : (
+                  <><Upload size={20} style={{ color: 'var(--a-primary)' }} /><p>Klik untuk upload PDF baru</p></>
+                )}
               </div>
+              <input id="file-en" type="file" accept=".pdf" className="hidden" style={{ display: 'none' }} onChange={(e) => handleFileUpload(e, 'en')} disabled={uploadingEn} />
+
+              {links.cv_en?.includes('/storage/v1/object/public/') && (
+                <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.8rem', color: 'var(--a-success)', fontWeight: 600 }}>
+                  <Check size={14} /> Terunggah di Supabase Storage
+                </div>
+              )}
             </div>
 
             {/* Indonesian CV Card */}
-            <div className="p-6 rounded-2xl bg-card border border-border shadow-sm space-y-4 hover:border-emerald-500/20 transition-all">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-                  <FileText size={20} />
+            <div className="cv-card">
+              <div className="cv-card-header">
+                <div className="cv-card-icon cv-card-icon-emerald">
+                  <FileText size={22} />
                 </div>
-                <div className="text-left">
-                  <h3 className="text-sm font-bold text-foreground">CV / Resume Link (Bahasa Indonesia)</h3>
-                  <p className="text-xs text-muted-foreground">Tautan ini akan digunakan ketika pengunjung memilih Bahasa Indonesia di toolbar.</p>
+                <div>
+                  <h3 className="cv-card-title">CV (Bahasa Indonesia)</h3>
+                  <p className="cv-card-desc">Digunakan saat pengunjung memilih Bahasa Indonesia</p>
                 </div>
               </div>
 
-              <div className="form-group text-left">
-                <label className="form-label font-semibold">Tautan URL CV *</label>
+              <div className="form-group">
+                <label className="form-label">Tautan URL CV *</label>
                 <input
                   type="url"
                   className="form-input"
                   value={links.cv_id}
                   onChange={(e) => setLinks(prev => ({ ...prev, cv_id: e.target.value }))}
-                  placeholder="https://drive.google.com/file/d/.../view?usp=sharing"
+                  placeholder="https://drive.google.com/file/d/.../view"
                   required
                 />
+                {links.cv_id && (
+                  <a href={links.cv_id} target="_blank" rel="noreferrer" className="link-btn" style={{ marginTop: 6, width: 'auto', padding: '4px 10px', gap: 6, fontSize: '0.78rem', borderRadius: 6 }}>
+                    <ExternalLink size={13} /> Buka Link
+                  </a>
+                )}
               </div>
 
-              <div className="form-group text-left mt-2 pt-2 border-t border-border/40">
-                <label className="form-label font-semibold text-xs text-muted-foreground block mb-2">Atau Unggah File CV Baru (PDF)</label>
-                <div className="flex items-center gap-3">
-                  <input
-                    type="file"
-                    accept=".pdf,application/pdf"
-                    id="file-upload-id"
-                    className="hidden"
-                    onChange={(e) => handleFileUpload(e, 'id')}
-                    disabled={uploadingId}
-                  />
-                  <label
-                    htmlFor="file-upload-id"
-                    className="btn-secondary flex items-center gap-2 cursor-pointer text-xs font-semibold px-4 py-2 hover:bg-muted transition-all"
-                  >
-                    {uploadingId ? <Loader2 size={14} className="spin" /> : <Upload size={14} />}
-                    {uploadingId ? 'Mengunggah...' : 'Pilih File PDF'}
-                  </label>
-                  {links.cv_id && links.cv_id.includes('/storage/v1/object/public/') && (
-                    <span className="text-[11px] text-emerald-500 flex items-center gap-1 font-semibold">
-                      <Check size={14} /> Terunggah di Storage Supabase
-                    </span>
-                  )}
+              <div className="cv-upload-zone" onClick={() => document.getElementById('file-id')?.click()}>
+                {uploadingId ? (
+                  <><Loader2 size={20} className="spin" style={{ color: 'var(--a-success)' }} /><p>Sedang mengunggah...</p></>
+                ) : (
+                  <><Upload size={20} style={{ color: 'var(--a-success)' }} /><p>Klik untuk upload PDF baru</p></>
+                )}
+              </div>
+              <input id="file-id" type="file" accept=".pdf" className="hidden" style={{ display: 'none' }} onChange={(e) => handleFileUpload(e, 'id')} disabled={uploadingId} />
+
+              {links.cv_id?.includes('/storage/v1/object/public/') && (
+                <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.8rem', color: 'var(--a-success)', fontWeight: 600 }}>
+                  <Check size={14} /> Terunggah di Supabase Storage
                 </div>
-              </div>
+              )}
             </div>
-
-            {/* Form Actions */}
-            <div className="flex justify-end gap-3 pt-2">
-              <button
-                type="submit"
-                id="save-cv-btn"
-                className="btn-primary flex items-center gap-2"
-                disabled={saving || uploadingEn || uploadingId}
-              >
-                {saving ? <Loader2 size={16} className="spin" /> : <Save size={16} />}
-                {saving ? 'Menyimpan...' : 'Simpan Tautan CV'}
-              </button>
-            </div>
-          </form>
-        </div>
+          </div>
+        </form>
       )}
     </div>
   );

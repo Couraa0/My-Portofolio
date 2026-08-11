@@ -159,25 +159,41 @@ export default function AdminExperience() {
 
   return (
     <div className="admin-section">
-      <div className="section-header">
-        <div>
-          <h2 className="section-heading">Experience</h2>
-          <p className="section-desc">{experiences.length} experience tersimpan di database</p>
+      {/* Page Hero */}
+      <div className="page-hero">
+        <div className="page-hero-inner">
+          <div className="page-hero-left">
+            <div className="page-hero-icon page-hero-icon-indigo">
+              <Search size={24} />
+            </div>
+            <div>
+              <h2 className="page-hero-title">
+                Experience
+                <span className="count-badge">{experiences.length}</span>
+              </h2>
+              <p className="page-hero-desc">Riwayat pekerjaan dan pengalaman profesional</p>
+            </div>
+          </div>
+          <div className="page-hero-actions">
+            <button id="add-experience-btn" className="btn-primary" onClick={openCreate}>
+              <Plus size={18} /> Tambah Experience
+            </button>
+          </div>
         </div>
-        <button id="add-experience-btn" className="btn-primary" onClick={openCreate}>
-          <Plus size={18} /> Tambah Experience
-        </button>
       </div>
 
-      <div className="search-wrap">
-        <Search size={18} className="search-icon" />
-        <input
-          type="search"
-          placeholder="Cari experience..."
-          className="search-input"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+      {/* Toolbar */}
+      <div className="page-toolbar">
+        <div className="toolbar-search">
+          <Search size={16} className="search-icon" />
+          <input
+            type="search"
+            placeholder="Cari perusahaan atau posisi..."
+            className="search-input"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
       </div>
 
       {loading ? (
@@ -371,3 +387,4 @@ export default function AdminExperience() {
     </div>
   );
 }
+

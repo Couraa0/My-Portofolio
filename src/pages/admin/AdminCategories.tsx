@@ -87,25 +87,41 @@ export default function AdminCategories() {
 
   return (
     <div className="admin-section">
-      <div className="section-header">
-        <div>
-          <h2 className="section-heading">Project Categories</h2>
-          <p className="section-desc">{categories.length} kategori tersimpan di database</p>
+      {/* Page Hero */}
+      <div className="page-hero">
+        <div className="page-hero-inner">
+          <div className="page-hero-left">
+            <div className="page-hero-icon page-hero-icon-cyan">
+              <Loader2 size={24} />
+            </div>
+            <div>
+              <h2 className="page-hero-title">
+                Project Categories
+                <span className="count-badge">{categories.length}</span>
+              </h2>
+              <p className="page-hero-desc">Kelola kategori untuk pengelompokan project</p>
+            </div>
+          </div>
+          <div className="page-hero-actions">
+            <button className="btn-primary" onClick={openCreate}>
+              <Plus size={18} /> Tambah Kategori
+            </button>
+          </div>
         </div>
-        <button className="btn-primary" onClick={openCreate}>
-          <Plus size={18} /> Tambah Kategori
-        </button>
       </div>
 
-      <div className="search-wrap">
-        <Search size={18} className="search-icon" />
-        <input
-          type="search"
-          placeholder="Cari kategori..."
-          className="search-input"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+      {/* Toolbar */}
+      <div className="page-toolbar">
+        <div className="toolbar-search">
+          <Search size={16} className="search-icon" />
+          <input
+            type="search"
+            placeholder="Cari nama kategori..."
+            className="search-input"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
       </div>
 
       {loading ? (
@@ -201,3 +217,4 @@ export default function AdminCategories() {
     </div>
   );
 }
+

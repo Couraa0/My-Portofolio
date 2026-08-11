@@ -14,10 +14,14 @@ import {
   GraduationCap,
   MessageSquare,
   FileText,
+  BarChart3,
+  ScrollText,
 } from 'lucide-react';
 
 const navItems = [
   { to: `/${ADMIN_PATH}/dashboard`, icon: LayoutDashboard, label: 'Dashboard' },
+  { to: `/${ADMIN_PATH}/analytics`, icon: BarChart3, label: 'Google Analytics' },
+  { to: `/${ADMIN_PATH}/logs`, icon: ScrollText, label: 'Website Logs' },
   { to: `/${ADMIN_PATH}/categories`, icon: FolderOpen, label: 'Categories' },
   { to: `/${ADMIN_PATH}/projects`, icon: FolderOpen, label: 'Projects' },
   { to: `/${ADMIN_PATH}/achievements`, icon: Trophy, label: 'Achievements' },
@@ -153,3 +157,4 @@ export default function AdminLayout() {
     </div>
   );
 }
+

@@ -211,32 +211,44 @@ export default function AdminProjects() {
 
   return (
     <div className="admin-section">
-      {/* Header */}
-      <div className="section-header">
-        <div>
-          <h2 className="section-heading">Projects</h2>
-          <p className="section-desc">{projects.length} project tersimpan di database</p>
-        </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <Link to={`/${ADMIN_PATH}/categories`} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
-            <FolderOpen size={18} /> Kelola Kategori
-          </Link>
-          <button id="add-project-btn" className="btn-primary" onClick={openCreate}>
-            <Plus size={18} /> Tambah Project
-          </button>
+      {/* Page Hero */}
+      <div className="page-hero">
+        <div className="page-hero-inner">
+          <div className="page-hero-left">
+            <div className="page-hero-icon page-hero-icon-blue">
+              <FolderOpen size={24} />
+            </div>
+            <div>
+              <h2 className="page-hero-title">
+                Projects
+                <span className="count-badge">{projects.length}</span>
+              </h2>
+              <p className="page-hero-desc">Kelola semua project yang tampil di portfolio</p>
+            </div>
+          </div>
+          <div className="page-hero-actions">
+            <Link to={`/${ADMIN_PATH}/categories`} className="btn-secondary" style={{ textDecoration: 'none' }}>
+              <FolderOpen size={16} /> Kategori
+            </Link>
+            <button id="add-project-btn" className="btn-primary" onClick={openCreate}>
+              <Plus size={18} /> Tambah Project
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Search */}
-      <div className="search-wrap">
-        <Search size={18} className="search-icon" />
-        <input
-          type="search"
-          placeholder="Cari project..."
-          className="search-input"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+      {/* Toolbar */}
+      <div className="page-toolbar">
+        <div className="toolbar-search">
+          <Search size={16} className="search-icon" />
+          <input
+            type="search"
+            placeholder="Cari project berdasarkan nama atau kategori..."
+            className="search-input"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
       </div>
 
       {/* Table */}
@@ -508,3 +520,4 @@ export default function AdminProjects() {
     </div>
   );
 }
+

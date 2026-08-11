@@ -152,25 +152,41 @@ export default function AdminAchievements() {
 
   return (
     <div className="admin-section">
-      <div className="section-header">
-        <div>
-          <h2 className="section-heading">Achievements</h2>
-          <p className="section-desc">{achievements.length} achievement tersimpan di database</p>
+      {/* Page Hero */}
+      <div className="page-hero">
+        <div className="page-hero-inner">
+          <div className="page-hero-left">
+            <div className="page-hero-icon page-hero-icon-amber">
+              <FileText size={24} />
+            </div>
+            <div>
+              <h2 className="page-hero-title">
+                Achievements
+                <span className="count-badge">{achievements.length}</span>
+              </h2>
+              <p className="page-hero-desc">Sertifikat, penghargaan, dan pencapaian profesional</p>
+            </div>
+          </div>
+          <div className="page-hero-actions">
+            <button id="add-achievement-btn" className="btn-primary" onClick={openCreate}>
+              <Plus size={18} /> Tambah Achievement
+            </button>
+          </div>
         </div>
-        <button id="add-achievement-btn" className="btn-primary" onClick={openCreate}>
-          <Plus size={18} /> Tambah Achievement
-        </button>
       </div>
 
-      <div className="search-wrap">
-        <Search size={18} className="search-icon" />
-        <input
-          type="search"
-          placeholder="Cari achievement..."
-          className="search-input"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+      {/* Toolbar */}
+      <div className="page-toolbar">
+        <div className="toolbar-search">
+          <Search size={16} className="search-icon" />
+          <input
+            type="search"
+            placeholder="Cari achievement berdasarkan judul atau issuer..."
+            className="search-input"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
       </div>
 
       {loading ? (
@@ -370,3 +386,4 @@ export default function AdminAchievements() {
     </div>
   );
 }
+

@@ -141,25 +141,41 @@ export default function AdminCompetitions() {
 
   return (
     <div className="admin-section">
-      <div className="section-header">
-        <div>
-          <h2 className="section-heading">Competitive Experience</h2>
-          <p className="section-desc">{competitions.length} kompetisi tersimpan di database</p>
+      {/* Page Hero */}
+      <div className="page-hero">
+        <div className="page-hero-inner">
+          <div className="page-hero-left">
+            <div className="page-hero-icon page-hero-icon-amber">
+              <Trophy size={24} />
+            </div>
+            <div>
+              <h2 className="page-hero-title">
+                Competitive Experience
+                <span className="count-badge">{competitions.length}</span>
+              </h2>
+              <p className="page-hero-desc">Kompetisi, hackathon, dan lomba yang pernah diikuti</p>
+            </div>
+          </div>
+          <div className="page-hero-actions">
+            <button id="add-competition-btn" className="btn-primary" onClick={openCreate}>
+              <Plus size={18} /> Tambah Kompetisi
+            </button>
+          </div>
         </div>
-        <button id="add-competition-btn" className="btn-primary" onClick={openCreate}>
-          <Plus size={18} /> Tambah Kompetisi
-        </button>
       </div>
 
-      <div className="search-wrap">
-        <Search size={18} className="search-icon" />
-        <input
-          type="search"
-          placeholder="Cari kompetisi..."
-          className="search-input"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+      {/* Toolbar */}
+      <div className="page-toolbar">
+        <div className="toolbar-search">
+          <Search size={16} className="search-icon" />
+          <input
+            type="search"
+            placeholder="Cari nama lomba, role, atau award..."
+            className="search-input"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
       </div>
 
       {loading ? (
@@ -400,3 +416,4 @@ export default function AdminCompetitions() {
     </div>
   );
 }
+

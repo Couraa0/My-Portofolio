@@ -134,25 +134,41 @@ export default function AdminEducation() {
 
   return (
     <div className="admin-section">
-      <div className="section-header">
-        <div>
-          <h2 className="section-heading">Education</h2>
-          <p className="section-desc">{educations.length} riwayat pendidikan tersimpan di database</p>
+      {/* Page Hero */}
+      <div className="page-hero">
+        <div className="page-hero-inner">
+          <div className="page-hero-left">
+            <div className="page-hero-icon page-hero-icon-emerald">
+              <Search size={24} />
+            </div>
+            <div>
+              <h2 className="page-hero-title">
+                Education
+                <span className="count-badge">{educations.length}</span>
+              </h2>
+              <p className="page-hero-desc">Riwayat pendidikan dan institusi akademik</p>
+            </div>
+          </div>
+          <div className="page-hero-actions">
+            <button id="add-education-btn" className="btn-primary" onClick={openCreate}>
+              <Plus size={18} /> Tambah Pendidikan
+            </button>
+          </div>
         </div>
-        <button id="add-education-btn" className="btn-primary" onClick={openCreate}>
-          <Plus size={18} /> Tambah Pendidikan
-        </button>
       </div>
 
-      <div className="search-wrap">
-        <Search size={18} className="search-icon" />
-        <input
-          type="search"
-          placeholder="Cari pendidikan..."
-          className="search-input"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+      {/* Toolbar */}
+      <div className="page-toolbar">
+        <div className="toolbar-search">
+          <Search size={16} className="search-icon" />
+          <input
+            type="search"
+            placeholder="Cari sekolah atau jurusan..."
+            className="search-input"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
       </div>
 
       {loading ? (
@@ -312,3 +328,4 @@ export default function AdminEducation() {
     </div>
   );
 }
+

@@ -16,11 +16,18 @@ import AchievementPage from "./pages/AchievementPage";
 import NotFound from "./pages/NotFound";
 import { ThemeProvider } from "@/components/theme-provider";
 
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { initGA, trackPageView } from "@/lib/ga";
+import { logActivity } from "@/lib/logger";
+
 // Admin imports
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminGuard from "./pages/admin/AdminGuard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
+import AdminLogs from "./pages/admin/AdminLogs";
 import AdminProjects from "./pages/admin/AdminProjects";
 import AdminAchievements from "./pages/admin/AdminAchievements";
 import AdminExperience from "./pages/admin/AdminExperience";
@@ -34,6 +41,31 @@ import { ADMIN_PATH } from "./lib/supabase";
 
 const queryClient = new QueryClient();
 
+// PageTracker component to capture route pageviews & activity log
+const PageTracker = ({ children }: { children: React.ReactNode }) => {
+  const location = useLocation();
+
+  useEffect(() => {
+    initGA();
+  }, []);
+
+  useEffect(() => {
+    trackPageView(location.pathname);
+
+    // Only log public pageviews to activity logger
+    if (!location.pathname.startsWith(`/${ADMIN_PATH}`)) {
+      logActivity({
+        category: 'VISITOR',
+        level: 'INFO',
+        action: `Navigasi ke ${location.pathname}`,
+        page_url: location.pathname,
+      });
+    }
+  }, [location.pathname]);
+
+  return <>{children}</>;
+};
+
 const App = () => (
   <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
     <ErrorBoundary>
@@ -43,40 +75,44 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-              <Routes>
-                <Route element={<Layout />}>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/about" element={<AboutPage />} />
-                  <Route path="/experience" element={<ExperiencePage />} />
-                  <Route path="/projects" element={<ProjectsPage />} />
-                  <Route path="/achievements" element={<AchievementPage />} />
-                  <Route path="/contact" element={<ContactPage />} />
-                </Route>
+              <PageTracker>
+                <Routes>
+                  <Route element={<Layout />}>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/about" element={<AboutPage />} />
+                    <Route path="/experience" element={<ExperiencePage />} />
+                    <Route path="/projects" element={<ProjectsPage />} />
+                    <Route path="/achievements" element={<AchievementPage />} />
+                    <Route path="/contact" element={<ContactPage />} />
+                  </Route>
 
-                {/* Admin Routes */}
-                <Route path={`/${ADMIN_PATH}`} element={<AdminLogin />} />
-                <Route
-                  path={`/${ADMIN_PATH}`}
-                  element={
-                    <AdminGuard>
-                      <AdminLayout />
-                    </AdminGuard>
-                  }
-                >
-                  <Route path="dashboard" element={<AdminDashboard />} />
-                  <Route path="categories" element={<AdminCategories />} />
-                  <Route path="projects" element={<AdminProjects />} />
-                  <Route path="achievements" element={<AdminAchievements />} />
-                  <Route path="experience" element={<AdminExperience />} />
-                  <Route path="competitions" element={<AdminCompetitions />} />
-                  <Route path="education" element={<AdminEducation />} />
-                  <Route path="guestbook" element={<AdminGuestbook />} />
-                  <Route path="cv" element={<AdminCV />} />
-                </Route>
+                  {/* Admin Routes */}
+                  <Route path={`/${ADMIN_PATH}`} element={<AdminLogin />} />
+                  <Route
+                    path={`/${ADMIN_PATH}`}
+                    element={
+                      <AdminGuard>
+                        <AdminLayout />
+                      </AdminGuard>
+                    }
+                  >
+                    <Route path="dashboard" element={<AdminDashboard />} />
+                    <Route path="analytics" element={<AdminAnalytics />} />
+                    <Route path="logs" element={<AdminLogs />} />
+                    <Route path="categories" element={<AdminCategories />} />
+                    <Route path="projects" element={<AdminProjects />} />
+                    <Route path="achievements" element={<AdminAchievements />} />
+                    <Route path="experience" element={<AdminExperience />} />
+                    <Route path="competitions" element={<AdminCompetitions />} />
+                    <Route path="education" element={<AdminEducation />} />
+                    <Route path="guestbook" element={<AdminGuestbook />} />
+                    <Route path="cv" element={<AdminCV />} />
+                  </Route>
 
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </PageTracker>
             </BrowserRouter>
             <Analytics />
           </TooltipProvider>

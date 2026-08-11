@@ -106,29 +106,40 @@ export default function AdminGuestbook() {
 
   return (
     <div className="admin-section">
-      <div className="section-header">
-        <div>
-          <h2 className="section-heading">
-            
-            Guestbook
-          </h2>
-          <p className="section-desc">{messages.length} pesan terdaftar</p>
-        </div>
-        <div className="admin-page-actions flex items-center gap-3">
-          <div className="search-wrap !mb-0">
-            <Search size={16} className="search-icon" />
-            <input 
-              type="text" 
-              placeholder="Search messages..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
+      {/* Page Hero */}
+      <div className="page-hero">
+        <div className="page-hero-inner">
+          <div className="page-hero-left">
+            <div className="page-hero-icon page-hero-icon-rose">
+              <MessageSquare size={24} />
+            </div>
+            <div>
+              <h2 className="page-hero-title">
+                Guestbook
+                <span className="count-badge">{messages.length}</span>
+              </h2>
+              <p className="page-hero-desc">Pesan dari pengunjung portofolio Anda</p>
+            </div>
           </div>
-          <button onClick={fetchMessages} className="btn-secondary" disabled={loading}>
-            <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
-            Refresh
-          </button>
+          <div className="page-hero-actions">
+            <button onClick={fetchMessages} className="btn-secondary" disabled={loading}>
+              <RefreshCw size={16} className={loading ? 'spin' : ''} /> Refresh
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Toolbar */}
+      <div className="page-toolbar">
+        <div className="toolbar-search">
+          <Search size={16} className="search-icon" />
+          <input
+            type="text"
+            placeholder="Cari pesan atau nama pengirim..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
         </div>
       </div>
 
@@ -281,3 +292,4 @@ export default function AdminGuestbook() {
     </div>
   );
 }
+

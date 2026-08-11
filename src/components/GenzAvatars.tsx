@@ -326,7 +326,7 @@ export const AstroExplorer: React.FC<AvatarProps> = ({ size = 48, className = ""
   </svg>
 );
 
-// 9. King Rakha — Raja kulit putih, jubah merah keemasan, dua pedang silang
+// 9. King Rakha
 export const KingRakha: React.FC<AvatarProps> = ({ size = 48, className = "" }) => (
   <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
     <defs>
