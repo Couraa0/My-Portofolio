@@ -147,21 +147,21 @@ const Projects = () => {
           </div>
         </AnimatedSection>
 
-        {/* Featured Projects Slide Banner (Without redundant section title) */}
-        <div className="mb-12">
+        {/* Featured Projects Slide Banner (Hidden on mobile) */}
+        <div className="mb-12 hidden md:block">
           <FeaturedProjects hideHeader={true} />
         </div>
 
         {/* Redesigned Interactive Category Filter */}
         <AnimatedSection delay={0.1}>
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 p-2 rounded-2xl bg-secondary/50 border border-border/60 backdrop-blur-sm shadow-sm">
-            {/* Category Filter Pills */}
-            <div className="relative flex flex-wrap items-center gap-1.5 w-full sm:w-auto justify-center sm:justify-start">
+            {/* Category Filter Pills — Horizontal swipe row on mobile */}
+            <div className="relative flex overflow-x-auto no-scrollbar scroll-smooth gap-1.5 w-full sm:w-auto justify-start items-center py-1 flex-nowrap sm:flex-wrap shrink-0">
               {categories.map((f) => (
                 <button
                   key={f}
                   onClick={() => setFilter(f)}
-                  className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-colors duration-300 ${
+                  className={`relative flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold transition-colors duration-300 shrink-0 whitespace-nowrap ${
                     filter === f
                       ? "text-white"
                       : "text-muted-foreground hover:text-foreground"

@@ -210,11 +210,11 @@ export const FeaturedProjects = ({ hideHeader = false, className = "" }: Feature
                         >
                           {/* Slide Card */}
                           <div
-                            className="relative rounded-2xl overflow-hidden bg-card border border-border/60 cursor-pointer perspective-container entry-shimmer"
+                            className="relative rounded-2xl overflow-hidden bg-card border border-border/60 cursor-pointer perspective-container entry-shimmer flex flex-col md:block"
                             onClick={() => setSelectedProject(project)}
                           >
                             {/* Image Side */}
-                            <div className="relative h-[280px] sm:h-[340px] md:h-[420px] overflow-hidden">
+                            <div className="relative h-[200px] sm:h-[260px] md:h-[420px] overflow-hidden shrink-0">
                               {project.image ? (
                                 <motion.img
                                   src={project.image}
@@ -231,12 +231,12 @@ export const FeaturedProjects = ({ hideHeader = false, className = "" }: Feature
                                 </div>
                               )}
 
-                              {/* Gradient overlay on image bottom */}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none" />
+                              {/* Gradient overlay on image bottom (Desktop only) */}
+                              <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none" />
 
                               {/* Slide Counter */}
-                              <div className="absolute top-4 left-4 sm:top-5 sm:left-5 z-20">
-                                <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-bold font-mono text-white/80 bg-white/10 backdrop-blur-md border border-white/10">
+                              <div className="absolute top-3 left-3 sm:top-5 sm:left-5 z-20">
+                                <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[10px] font-bold font-mono text-white/90 bg-black/40 md:bg-white/10 backdrop-blur-md border border-white/20">
                                   <Star
                                     size={10}
                                     fill="currentColor"
@@ -249,8 +249,8 @@ export const FeaturedProjects = ({ hideHeader = false, className = "" }: Feature
                               </div>
 
                               {/* Featured badge */}
-                              <div className="absolute top-4 right-4 sm:top-5 sm:right-5 z-20">
-                                <span className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-[9px] font-extrabold uppercase tracking-wider text-white bg-blue-600/90 backdrop-blur-sm shadow-lg">
+                              <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20">
+                                <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 sm:px-3 sm:py-1 text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-white bg-blue-600/90 backdrop-blur-sm shadow-lg">
                                   <Star
                                     size={10}
                                     fill="currentColor"
@@ -259,87 +259,86 @@ export const FeaturedProjects = ({ hideHeader = false, className = "" }: Feature
                                   FEATURED
                                 </span>
                               </div>
+                            </div>
 
-                              {/* Content overlay at bottom of image */}
-                              <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7 z-10">
-                                <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-                                  {/* Info */}
-                                  <div className="flex-1 min-w-0">
-                                    {/* Category tags */}
-                                    <div className="flex flex-wrap gap-1.5 mb-3">
-                                      {project.category.map((cat) => (
-                                        <span
-                                          key={cat}
-                                          className="px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white/90 bg-white/10 backdrop-blur-sm rounded-full border border-white/10"
-                                        >
-                                          {t(cat)}
-                                        </span>
-                                      ))}
-                                    </div>
-
-                                    <h3 className="font-heading text-xl sm:text-2xl md:text-3xl font-extrabold text-white mb-2 leading-tight">
-                                      {project.title}
-                                    </h3>
-                                    <p className="text-white/70 text-xs sm:text-sm leading-relaxed line-clamp-2 max-w-2xl">
-                                      {project.description}
-                                    </p>
-
-                                    {/* Tech Stack */}
-                                    <div className="flex flex-wrap gap-1.5 mt-3">
-                                      {project.tech.slice(0, 5).map((tech) => (
-                                        <span
-                                          key={tech}
-                                          className="px-2 py-0.5 text-[10px] font-bold font-mono text-blue-300 bg-blue-500/15 backdrop-blur-sm rounded-md border border-blue-400/15"
-                                        >
-                                          {tech}
-                                        </span>
-                                      ))}
-                                      {project.tech.length > 5 && (
-                                        <span className="px-2 py-0.5 text-[10px] font-bold font-mono text-white/60 bg-white/5 rounded-md border border-white/10">
-                                          +{project.tech.length - 5}
-                                        </span>
-                                      )}
-                                    </div>
+                            {/* Content Block — Below image on mobile, absolute overlay on desktop */}
+                            <div className="relative md:absolute md:bottom-0 md:left-0 md:right-0 p-4 sm:p-6 md:p-7 z-10 bg-card md:bg-transparent border-t md:border-0 border-border/40">
+                              <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 sm:gap-4">
+                                {/* Info */}
+                                <div className="flex-1 min-w-0">
+                                  {/* Category tags */}
+                                  <div className="flex flex-wrap gap-1.5 mb-2 sm:mb-3">
+                                    {project.category.map((cat) => (
+                                      <span
+                                        key={cat}
+                                        className="px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 md:text-white/90 bg-blue-500/10 md:bg-white/10 backdrop-blur-sm rounded-full border border-blue-500/20 md:border-white/10"
+                                      >
+                                        {t(cat)}
+                                      </span>
+                                    ))}
                                   </div>
 
-                                  {/* Quick Actions */}
-                                  <div className="flex items-center gap-2 flex-shrink-0">
-                                    {project.liveUrl && (
-                                      <a
-                                        href={project.liveUrl}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        onClick={(e) => e.stopPropagation()}
-                                        className="flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] font-bold font-mono text-white bg-blue-600/80 backdrop-blur-sm border border-blue-500/30 hover:bg-blue-600 transition-all duration-300 hover:scale-105 shadow-lg"
+                                  <h3 className="font-heading text-lg sm:text-2xl md:text-3xl font-extrabold text-foreground md:text-white mb-1.5 leading-tight">
+                                    {project.title}
+                                  </h3>
+                                  <p className="text-muted-foreground md:text-white/70 text-xs sm:text-sm leading-relaxed line-clamp-2 max-w-2xl">
+                                    {project.description}
+                                  </p>
+
+                                  {/* Tech Stack */}
+                                  <div className="flex flex-wrap gap-1.5 mt-2.5 sm:mt-3">
+                                    {project.tech.slice(0, 5).map((tech) => (
+                                      <span
+                                        key={tech}
+                                        className="px-2 py-0.5 text-[9.5px] sm:text-[10px] font-bold font-mono text-blue-600 dark:text-blue-300 bg-blue-500/10 md:bg-blue-500/15 backdrop-blur-sm rounded-md border border-blue-500/20 md:border-blue-400/15"
                                       >
-                                        {project.liveUrlLabel ||
-                                          t("Live Demo")}
-                                        <ExternalLink size={11} />
-                                      </a>
+                                        {tech}
+                                      </span>
+                                    ))}
+                                    {project.tech.length > 5 && (
+                                      <span className="px-2 py-0.5 text-[9.5px] sm:text-[10px] font-bold font-mono text-muted-foreground md:text-white/60 bg-muted md:bg-white/5 rounded-md border border-border/40 md:border-white/10">
+                                        +{project.tech.length - 5}
+                                      </span>
                                     )}
-                                    {project.githubUrl && (
-                                      <a
-                                        href={project.githubUrl}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        onClick={(e) => e.stopPropagation()}
-                                        className="flex items-center justify-center w-9 h-9 rounded-full text-white/80 bg-white/10 backdrop-blur-sm border border-white/10 hover:bg-white/20 transition-all duration-300 hover:scale-105"
-                                        title={t("Source Code")}
-                                      >
-                                        <Github size={15} />
-                                      </a>
-                                    )}
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setSelectedProject(project);
-                                      }}
-                                      className="flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] font-bold font-mono text-white/90 bg-white/10 backdrop-blur-sm border border-white/15 hover:bg-white/20 transition-all duration-300 hover:scale-105"
+                                  </div>
+                                </div>
+
+                                {/* Quick Actions */}
+                                <div className="flex items-center gap-2 flex-shrink-0 pt-1 md:pt-0">
+                                  {project.liveUrl && (
+                                    <a
+                                      href={project.liveUrl}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      onClick={(e) => e.stopPropagation()}
+                                      className="flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full text-[9.5px] sm:text-[10px] font-bold font-mono text-white bg-blue-600 backdrop-blur-sm border border-blue-500/30 hover:bg-blue-700 transition-all duration-300 shadow-md"
                                     >
-                                      {t("Details")}
-                                      <ArrowRight size={11} />
-                                    </button>
-                                  </div>
+                                      {project.liveUrlLabel || t("Live Demo")}
+                                      <ExternalLink size={11} />
+                                    </a>
+                                  )}
+                                  {project.githubUrl && (
+                                    <a
+                                      href={project.githubUrl}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      onClick={(e) => e.stopPropagation()}
+                                      className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full text-foreground md:text-white/80 bg-muted md:bg-white/10 backdrop-blur-sm border border-border/60 md:border-white/10 hover:bg-muted/80 transition-all duration-300"
+                                      title={t("Source Code")}
+                                    >
+                                      <Github size={14} />
+                                    </a>
+                                  )}
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setSelectedProject(project);
+                                    }}
+                                    className="flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full text-[9.5px] sm:text-[10px] font-bold font-mono text-foreground md:text-white/90 bg-muted md:bg-white/10 backdrop-blur-sm border border-border/60 md:border-white/15 hover:bg-muted/80 transition-all duration-300"
+                                  >
+                                    {t("Details")}
+                                    <ArrowRight size={11} />
+                                  </button>
                                 </div>
                               </div>
                             </div>
@@ -615,3 +614,5 @@ export const FeaturedProjects = ({ hideHeader = false, className = "" }: Feature
     </section>
   );
 };
+
+export default FeaturedProjects;

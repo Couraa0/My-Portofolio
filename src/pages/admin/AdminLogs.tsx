@@ -18,6 +18,11 @@ import {
   Eye,
   Copy,
   Check,
+  Calendar,
+  Database,
+  HardDrive,
+  Clock,
+  Code,
 } from 'lucide-react';
 import {
   getLogs,
@@ -26,6 +31,7 @@ import {
   type LogEntry,
   type LogCategory,
   type LogLevel,
+  type LogTimeRange,
 } from '@/lib/logger';
 import { toast } from 'sonner';
 
@@ -35,19 +41,25 @@ export default function AdminLogs() {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<LogCategory | 'ALL'>('ALL');
   const [selectedLevel, setSelectedLevel] = useState<LogLevel | 'ALL'>('ALL');
+  const [timeRange, setTimeRange] = useState<LogTimeRange>('ALL');
+  const [dataSource, setDataSource] = useState<'database' | 'local'>('database');
   const [activeLog, setActiveLog] = useState<LogEntry | null>(null);
   const [showConfirmClear, setShowConfirmClear] = useState(false);
+  const [showSqlModal, setShowSqlModal] = useState(false);
   const [copiedId, setCopiedId] = useState(false);
+  const [copiedSql, setCopiedSql] = useState(false);
 
   const fetchLogs = async () => {
     setLoading(true);
     try {
-      const data = await getLogs({
+      const { logs: data, source } = await getLogs({
         category: selectedCategory,
         level: selectedLevel,
+        timeRange,
         search,
       });
       setLogs(data);
+      setDataSource(source);
     } catch (e) {
       console.error('Error fetching logs:', e);
       toast.error('Gagal mengambil data log website');
@@ -58,7 +70,7 @@ export default function AdminLogs() {
 
   useEffect(() => {
     fetchLogs();
-  }, [selectedCategory, selectedLevel, search]);
+  }, [selectedCategory, selectedLevel, timeRange, search]);
 
   const stats = getLogStats(logs);
 
@@ -77,18 +89,18 @@ export default function AdminLogs() {
     const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(logs, null, 2));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute('href', dataStr);
-    downloadAnchor.setAttribute('download', `website_logs_${new Date().toISOString().slice(0, 10)}.json`);
+    downloadAnchor.setAttribute('download', `website_logs_${timeRange}_${new Date().toISOString().slice(0, 10)}.json`);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
     toast.success('File JSON log website berhasil diunduh!');
   };
 
-  const copyToClipboard = (text: string) => {
+  const copyToClipboard = (text: string, setStatus: (val: boolean) => void) => {
     navigator.clipboard.writeText(text);
-    setCopiedId(true);
+    setStatus(true);
     toast.success('Teks berhasil disalin ke clipboard!');
-    setTimeout(() => setCopiedId(false), 2000);
+    setTimeout(() => setStatus(false), 2000);
   };
 
   const getCategoryIcon = (cat: LogCategory) => {
@@ -118,6 +130,33 @@ export default function AdminLogs() {
     }
   };
 
+  const sqlSnippet = `-- Skrip Pembuatan Tabel website_logs di Supabase SQL Editor
+CREATE TABLE IF NOT EXISTS public.website_logs (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    category TEXT NOT NULL,
+    level TEXT NOT NULL DEFAULT 'INFO',
+    action TEXT NOT NULL,
+    details TEXT,
+    page_url TEXT,
+    user_agent TEXT,
+    ip_address TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_website_logs_created_at ON public.website_logs (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_website_logs_category ON public.website_logs (category);
+
+ALTER TABLE public.website_logs ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public insert to website_logs"
+    ON public.website_logs FOR INSERT TO public, anon, authenticated WITH CHECK (true);
+
+CREATE POLICY "Allow read access to website_logs"
+    ON public.website_logs FOR SELECT TO public, anon, authenticated USING (true);
+
+CREATE POLICY "Allow delete access to website_logs"
+    ON public.website_logs FOR DELETE TO public, anon, authenticated USING (true);`;
+
   return (
     <div className="analytics-container">
       {/* Top Header Banner */}
@@ -130,41 +169,58 @@ export default function AdminLogs() {
             <div>
               <div className="flex items-center gap-2.5 flex-wrap">
                 <h2 className="header-banner-title">Website Activity Logs</h2>
-                <span className="live-status-pill">
-                  <span className="live-status-dot animate-ping"></span>
-                  <span className="live-status-dot"></span>
-                  Live Event Monitor
-                </span>
+                
+                {dataSource === 'database' ? (
+                  <span className="live-status-pill bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span className="live-status-dot bg-emerald-500 animate-ping"></span>
+                    <span className="live-status-dot bg-emerald-500"></span>
+                    <Database size={13} className="text-emerald-600 ml-0.5" />
+                    Supabase DB Active
+                  </span>
+                ) : (
+                  <span className="live-status-pill bg-amber-50 text-amber-700 border border-amber-200">
+                    <HardDrive size={13} className="text-amber-600" />
+                    Local Cache (FallBack)
+                  </span>
+                )}
               </div>
               <p className="header-banner-subtitle">
                 Catatan aktivitas real-time pengunjung, kiriman formulir, keamanan, dan audit log sistem portofolio Anda.
               </p>
             </div>
           </div>
-          <div className="header-banner-actions">
+          <div className="header-banner-actions flex items-center gap-2">
+            <button
+              onClick={() => setShowSqlModal(true)}
+              className="btn-secondary !p-2.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all flex items-center justify-center"
+              title="Lihat Skrip SQL Setup Database"
+              aria-label="SQL DB Setup"
+            >
+              <Code size={18} />
+            </button>
             <button
               onClick={fetchLogs}
-              className="btn-admin btn-admin-secondary"
-              title="Muat Ulang Data Log"
+              className="btn-secondary !p-2.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all flex items-center justify-center"
+              title="Refresh / Muat Ulang Data Log"
+              aria-label="Refresh Log"
             >
-              <RefreshCw size={16} className={loading ? 'spin' : ''} />
-              <span>Refresh</span>
+              <RefreshCw size={18} className={loading ? 'spin' : ''} />
             </button>
             <button
               onClick={handleExportJSON}
-              className="btn-admin btn-admin-secondary"
-              title="Export ke JSON"
+              className="btn-secondary !p-2.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all flex items-center justify-center"
+              title="Export Log ke JSON"
+              aria-label="Export Log"
             >
-              <Download size={16} />
-              <span>Export Log</span>
+              <Download size={18} />
             </button>
             <button
               onClick={() => setShowConfirmClear(true)}
-              className="btn-admin btn-admin-danger"
-              title="Hapus Semua Log"
+              className="btn-danger !p-2.5 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 transition-all flex items-center justify-center"
+              title="Bersihkan Semua Catatan Log"
+              aria-label="Bersihkan Log"
             >
-              <Trash2 size={16} />
-              <span>Bersihkan Log</span>
+              <Trash2 size={18} />
             </button>
           </div>
         </div>
@@ -222,7 +278,7 @@ export default function AdminLogs() {
       </div>
 
       {/* Toolbar & Filters */}
-      <div className="logs-toolbar">
+      <div className="logs-toolbar flex-wrap">
         <div className="logs-search-wrap">
           <Search size={18} className="input-icon text-slate-400" />
           <input
@@ -234,10 +290,26 @@ export default function AdminLogs() {
           />
         </div>
 
-        <div className="logs-filters">
+        <div className="logs-filters flex-wrap gap-2">
+          {/* Time Range Selector */}
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500">
+            <Calendar size={14} className="text-blue-600" />
+            <span>Rentang Waktu:</span>
+          </div>
+          <select
+            className="analytics-select"
+            value={timeRange}
+            onChange={(e) => setTimeRange(e.target.value as LogTimeRange)}
+          >
+            <option value="ALL">Semua Riwayat Log</option>
+            <option value="7D">7 Hari Terakhir</option>
+            <option value="30D">30 Hari Terakhir</option>
+            <option value="1Y">1 Tahun Terakhir</option>
+          </select>
+
           <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500">
             <Filter size={14} />
-            <span>Filter:</span>
+            <span>Kategori:</span>
           </div>
           <select
             className="analytics-select"
@@ -265,6 +337,8 @@ export default function AdminLogs() {
         </div>
       </div>
 
+
+
       {/* Logs Table */}
       <div className="logs-table-container">
         <table className="data-table">
@@ -290,7 +364,7 @@ export default function AdminLogs() {
             ) : logs.length === 0 ? (
               <tr>
                 <td colSpan={7} className="text-center py-10 text-slate-400">
-                  Tidak ditemukan catatan log aktivitas website yang cocok.
+                  Tidak ditemukan catatan log aktivitas website yang cocok dengan filter.
                 </td>
               </tr>
             ) : (
@@ -373,7 +447,7 @@ export default function AdminLogs() {
                     {activeLog.id}
                   </code>
                   <button
-                    onClick={() => copyToClipboard(activeLog.id || '')}
+                    onClick={() => copyToClipboard(activeLog.id || '', setCopiedId)}
                     className="text-slate-400 hover:text-blue-600 transition-colors p-1"
                     title="Salin ID"
                   >
@@ -387,7 +461,7 @@ export default function AdminLogs() {
                     {activeLog.ip_address || '127.0.0.1'}
                   </code>
                   <button
-                    onClick={() => copyToClipboard(activeLog.ip_address || '127.0.0.1')}
+                    onClick={() => copyToClipboard(activeLog.ip_address || '127.0.0.1', () => {})}
                     className="text-slate-400 hover:text-cyan-600 transition-colors p-1"
                     title="Salin IP"
                   >
@@ -448,6 +522,45 @@ export default function AdminLogs() {
         </div>
       )}
 
+      {/* SQL Setup Modal */}
+      {showSqlModal && (
+        <div className="modal-overlay" onClick={() => setShowSqlModal(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '680px' }}>
+            <div className="modal-header">
+              <h3 className="modal-title flex items-center gap-2 text-slate-800">
+                <Database size={20} className="text-blue-600" />
+                <span>Skrip SQL Setup Tabel Supabase DB</span>
+              </h3>
+              <button className="modal-close" onClick={() => setShowSqlModal(false)}>
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="modal-body p-5 bg-slate-900 text-slate-100 font-mono text-xs leading-relaxed overflow-x-auto rounded-b-none">
+              <p className="text-slate-400 mb-3 font-sans text-xs">
+                Jalankan skrip berikut di <strong>Supabase Dashboard &gt; SQL Editor</strong> untuk membuat tabel <code className="text-blue-400">website_logs</code> dan mengaktifkan izin simpan log:
+              </p>
+              <pre className="bg-slate-950 p-3.5 rounded border border-slate-800 select-all whitespace-pre-wrap">
+                {sqlSnippet}
+              </pre>
+            </div>
+
+            <div className="modal-footer justify-between bg-slate-950 border-t border-slate-800">
+              <button
+                onClick={() => copyToClipboard(sqlSnippet, setCopiedSql)}
+                className="btn-admin btn-admin-primary flex items-center gap-2"
+              >
+                {copiedSql ? <Check size={16} /> : <Copy size={16} />}
+                <span>{copiedSql ? 'Disalin!' : 'Salin Skrip SQL'}</span>
+              </button>
+              <button className="btn-admin btn-admin-secondary" onClick={() => setShowSqlModal(false)}>
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Confirm Clear Modal */}
       {showConfirmClear && (
         <div className="modal-overlay" onClick={() => setShowConfirmClear(false)}>
@@ -470,4 +583,5 @@ export default function AdminLogs() {
     </div>
   );
 }
+
 

@@ -335,7 +335,8 @@ const Skills = () => {
             {/* Category Switcher bar */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-2 rounded-2xl bg-secondary/50 border border-border/60 backdrop-blur-sm shadow-sm">
               {/* Animated Tab Switcher */}
-              <div className="relative flex flex-wrap sm:flex-nowrap items-center gap-1.5 w-full sm:w-auto justify-center sm:justify-start">
+              {/* Animated Tab Switcher — Horizontal swipe row on mobile */}
+              <div className="relative flex overflow-x-auto no-scrollbar scroll-smooth items-center gap-1.5 w-full sm:w-auto justify-start sm:justify-start flex-nowrap shrink-0">
                 {[
                   {
                     id: "programming",
@@ -359,7 +360,7 @@ const Skills = () => {
                       setActiveCategory(cat.id as any);
                       setSelectedTag("All");
                     }}
-                    className={`relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors duration-300 ${
+                    className={`relative flex items-center gap-2 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold transition-colors duration-300 shrink-0 whitespace-nowrap ${
                       activeCategory === cat.id
                         ? "text-white"
                         : "text-muted-foreground hover:text-foreground"
@@ -382,7 +383,7 @@ const Skills = () => {
 
               {/* View Layout Toggle (Grid vs Marquee) */}
               {activeCategory !== "soft" && (
-                <div className="flex items-center gap-1 p-1 rounded-xl bg-background border border-border/60">
+                <div className="flex items-center gap-1 p-1 rounded-xl bg-background border border-border/60 shrink-0">
                   <button
                     onClick={() => setViewMode("grid")}
                     className={`p-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all ${
@@ -411,14 +412,14 @@ const Skills = () => {
               )}
             </div>
 
-            {/* Sub-category tag filters (only in Grid mode) */}
+            {/* Sub-category tag filters (only in Grid mode) — Horizontal swipe row on mobile */}
             {viewMode === "grid" && activeCategory !== "soft" && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1"
+                className="flex overflow-x-auto no-scrollbar scroll-smooth items-center justify-start gap-1.5 pt-1 flex-nowrap shrink-0 max-w-full min-w-0"
               >
-                <span className="text-[10px] font-bold font-mono uppercase tracking-wider text-muted-foreground mr-1 flex items-center gap-1">
+                <span className="text-[10px] font-bold font-mono uppercase tracking-wider text-muted-foreground mr-1 flex items-center gap-1 shrink-0">
                   <Search size={11} /> Filter:
                 </span>
                 {(activeCategory === "programming" ? progTags : toolTags).map(
@@ -426,7 +427,7 @@ const Skills = () => {
                     <button
                       key={tag}
                       onClick={() => setSelectedTag(tag)}
-                      className={`px-3 py-1 rounded-full text-[11px] font-bold font-mono transition-all duration-300 border ${
+                      className={`px-3 py-1 rounded-full text-[10.5px] font-bold font-mono transition-all duration-300 border shrink-0 whitespace-nowrap ${
                         selectedTag === tag
                           ? "bg-blue-500/15 text-blue-500 border-blue-500/40 shadow-sm"
                           : "bg-card text-muted-foreground border-border/60 hover:border-slate-300 dark:hover:border-slate-700 hover:text-foreground"

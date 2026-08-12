@@ -6,6 +6,7 @@ import ScrollProgress from "./ScrollProgress";
 import CursorSpotlight from "./CursorSpotlight";
 import Chatbot from "./Chatbot";
 import MusicPopup from "./MusicPopup";
+import MobileBottomBar from "./MobileBottomBar";
 
 const Layout = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -41,13 +42,14 @@ const Layout = () => {
       <Navbar isPlaying={isPlaying} toggleAudio={toggleAudio} />
       <MusicPopup isPlaying={isPlaying} toggleAudio={toggleAudio} />
 
-      {/* Main Content Area */}
-      <main className="relative z-10 flex-1 flex flex-col min-w-0 transition-all duration-300">
+      {/* Main Content Area — extra bottom padding on mobile for bottom bar clearance */}
+      <main className="relative z-10 flex-1 flex flex-col min-w-0 transition-all duration-300 pb-16 md:pb-0">
         <Outlet />
       </main>
 
       <Footer />
       <Chatbot />
+      <MobileBottomBar />
     </div>
   );
 };

@@ -57,6 +57,17 @@ export default function Chatbot() {
   }, []);
 
   // Ketika popup ditutup (X)
+  useEffect(() => {
+    const handleCustomToggle = () => handleToggleOpen();
+    const handleCustomOpen = () => handleOpenChat();
+    window.addEventListener("toggleChatbot", handleCustomToggle);
+    window.addEventListener("openChatbot", handleCustomOpen);
+    return () => {
+      window.removeEventListener("toggleChatbot", handleCustomToggle);
+      window.removeEventListener("openChatbot", handleCustomOpen);
+    };
+  }, [open]);
+
   const handleDismissPopup = () => {
     setNotifMode("mini");
     clearLoop();
@@ -193,7 +204,7 @@ export default function Chatbot() {
             exit={{ opacity: 0, y: 12, scale: 0.88 }}
             transition={{ type: "spring", damping: 18, stiffness: 220 }}
             onClick={handleOpenChat}
-            className="fixed bottom-[88px] right-4 sm:right-6 z-50 w-[272px] sm:w-[300px] cursor-pointer"
+            className="hidden md:block fixed bottom-[88px] right-4 sm:right-6 z-50 w-[272px] sm:w-[300px] cursor-pointer"
           >
             <motion.div
               animate={{ y: [0, -5, 0] }}
@@ -278,7 +289,7 @@ export default function Chatbot() {
             exit={{ opacity: 0, scale: 0.8, y: 6 }}
             transition={{ type: "spring", damping: 18, stiffness: 260 }}
             onClick={handleOpenChat}
-            className="fixed bottom-[88px] right-6 z-50 cursor-pointer"
+            className="hidden md:block fixed bottom-[88px] right-6 z-50 cursor-pointer"
           >
             <div
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11px] font-semibold text-white shadow-lg select-none whitespace-nowrap"
@@ -304,8 +315,8 @@ export default function Chatbot() {
         )}
       </AnimatePresence>
 
-      {/* ── Floating Action Button & Glow Aura ── */}
-      <div className="fixed bottom-6 right-6 z-50 flex items-center justify-center">
+      {/* ── Floating Action Button & Glow Aura (Desktop Only) ── */}
+      <div className="hidden md:flex fixed bottom-6 right-6 z-50 items-center justify-center">
 
         {/* Smooth persistent pulse rings — always visible when chat is closed */}
         {!open && (
@@ -357,7 +368,7 @@ export default function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.92 }}
             transition={{ type: "spring", damping: 22, stiffness: 300 }}
-            className="fixed bottom-24 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-[400px] bg-background border border-blue-500/15 rounded-2xl shadow-2xl shadow-blue-500/10 z-50 overflow-hidden flex flex-col h-[540px] max-h-[75vh]"
+            className="fixed bottom-36 md:bottom-24 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-[400px] bg-background border border-blue-500/15 rounded-2xl shadow-2xl shadow-blue-500/10 z-50 overflow-hidden flex flex-col h-[540px] max-h-[60vh] md:max-h-[75vh]"
           >
             {/* ── Header ── */}
             <div
@@ -368,10 +379,13 @@ export default function Chatbot() {
                 <div
                   className="w-9 h-9 rounded-full overflow-hidden shadow-md shadow-blue-500/20 shrink-0 bg-card border border-border/80 flex items-center justify-center"
                 >
-                  <img
-                    src="/Coura - Hmm.png"
-                    alt="Coura"
-                    className="w-7 h-7 object-contain"
+                  <video
+                    src="/Coura-Gif.mp4"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
                   />
                 </div>
                 <div>
@@ -404,10 +418,13 @@ export default function Chatbot() {
                   <div
                     className="w-14 h-14 rounded-full overflow-hidden shadow-lg shadow-blue-500/20 mb-4 bg-card border border-border/80 flex items-center justify-center"
                   >
-                    <img
-                      src="/Coura - Halo.png"
-                      alt="Coura"
-                      className="w-11 h-11 object-contain"
+                    <video
+                      src="/Coura-Gif.mp4"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
                     />
                   </div>
                   <h4 className="font-heading font-bold text-base text-foreground mb-1">
@@ -453,10 +470,13 @@ export default function Chatbot() {
                     <div
                       className="w-6 h-6 rounded-full overflow-hidden shrink-0 mr-2 mt-1 shadow-sm bg-card border border-border/80 flex items-center justify-center"
                     >
-                      <img
-                        src="/Coura.png"
-                        alt="Coura"
-                        className="w-5 h-5 object-contain"
+                      <video
+                        src="/Coura-Gif.mp4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover"
                       />
                     </div>
                   )}
@@ -515,10 +535,13 @@ export default function Chatbot() {
                   <div
                     className="w-6 h-6 rounded-full overflow-hidden shrink-0 mr-2 mt-1 bg-card border border-border/80 flex items-center justify-center shadow-sm"
                   >
-                    <img
-                      src="/Coura.png"
-                      alt="Coura"
-                      className="w-5 h-5 object-contain"
+                    <video
+                      src="/Coura-Gif.mp4"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="rounded-2xl px-4 py-3 bg-card border border-border rounded-bl-sm flex items-center gap-1.5 shadow-sm">

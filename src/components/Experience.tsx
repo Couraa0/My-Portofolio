@@ -36,7 +36,6 @@ function adaptExp(e: DBExp): Experience {
   };
 }
 
-
 interface FlattenedCompetition {
   id: string;
   parentExperienceId: string;
@@ -87,23 +86,14 @@ const COMPETITION_THEMES = [
   }
 ];
 
-const Experience = () => {
+const ExperienceComponent = () => {
   const { t } = useTranslation();
   const [careerExperiences, setCareerExperiences] = useState<Experience[]>([]);
   const [flattenedCompetitions, setFlattenedCompetitions] = useState<FlattenedCompetition[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"career" | "competitions" | "all">("career");
-  const [activeCareerIndex, setActiveCareerIndex] = useState<number>(0);
-  const [activeCompIndex, setActiveCompIndex] = useState<number>(0);
-
-  const totalRoles = careerExperiences.length;
-  const uniqueCompanies = new Set(careerExperiences.map((e) => e.company)).size;
-  const totalCompetitions = flattenedCompetitions.length;
-  const totalTools = new Set([
-    ...careerExperiences.flatMap((e) => e.tools || []),
-    ...flattenedCompetitions.flatMap((c) => c.skills || []),
-  ]).size;
+  const [activeCareerIndex, setActiveCareerIndex] = useState<number | null>(0);
+  const [activeCompIndex, setActiveCompIndex] = useState<number | null>(0);
 
   useEffect(() => {
     Promise.all([getExperiences(), getCompetitions()])
@@ -137,7 +127,7 @@ const Experience = () => {
     <section id="experience" className="py-24 bg-background relative z-10 overflow-x-hidden text-left pb-28 sm:pb-24">
       <div className="container mx-auto px-4 sm:px-6 max-w-5xl">
 
-        {/* === KARIER HEADING === */}
+        {/* === HEADING === */}
         <AnimatedSection>
           <div className="mb-8 pb-6 border-b border-border/60 relative">
             <span
@@ -159,7 +149,7 @@ const Experience = () => {
               {t("Experience Subtitle")}
             </p>
 
-            {/* Coura Peace mascot */}
+            {/* Mascot */}
             <motion.img
               src="/Coura - Peace.png"
               alt="Coura mascot celebrating"
@@ -194,10 +184,9 @@ const Experience = () => {
             {/* === SECTION 1: PROFESSIONAL EXPERIENCE === */}
             {careerExperiences.length > 0 && (
               <div className="mb-20">
-
-                {/* Professional Experience Workspace */}
                 <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 max-w-5xl mx-auto items-stretch">
-                  {/* Left Column: Work Cards (5 cols) - Scrollable without clipping */}
+                  
+                  {/* Left Column: Work Cards (5 cols) */}
                   <div className="lg:col-span-5 flex flex-col gap-3.5 text-left max-h-[580px] overflow-y-auto px-2 py-1">
                     <h3 className="font-mono text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-1 flex items-center gap-1.5 sticky top-0 bg-background/95 backdrop-blur-sm py-1 z-20">
                       <Sparkles size={12} className="text-blue-500" />
@@ -211,7 +200,8 @@ const Experience = () => {
                         return (
                           <AnimatedSection key={exp.id} delay={idx * 0.05} className="w-full">
                             <div
-                              onClick={() => setActiveCareerIndex(idx)}
+                              onClick={() => setActiveCareerIndex((prev) => (prev === idx ? null : idx))}
+                              onDoubleClick={() => setActiveCareerIndex(null)}
                               className={`group relative p-4 rounded-2xl glass-card-premium transition-all duration-300 cursor-pointer flex flex-col ${isActive
                                 ? "border-blue-500 ring-2 ring-blue-500/20 shadow-lg shadow-blue-500/10 scale-[1.01]"
                                 : "hover:border-blue-500/40"
@@ -232,38 +222,35 @@ const Experience = () => {
                                 <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-white dark:bg-slate-950 flex items-center justify-center p-1.5 border border-border shadow-sm overflow-hidden group-hover:scale-105 transition-transform">
                                   {exp.logo ? <img src={exp.logo} alt={exp.company} className="object-contain w-full h-full" /> : <Briefcase className="text-slate-400 dark:text-slate-600 w-5 h-5" />}
                                 </div>
-                                <div className="min-w-0 flex-1 text-left">
-                                  <span className="font-mono text-[9px] text-blue-500 font-bold block mb-0.5">{exp.period}</span>
-                                  <h4 className="font-heading font-extrabold text-sm text-foreground group-hover:text-blue-500 transition-colors truncate leading-snug">
+                                <div className="min-w-0 flex-1 text-left space-y-1">
+                                  <div className="flex items-center gap-1.5 font-mono text-[10px] font-bold text-blue-500">
+                                    <Calendar size={11} className="text-blue-500 shrink-0" />
+                                    <span>{exp.period}</span>
+                                  </div>
+                                  <h4 className="font-heading font-extrabold text-sm sm:text-base text-foreground group-hover:text-blue-500 transition-colors leading-snug break-words">
                                     {exp.role}
                                   </h4>
-                                  <p className="text-xs text-muted-foreground mt-0.5 truncate font-medium">
-                                    {exp.company} • {exp.location}
-                                  </p>
+                                  <div className="text-xs font-medium leading-relaxed break-words flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                                    <span className="font-semibold text-foreground/90 flex items-center gap-1">
+                                      <Building2 size={12} className="text-blue-500/80 shrink-0" /> {exp.company}
+                                    </span>
+                                    {exp.location && (
+                                      <>
+                                        <span className="text-muted-foreground/60">•</span>
+                                        <span className="flex items-center gap-1 text-muted-foreground">
+                                          <MapPin size={11} className="shrink-0 text-slate-400" /> {exp.location}
+                                        </span>
+                                      </>
+                                    )}
+                                  </div>
                                 </div>
-                                <ChevronRight size={14} className={`text-slate-400 shrink-0 transition-transform duration-300 ${isActive ? "translate-x-0 text-blue-500" : "-translate-x-1 opacity-0 group-hover:opacity-100"}`} />
+                                <ChevronRight size={14} className={`text-slate-400 shrink-0 transition-transform duration-300 ${isActive ? "rotate-90 text-blue-500" : "-translate-x-1 opacity-0 group-hover:opacity-100"}`} />
                               </div>
-
-                              {/* Tools tags */}
-                              {exp.tools && exp.tools.length > 0 && (
-                                <div className="flex flex-wrap gap-1 mt-3 pt-2 border-t border-border/30">
-                                  {exp.tools.slice(0, 3).map((t) => (
-                                    <span key={t} className="px-1.5 py-0.5 rounded text-[8px] font-mono font-bold bg-secondary text-muted-foreground">
-                                      {t}
-                                    </span>
-                                  ))}
-                                  {exp.tools.length > 3 && (
-                                    <span className="text-[8px] font-mono text-muted-foreground font-bold self-center">
-                                      +{exp.tools.length - 3}
-                                    </span>
-                                  )}
-                                </div>
-                              )}
                             </div>
 
                             {/* Mobile detail panel */}
                             <AnimatePresence>
-                              {isActive && (
+                              {isActive && activeCareerIndex !== null && careerExperiences[activeCareerIndex] && (
                                 <motion.div
                                   key={`career-detail-${idx}`}
                                   initial={{ opacity: 0, height: 0 }}
@@ -292,16 +279,24 @@ const Experience = () => {
                     <div className="sticky top-24 h-full min-h-[520px] rounded-3xl border border-border bg-slate-50/50 dark:bg-slate-900/10 backdrop-blur-md p-6 relative overflow-hidden shadow-inner flex flex-col justify-between">
                       <div className="absolute inset-0 bg-grid opacity-[0.08] pointer-events-none" />
                       <AnimatePresence mode="wait">
-                        <motion.div
-                          key={`work-console-${activeCareerIndex}`}
-                          initial={{ opacity: 0, scale: 0.98 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.98 }}
-                          transition={{ duration: 0.25 }}
-                          className="flex-grow flex flex-col justify-between h-full relative z-10"
-                        >
-                          <MissionDebrief exp={careerExperiences[activeCareerIndex]} t={t} />
-                        </motion.div>
+                        {activeCareerIndex !== null && careerExperiences[activeCareerIndex] ? (
+                          <motion.div
+                            key={`work-console-${activeCareerIndex}`}
+                            initial={{ opacity: 0, scale: 0.98 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.98 }}
+                            transition={{ duration: 0.25 }}
+                            className="flex-grow flex flex-col justify-between h-full relative z-10"
+                          >
+                            <MissionDebrief exp={careerExperiences[activeCareerIndex]} t={t} />
+                          </motion.div>
+                        ) : (
+                          <div className="h-full min-h-[460px] flex flex-col items-center justify-center text-center p-8 text-muted-foreground font-mono text-xs z-10">
+                            <Briefcase size={36} className="text-blue-500/40 mb-3 animate-pulse" />
+                            <span className="font-bold text-foreground mb-1">SELECT_CAREER_NODE</span>
+                            <span className="text-[11px] text-muted-foreground max-w-xs">Click or double-click any node to expand or collapse mission debrief logs.</span>
+                          </div>
+                        )}
                       </AnimatePresence>
                     </div>
                   </div>
@@ -326,7 +321,7 @@ const Experience = () => {
 
                 {/* Competitive Experience Workspace */}
                 <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 max-w-5xl mx-auto items-stretch">
-                  {/* Left Column: Competition Cards (5 cols) - Scrollable without clipping */}
+                  {/* Left Column: Competition Cards (5 cols) */}
                   <div className="lg:col-span-5 flex flex-col gap-3.5 text-left max-h-[580px] overflow-y-auto px-2 py-1">
                     <h3 className="font-mono text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-1 flex items-center gap-1.5 sticky top-0 bg-background/95 backdrop-blur-sm py-1 z-20">
                       <Sparkles size={12} className="text-amber-500" />
@@ -341,7 +336,8 @@ const Experience = () => {
                         return (
                           <AnimatedSection key={comp.id} delay={idx * 0.05} className="w-full">
                             <div
-                              onClick={() => setActiveCompIndex(idx)}
+                              onClick={() => setActiveCompIndex((prev) => (prev === idx ? null : idx))}
+                              onDoubleClick={() => setActiveCompIndex(null)}
                               className={`group relative p-4 rounded-2xl glass-card-premium transition-all duration-300 cursor-pointer flex flex-col w-full min-w-0 overflow-hidden ${isActive
                                 ? "border-amber-500 ring-2 ring-amber-500/20 shadow-lg shadow-amber-500/10 scale-[1.01]"
                                 : "hover:border-amber-500/40"
@@ -365,14 +361,14 @@ const Experience = () => {
                                 </div>
                                 <div className="min-w-0 flex-1 text-left">
                                   <span className="font-mono text-[9px] text-amber-500 font-bold block mb-0.5">{comp.period}</span>
-                                  <h4 className="font-heading font-extrabold text-sm text-foreground group-hover:text-amber-500 transition-colors truncate leading-snug">
+                                  <h4 className="font-heading font-extrabold text-sm text-foreground group-hover:text-amber-500 transition-colors leading-snug break-words">
                                     {comp.role}
                                   </h4>
-                                  <p className="text-xs text-muted-foreground mt-0.5 truncate font-medium">
+                                  <p className="text-xs text-muted-foreground mt-0.5 font-medium leading-relaxed break-words">
                                     {comp.title}
                                   </p>
                                 </div>
-                                <ChevronRight size={14} className={`text-slate-400 shrink-0 transition-transform duration-300 ${isActive ? "translate-x-0 text-amber-500" : "-translate-x-1 opacity-0 group-hover:opacity-100"}`} />
+                                <ChevronRight size={14} className={`text-slate-400 shrink-0 transition-transform duration-300 ${isActive ? "rotate-90 text-amber-500" : "-translate-x-1 opacity-0 group-hover:opacity-100"}`} />
                               </div>
 
                               <div className="flex flex-wrap gap-1 mt-2.5">
@@ -384,7 +380,7 @@ const Experience = () => {
 
                             {/* Mobile detail panel */}
                             <AnimatePresence>
-                              {isActive && (
+                              {isActive && activeCompIndex !== null && flattenedCompetitions[activeCompIndex] && (
                                 <motion.div
                                   key={`comp-detail-${idx}`}
                                   initial={{ opacity: 0, height: 0 }}
@@ -410,16 +406,24 @@ const Experience = () => {
                     <div className="sticky top-24 h-full min-h-[520px] rounded-3xl border border-border bg-slate-50/50 dark:bg-slate-900/10 backdrop-blur-md p-6 relative overflow-hidden shadow-inner flex flex-col justify-between">
                       <div className="absolute inset-0 bg-grid opacity-[0.08] pointer-events-none" />
                       <AnimatePresence mode="wait">
-                        <motion.div
-                          key={`comp-console-${activeCompIndex}`}
-                          initial={{ opacity: 0, scale: 0.98 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.98 }}
-                          transition={{ duration: 0.25 }}
-                          className="flex-grow flex flex-col justify-between h-full relative z-10"
-                        >
-                          <CompetitionDebrief comp={flattenedCompetitions[activeCompIndex]} theme={COMPETITION_THEMES[activeCompIndex % COMPETITION_THEMES.length]} />
-                        </motion.div>
+                        {activeCompIndex !== null && flattenedCompetitions[activeCompIndex] ? (
+                          <motion.div
+                            key={`comp-console-${activeCompIndex}`}
+                            initial={{ opacity: 0, scale: 0.98 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.98 }}
+                            transition={{ duration: 0.25 }}
+                            className="flex-grow flex flex-col justify-between h-full relative z-10"
+                          >
+                            <CompetitionDebrief comp={flattenedCompetitions[activeCompIndex]} theme={COMPETITION_THEMES[activeCompIndex % COMPETITION_THEMES.length]} />
+                          </motion.div>
+                        ) : (
+                          <div className="h-full min-h-[460px] flex flex-col items-center justify-center text-center p-8 text-muted-foreground font-mono text-xs z-10">
+                            <Trophy size={36} className="text-amber-500/40 mb-3 animate-pulse" />
+                            <span className="font-bold text-foreground mb-1">SELECT_COMPETITION_NODE</span>
+                            <span className="text-[11px] text-muted-foreground max-w-xs">Click or double-click any node to expand or collapse competition debrief logs.</span>
+                          </div>
+                        )}
                       </AnimatePresence>
                     </div>
                   </div>
@@ -438,31 +442,20 @@ const Experience = () => {
 
 const MissionDebrief = ({ exp, t }: { exp: Experience; t: any }) => {
   return (
-    <div className="flex flex-col space-y-4 text-left">
+    <div className="flex flex-col space-y-4 text-left w-full min-w-0">
 
-      {/* Debrief Header */}
-      <div className="flex flex-row gap-3 pb-4 border-b border-border/50 items-center">
-        <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white flex items-center justify-center p-2 border border-border shadow-sm">
-          {exp.logo ? (
-            <img src={exp.logo} alt={exp.company} className="object-contain w-full h-full" />
-          ) : (
-            <Briefcase className="text-muted-foreground/45 w-5 h-5" />
-          )}
-        </div>
-        <div className="min-w-0 flex-1">
-          <span className="font-mono text-[10px] text-blue-500 font-bold uppercase tracking-wider block leading-none mb-1">MISSION_DEBRIEF</span>
-          <h3 className="text-base sm:text-lg font-heading font-extrabold text-foreground leading-snug tracking-tight break-words">
-            {exp.role}
-          </h3>
-          <p className="text-xs sm:text-sm font-semibold text-slate-500 mt-0.5 line-clamp-1">
-            {exp.company}
-          </p>
-        </div>
+      {/* Clean Header Badge (WITHOUT redundant period date) */}
+      <div className="flex items-center justify-between pb-2.5 border-b border-border/50">
+        <span className="font-mono text-[10px] text-blue-500 font-bold uppercase tracking-wider flex items-center gap-1.5">
+          <Terminal size={13} className="text-blue-500" />
+          MISSION_DEBRIEF_LOGS
+        </span>
       </div>
 
       {/* Description Logs */}
-      <div className="space-y-3">
-        <h4 className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400">
+      <div className="space-y-2.5 pt-1">
+        <h4 className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+          <Sparkles size={11} className="text-blue-500" />
           LOG_REPORTS
         </h4>
         <ul className="space-y-2 font-mono text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -502,46 +495,22 @@ const CompetitionDebrief = ({ comp, theme }: { comp: FlattenedCompetition; theme
   return (
     <div className="flex flex-col space-y-4 text-left w-full min-w-0">
 
-      {/* Debrief Header */}
-      <div className="flex flex-row gap-3 pb-4 border-b border-border/50 items-center min-w-0">
-        <div className={`flex-shrink-0 w-9 h-9 rounded-xl bg-white dark:bg-slate-950 flex items-center justify-center border border-border shadow-sm overflow-hidden ${comp.logo ? 'p-0' : `p-1.5 ${theme.bg} ${theme.border}`}`}>
-          {comp.logo ? (
-            <img src={comp.logo} alt={comp.title} className="object-cover w-full h-full" />
-          ) : (
-            <Trophy className={`${theme.primary} w-4 h-4`} />
-          )}
-        </div>
-        <div className="min-w-0 flex-1 overflow-hidden">
-          <span className="font-mono text-[10px] text-blue-500 font-bold uppercase tracking-wider block leading-none mb-1">COMPETITION_DEBRIEF</span>
-          <h3 className="text-sm font-heading font-extrabold text-foreground leading-snug tracking-tight break-words">
-            {comp.role}
-          </h3>
-          <p className="text-xs font-semibold text-slate-500 mt-0.5 break-words">
-            {comp.title}
-          </p>
-        </div>
-      </div>
-
-      {/* Award & Project Metadata */}
-      <div className="flex flex-wrap gap-1.5 min-w-0">
-        <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 max-w-full truncate ${theme.pill}`}>
-          🏆 {comp.award}
+      {/* Clean Header Badge (WITHOUT redundant period date) */}
+      <div className="flex items-center justify-between pb-2.5 border-b border-border/50 min-w-0">
+        <span className="font-mono text-[10px] text-amber-500 font-bold uppercase tracking-wider flex items-center gap-1.5">
+          <Trophy size={13} className="text-amber-500" />
+          COMPETITION_DEBRIEF_LOGS
         </span>
-        {comp.project && (
-          <span className="font-mono text-[9px] font-bold px-2 py-0.5 rounded border border-border bg-slate-50 dark:bg-slate-900 text-foreground/80 flex items-center gap-1 max-w-full truncate">
-            <span className={theme.text}>⚡</span> {comp.project}
-          </span>
-        )}
       </div>
 
       {/* What was built */}
       {comp.what_was_built && (
         <div className="space-y-1.5 min-w-0">
           <h4 className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="22" x2="18" y1="12" y2="12" /><line x1="6" x2="2" y1="12" y2="12" /><line x1="12" x2="12" y1="6" y2="2" /><line x1="12" x2="12" y1="22" y2="18" /></svg>
+            <Sparkles size={11} className="text-amber-500" />
             WHAT_WAS_BUILT
           </h4>
-          <div className={`p-2.5 rounded-lg border text-[11px] leading-relaxed text-slate-600 dark:text-slate-300 font-medium break-words overflow-hidden ${theme.boxBg}`}>
+          <div className={`p-3 rounded-xl border text-[11px] leading-relaxed text-slate-600 dark:text-slate-300 font-medium break-words overflow-hidden ${theme.boxBg}`}>
             {comp.what_was_built}
           </div>
         </div>
@@ -551,7 +520,7 @@ const CompetitionDebrief = ({ comp, theme }: { comp: FlattenedCompetition; theme
       {comp.impact_achievements && comp.impact_achievements.length > 0 && (
         <div className="space-y-1.5 min-w-0">
           <h4 className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+            <Award size={11} className="text-amber-500" />
             IMPACT_AND_ACHIEVEMENTS
           </h4>
           <ul className="space-y-2 text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -586,4 +555,4 @@ const CompetitionDebrief = ({ comp, theme }: { comp: FlattenedCompetition; theme
   );
 };
 
-export default Experience;
+export default ExperienceComponent;

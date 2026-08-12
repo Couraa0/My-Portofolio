@@ -102,14 +102,14 @@ export default function AdminAnalytics() {
               </p>
             </div>
           </div>
-          <div className="header-banner-actions">
+          <div className="header-banner-actions flex items-center gap-2">
             <button
               onClick={refreshAnalyticsData}
-              className="btn-admin btn-admin-secondary"
-              title="Muat ulang data analytics"
+              className="btn-secondary !p-2.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all flex items-center justify-center"
+              title="Refresh / Muat Ulang Data Analytics"
+              aria-label="Refresh Data Analytics"
             >
-              <RefreshCw size={16} className={loading ? 'spin' : ''} />
-              <span>Refresh</span>
+              <RefreshCw size={18} className={loading ? 'spin' : ''} />
             </button>
             <select
               className="analytics-select"
@@ -124,11 +124,11 @@ export default function AdminAnalytics() {
               href="https://analytics.google.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-admin btn-admin-primary"
+              className="btn-primary !p-2.5 rounded-lg transition-all flex items-center justify-center"
               title="Buka Console Google Analytics Resmi"
+              aria-label="Buka Console Google Analytics"
             >
-              <ExternalLink size={16} />
-              <span>GA Console</span>
+              <ExternalLink size={18} />
             </a>
           </div>
         </div>
@@ -412,9 +412,13 @@ export default function AdminAnalytics() {
                 onChange={(e) => setGaId(e.target.value)}
               />
             </div>
-            <button type="submit" className="btn-admin btn-admin-primary">
-              {savedSuccess ? <CheckCircle2 size={16} /> : <Save size={16} />}
-              <span>{savedSuccess ? 'Tersimpan!' : 'Simpan ID GA'}</span>
+            <button
+              type="submit"
+              className="btn-primary !p-2.5 rounded-lg transition-all flex items-center justify-center min-w-[42px]"
+              title={savedSuccess ? 'Tersimpan!' : 'Simpan ID Google Analytics'}
+              aria-label="Simpan ID GA"
+            >
+              {savedSuccess ? <CheckCircle2 size={18} className="text-emerald-300" /> : <Save size={18} />}
             </button>
           </div>
         </form>

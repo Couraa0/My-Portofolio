@@ -19,12 +19,10 @@ import { useState, useEffect, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { useCVLink } from "@/hooks/useCVLink";
 import { HeroBanner } from "@/components/HeroBanner";
-import SocialFeed from "@/components/SocialFeed";
-
-import { FeaturedProjects } from "@/components/FeaturedProjects";
-
+const FeaturedProjects = lazy(() => import("@/components/FeaturedProjects"));
 const Skills = lazy(() => import("@/components/Skills"));
-const HomeAchievements = lazy(() => import("@/components/HomeAchievements").then(module => ({ default: module.HomeAchievements })));
+const HomeAchievements = lazy(() => import("@/components/HomeAchievements"));
+const SocialFeed = lazy(() => import("@/components/SocialFeed"));
 const DecryptionGame = lazy(() => import("@/components/DecryptionGame"));
 
 const container: Variants = {
@@ -90,7 +88,7 @@ const Index = () => {
   return (
     <>
       {/* ═══════════════ HERO SECTION ═══════════════ */}
-      <section className={`relative min-h-screen flex items-center overflow-hidden ${layoutMode === "sidebar" ? "pt-10" : "pt-24"} pb-16 lg:pb-0 bg-background`}>
+      <section className={`relative min-h-screen flex items-center overflow-hidden ${layoutMode === "sidebar" ? "pt-10" : "pt-24 sm:pt-28"} pb-12 sm:pb-16 lg:pb-0 bg-background`}>
         {/* Mesh gradient overlay in blue theme */}
         <div className="absolute inset-0 pointer-events-none" style={{
           background: "radial-gradient(circle at 10% 20%, hsl(215 100% 55% / 0.04) 0%, transparent 40%), radial-gradient(circle at 90% 80%, hsl(196 100% 47% / 0.03) 0%, transparent 45%)"
@@ -122,14 +120,14 @@ const Index = () => {
         </div>
 
         <div className="container mx-auto px-4 sm:px-6 relative z-10 w-full">
-          <div className={`grid ${layoutMode === "navbar" ? "lg:grid-cols-12" : "grid-cols-1 md:-mt-10"} gap-12 lg:gap-8 items-center`}>
+          <div className={`grid ${layoutMode === "navbar" ? "lg:grid-cols-12" : "grid-cols-1 md:-mt-10"} gap-8 lg:gap-8 items-center`}>
 
             {/* ═════ LEFT: TYPOGRAPHY & HERO CONTENT ═════ */}
             <motion.div
               variants={container}
               initial="hidden"
               animate="show"
-              className={`space-y-6 text-center ${layoutMode === "navbar" ? "lg:text-left lg:col-span-6 xl:col-span-5" : "mx-auto w-full max-w-4xl"}`}
+              className={`space-y-5 sm:space-y-6 text-center ${layoutMode === "navbar" ? "lg:text-left lg:col-span-6 xl:col-span-5" : "mx-auto w-full max-w-4xl"}`}
             >
               {/* Hiring Badge */}
               <motion.div variants={fadeUp}>
@@ -151,7 +149,7 @@ const Index = () => {
               <motion.div variants={fadeUp}>
                 <h1 className="font-heading text-3xl sm:text-[3.2rem] lg:text-[4rem] font-extrabold leading-[1.15] tracking-tight text-foreground transition-all">
                   {t("Hii👋🏻,")}{" "}
-                  <span className="block mt-2 bg-gradient-to-r from-primary via-blue-800 to-indigo-900 bg-clip-text text-transparent pb-1 break-words">
+                  <span className="block mt-1 sm:mt-2 bg-gradient-to-r from-primary via-blue-800 to-indigo-900 bg-clip-text text-transparent pb-1 break-words">
                     I'm Muhammad Rakha Syamputra
                   </span>
                 </h1>
@@ -177,7 +175,7 @@ const Index = () => {
               {/* Bio Paragraph */}
               <motion.p
                 variants={fadeUp}
-                className={`text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed transition-all ${layoutMode === "navbar" ? "max-w-xl mx-auto lg:mx-0" : "max-w-3xl mx-auto"}`}
+                className={`text-xs sm:text-base md:text-lg text-muted-foreground leading-relaxed transition-all ${layoutMode === "navbar" ? "max-w-xl mx-auto lg:mx-0" : "max-w-3xl mx-auto"}`}
               >
                 {t("Hero Description")}
               </motion.p>
@@ -273,7 +271,7 @@ const Index = () => {
               initial={{ opacity: 0, scale: 0.95, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.25, ease: [0.25, 0.4, 0.25, 1] }}
-              className={`flex relative flex-col items-center justify-center -translate-y-4 lg:-translate-y-8 ${
+              className={`flex relative flex-col items-center justify-center mt-6 lg:mt-0 lg:-translate-y-8 ${
                 layoutMode === "navbar"
                   ? "lg:col-span-6 xl:col-span-7"
                   : "w-full max-w-2xl mx-auto mt-12"
@@ -306,7 +304,7 @@ const Index = () => {
           initial={{ opacity: 0, y: -40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.2 }}
-          className="absolute top-28 right-6 sm:right-12 hidden md:block pointer-events-none z-20"
+          className="absolute top-28 right-6 sm:right-12 hidden lg:block pointer-events-none z-20"
         >
           <motion.img
             src="/Coura - Halo.png"
@@ -335,7 +333,9 @@ const Index = () => {
       </Suspense>
 
       {/* ═══════════════ SOCIAL FEED ═══════════════ */}
-      <SocialFeed />
+      <Suspense fallback={<div className="h-40" />}>
+        <SocialFeed />
+      </Suspense>
 
       {/* ═══════════════ CYBER DECRYPTOR GAME ═══════════════ */}
       <Suspense fallback={<div className="h-40" />}>

@@ -24,6 +24,29 @@ export default defineConfig({
   build: {
     minify: "esbuild",
     sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          "vendor-motion": ["framer-motion"],
+          "vendor-supabase": ["@supabase/supabase-js"],
+          "vendor-i18n": ["i18next", "react-i18next"],
+          "vendor-ui": [
+            "@radix-ui/react-dialog",
+            "@radix-ui/react-tooltip",
+            "@radix-ui/react-toast",
+            "@radix-ui/react-select",
+            "@radix-ui/react-tabs",
+            "@radix-ui/react-dropdown-menu",
+            "@radix-ui/react-popover",
+            "@radix-ui/react-slot",
+          ],
+          "vendor-charts": ["recharts"],
+          "vendor-embla": ["embla-carousel-react"],
+          "vendor-query": ["@tanstack/react-query"],
+        },
+      },
+    },
   },
   esbuild: {
     drop: ["console", "debugger"],

@@ -352,7 +352,7 @@ export default function SocialFeed() {
                         return (
                           <div
                             key={post.id}
-                            className="flex-[0_0_75%] sm:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0"
+                            className="flex-[0_0_88%] sm:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0"
                           >
                             <motion.div
                               animate={{
@@ -498,7 +498,7 @@ export default function SocialFeed() {
                         return (
                           <div
                             key={post.id}
-                            className="flex-[0_0_75%] sm:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0"
+                            className="flex-[0_0_88%] sm:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0"
                           >
                             <motion.div
                               animate={{

@@ -674,5 +674,33 @@
     0% { opacity: 1; background-position: 200% 0; }
     100% { opacity: 0; background-position: -200% 0; }
   }
+
+  /* ── Mobile Performance & Reduced Motion Optimizations ── */
+  @media (max-width: 768px) {
+    .animate-float,
+    .animate-float-slow,
+    .gradient-orb {
+      animation: none !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 

@@ -58,8 +58,9 @@ export const HomeAchievements = () => {
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
-    align: "start",
+    align: "center",
     slidesToScroll: 1,
+    containScroll: false,
     breakpoints: {
       "(min-width: 640px)": { slidesToScroll: 1 },
       "(min-width: 1024px)": { slidesToScroll: 1 },
@@ -264,7 +265,8 @@ export const HomeAchievements = () => {
                       return (
                         <div
                           key={item.id}
-                          className="flex-[0_0_85%] sm:flex-[0_0_45%] lg:flex-[0_0_31%] min-w-0"
+                          onClick={() => emblaApi?.scrollTo(i)}
+                          className="flex-[0_0_85%] sm:flex-[0_0_45%] lg:flex-[0_0_31%] min-w-0 cursor-pointer"
                         >
                           <motion.div
                             animate={{
@@ -417,3 +419,5 @@ export const HomeAchievements = () => {
     </section>
   );
 };
+
+export default HomeAchievements;

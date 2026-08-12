@@ -164,7 +164,7 @@ export default function Achievements() {
         {/* Dynamic Stats Counter Bar for All Categories */}
         {!loading && !error && achievementsData.length > 0 && (
           <AnimatedSection delay={0.03}>
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-4 mb-8">
+            <div className="flex overflow-x-auto no-scrollbar scroll-smooth items-center gap-2.5 sm:gap-4 mb-8 py-1 flex-nowrap sm:flex-wrap justify-start sm:justify-start shrink-0">
               {Array.from(
                 achievementsData.reduce((map, item) => {
                   const key = item.type || "Certification";
@@ -182,14 +182,14 @@ export default function Achievements() {
                 return (
                   <div
                     key={type}
-                    className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-card border border-border/60 shadow-sm transition-transform hover:scale-105"
+                    className="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl bg-card border border-border/60 shadow-sm transition-transform hover:scale-105 shrink-0 whitespace-nowrap"
                   >
-                    <span className="text-lg">{emoji}</span>
+                    <span className="text-base">{emoji}</span>
                     <div className="text-left">
-                      <span className="text-base font-extrabold text-foreground leading-none">
+                      <span className="text-sm sm:text-base font-extrabold text-foreground leading-none">
                         {count}
                       </span>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-1.5 font-mono">
+                      <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-1 font-mono">
                         {type}
                       </span>
                     </div>
@@ -215,13 +215,13 @@ export default function Achievements() {
               />
             </div>
 
-            {/* Sliding Pill Type Filters */}
-            <div className="relative flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl bg-secondary/50 border border-border/60 backdrop-blur-sm shadow-sm justify-center sm:justify-start">
+            {/* Sliding Pill Type Filters — Horizontal swipe row on mobile */}
+            <div className="relative flex overflow-x-auto no-scrollbar scroll-smooth items-center gap-1.5 p-1.5 rounded-2xl bg-secondary/50 border border-border/60 backdrop-blur-sm shadow-sm justify-start sm:justify-start flex-nowrap sm:flex-wrap shrink-0">
               {types.map((type) => (
                 <button
                   key={type}
                   onClick={() => setSelectedType(type)}
-                  className={`relative flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-colors duration-300 ${
+                  className={`relative flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-colors duration-300 shrink-0 whitespace-nowrap ${
                     selectedType === type
                       ? "text-white"
                       : "text-muted-foreground hover:text-foreground"

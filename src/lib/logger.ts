@@ -2,6 +2,7 @@ import { supabase } from './supabase';
 
 export type LogCategory = 'SYSTEM' | 'VISITOR' | 'FORM' | 'SECURITY';
 export type LogLevel = 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR';
+export type LogTimeRange = '7D' | '30D' | '1Y' | 'ALL';
 
 export interface LogEntry {
   id?: string;
@@ -15,9 +16,30 @@ export interface LogEntry {
   created_at: string;
 }
 
+export interface GetLogsResult {
+  logs: LogEntry[];
+  source: 'database' | 'local';
+}
+
 const LOCAL_STORAGE_KEY = 'portfolio_website_logs';
 const MAX_LOCAL_LOGS = 500;
 let cachedClientIP: string | null = null;
+
+/**
+ * Helper to calculate cutoff date for filtering logs
+ */
+export const getCutoffDate = (range: LogTimeRange): Date | null => {
+  if (range === 'ALL') return null;
+  const now = new Date();
+  if (range === '7D') {
+    now.setDate(now.getDate() - 7);
+  } else if (range === '30D') {
+    now.setDate(now.getDate() - 30);
+  } else if (range === '1Y') {
+    now.setFullYear(now.getFullYear() - 1);
+  }
+  return now;
+};
 
 /**
  * Dynamically fetch real public IP address of the client
@@ -128,43 +150,68 @@ export const logActivity = async (entry: {
 };
 
 /**
- * Retrieve real logs with optional filtering
+ * Retrieve real logs with optional filtering and time range support
  */
 export const getLogs = async (options?: {
   category?: LogCategory | 'ALL';
   level?: LogLevel | 'ALL';
+  timeRange?: LogTimeRange;
   search?: string;
   limit?: number;
-}): Promise<LogEntry[]> => {
+}): Promise<GetLogsResult> => {
   let logs: LogEntry[] = [];
+  let source: 'database' | 'local' = 'local';
+
+  const cutoff = getCutoffDate(options?.timeRange || 'ALL');
 
   // Try fetching real logs from Supabase first
   try {
     let query = supabase.from('website_logs').select('*').order('created_at', { ascending: false });
+
+    if (cutoff) {
+      query = query.gte('created_at', cutoff.toISOString());
+    }
+
+    if (options?.category && options.category !== 'ALL') {
+      query = query.eq('category', options.category);
+    }
+
+    if (options?.level && options.level !== 'ALL') {
+      query = query.eq('level', options.level);
+    }
 
     if (options?.limit) {
       query = query.limit(options.limit);
     }
 
     const { data, error } = await query;
-    if (!error && data && data.length > 0) {
+    if (!error && data) {
       logs = data;
+      source = 'database';
     } else {
       logs = getLocalLogs();
+      source = 'local';
     }
   } catch (err) {
     logs = getLocalLogs();
+    source = 'local';
   }
 
-  // Filter in memory
+  // Filter in memory for local storage fallback or search query
   let filtered = [...logs];
 
-  if (options?.category && options.category !== 'ALL') {
-    filtered = filtered.filter((l) => l.category === options.category);
-  }
+  if (source === 'local') {
+    if (cutoff) {
+      filtered = filtered.filter((l) => new Date(l.created_at) >= cutoff);
+    }
 
-  if (options?.level && options.level !== 'ALL') {
-    filtered = filtered.filter((l) => l.level === options.level);
+    if (options?.category && options.category !== 'ALL') {
+      filtered = filtered.filter((l) => l.category === options.category);
+    }
+
+    if (options?.level && options.level !== 'ALL') {
+      filtered = filtered.filter((l) => l.level === options.level);
+    }
   }
 
   if (options?.search && options.search.trim() !== '') {
@@ -182,7 +229,7 @@ export const getLogs = async (options?: {
     filtered = filtered.slice(0, options.limit);
   }
 
-  return filtered;
+  return { logs: filtered, source };
 };
 
 /**
@@ -217,3 +264,4 @@ export const getLogStats = (logs: LogEntry[]) => {
     errorCount,
   };
 };
+

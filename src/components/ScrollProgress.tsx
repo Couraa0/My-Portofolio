@@ -4,7 +4,25 @@ import { ArrowUp } from "lucide-react";
 
 const ScrollProgress = () => {
   const [progress, setProgress] = useState(0);
-  const [visible, setVisible] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [isBottomBarVisible, setIsBottomBarVisible] = useState(true);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" && window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize, { passive: true });
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const handleBottomBar = (e: CustomEvent) => {
+      setIsBottomBarVisible(e.detail?.visible ?? true);
+    };
+    window.addEventListener("bottomBarVisibilityChange" as any, handleBottomBar);
+    return () => window.removeEventListener("bottomBarVisibilityChange" as any, handleBottomBar);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => {
@@ -12,11 +30,15 @@ const ScrollProgress = () => {
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const pct = docHeight > 0 ? scrollTop / docHeight : 0;
       setProgress(pct);
-      setVisible(scrollTop > 400);
+      setScrolled(scrollTop > 400);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Arrow is visible if scrolled > 400px AND (on desktop OR (on mobile AND bottom bar is hidden))
+  const showArrow = scrolled && (!isMobile || !isBottomBarVisible);
 
   const radius = 20;
   const circumference = 2 * Math.PI * radius;
@@ -24,7 +46,7 @@ const ScrollProgress = () => {
 
   return (
     <AnimatePresence>
-      {visible && (
+      {showArrow && (
         <motion.button
           initial={{ opacity: 0, scale: 0.5, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -33,7 +55,7 @@ const ScrollProgress = () => {
           whileTap={{ scale: 0.9 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Back to top"
-          className="fixed bottom-6 left-6 z-50 w-12 h-12 flex items-center justify-center group"
+          className="fixed bottom-4 sm:bottom-6 left-4 sm:left-6 z-50 w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center group"
         >
           {/* Background glow */}
           <div

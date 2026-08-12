@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
@@ -28,17 +28,13 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
   const { i18n, t } = useTranslation();
   const location = useLocation();
 
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  };
-
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     const onModalState = (e: any) => setModalOpen(e.detail);
-    
+
     window.addEventListener("scroll", onScroll);
     window.addEventListener("modalState", onModalState);
-    
+
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("modalState", onModalState);
@@ -50,7 +46,6 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
     if (!location.hash) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
-      // Handle hash navigation like /#skills
       const el = document.getElementById(location.hash.replace("#", ""));
       if (el) {
         setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 100);
@@ -60,13 +55,12 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
   }, [location.pathname, location.hash]);
 
   const isActive = (to: string) => {
-    if (to.startsWith("/#")) return false; // hash links are never "active"
+    if (to.startsWith("/#")) return false;
     return location.pathname === to;
   };
 
   const handleNavClick = (to: string) => {
     setMobileOpen(false);
-    // If it's a hash link on the home page and we're already on home, scroll to element
     if (to.startsWith("/#") && location.pathname === "/") {
       const id = to.replace("/#", "");
       const el = document.getElementById(id);
@@ -84,10 +78,11 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled || modalOpen
           ? "bg-background/90 shadow-sm backdrop-blur-md border-b border-border"
-          : "bg-transparent"
+          : "bg-background/70 backdrop-blur-sm"
       }`}
     >
-      <div className="container mx-auto flex items-center justify-between px-4 sm:px-6 py-4">
+      <div className="container mx-auto flex items-center justify-between px-4 sm:px-6 py-3 md:py-4">
+        {/* Brand Logo */}
         <Link
           to="/"
           className="font-heading text-xl font-bold tracking-tight flex items-center gap-1.5 group/logo"
@@ -104,7 +99,7 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
           />
         </Link>
 
-        {/* Desktop */}
+        {/* Desktop Nav Links */}
         <ul className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => {
             const active = isActive(link.to);
@@ -114,9 +109,9 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
                   to={link.to}
                   onClick={() => handleNavClick(link.to)}
                   className={`group px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg flex items-center justify-center ${
-                      active
-                        ? "text-primary"
-                        : "text-muted-foreground hover:text-foreground"
+                    active
+                      ? "text-primary"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   <span className="relative">
@@ -145,31 +140,31 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
           <Toolbar isPlaying={isPlaying} toggleAudio={toggleAudio} />
         </div>
 
-        {/* Mobile toggle & Theme */}
+        {/* Mobile Header Right Controls: Menu Toggle */}
         <div className="flex md:hidden items-center gap-2">
           <button
-            className="text-foreground p-2"
+            aria-label="Toggle Menu"
+            className="p-2 rounded-xl bg-card border border-border text-foreground hover:bg-muted transition-colors flex items-center justify-center"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
-            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile */}
+      {/* Mobile Drawer Menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="md:hidden border-t border-border bg-background"
-            style={{ position: "relative", zIndex: 50 }}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl overflow-hidden shadow-2xl"
           >
-            <div className="px-4 py-5">
-              {/* 2-column grid for nav links */}
-              <div className="grid grid-cols-2 gap-1 mb-4">
+            <div className="px-4 py-5 space-y-4">
+              {/* Navigation Links Grid (2 columns) */}
+              <div className="grid grid-cols-2 gap-2">
                 {navLinks.map((link) => {
                   const active = isActive(link.to);
                   return (
@@ -177,15 +172,11 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
                       key={link.label}
                       to={link.to}
                       onClick={() => handleNavClick(link.to)}
-                      className={`rounded-xl py-3 px-4 text-sm font-medium text-center transition-all duration-200 ${
+                      className={`rounded-xl py-2.5 px-3 text-xs font-semibold text-center transition-all duration-200 border ${
                         active
-                          ? "text-primary bg-primary/10 border-primary/20"
-                          : "text-muted-foreground hover:text-foreground bg-transparent border-transparent"
+                          ? "text-primary bg-primary/10 border-primary/30 font-bold shadow-sm"
+                          : "text-muted-foreground hover:text-foreground bg-card/50 border-border/60"
                       }`}
-                      style={{
-                        borderWidth: "1px",
-                        borderStyle: "solid",
-                      }}
                     >
                       {t(link.label)}
                     </Link>
@@ -193,33 +184,10 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
                 })}
               </div>
 
-              {/* Mobile Toolbar within Menu */}
-              <div className="flex justify-center mb-6">
-                 <Toolbar className="justify-center scale-90" isPlaying={isPlaying} toggleAudio={toggleAudio} />
+              {/* Toolbar controls in Mobile Drawer */}
+              <div className="pt-2 flex justify-center">
+                <Toolbar className="scale-90" isPlaying={isPlaying} toggleAudio={toggleAudio} />
               </div>
-              
-              {/* Divider */}
-              <div
-                className="h-px mb-4"
-                style={{
-                  background:
-                    "linear-gradient(90deg, transparent, hsl(var(--border)), transparent)",
-                }}
-              />
-
-              {/* Hire Me CTA - centered full width */}
-              <Link
-                to="/contact"
-                onClick={() => setMobileOpen(false)}
-                className="w-full rounded-full py-3 text-sm font-semibold text-white transition-all duration-200 active:scale-95 block text-center"
-                style={{
-                  background:
-                    "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--cyan)))",
-                  boxShadow: "0 4px 16px hsl(var(--primary) / 0.25)",
-                }}
-              >
-                {t("Hire Me")}
-              </Link>
             </div>
           </motion.div>
         )}
