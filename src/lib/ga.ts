@@ -8,7 +8,7 @@ declare global {
 }
 
 const GA_STORAGE_KEY = 'portfolio_ga_measurement_id';
-const DEFAULT_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-RAKHA2026GA';
+const DEFAULT_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-9PR2BB1KYP';
 
 /**
  * Get current Google Analytics Measurement ID
