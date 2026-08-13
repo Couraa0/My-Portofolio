@@ -3,7 +3,7 @@ import {
   ScrollText,
   Search,
   Trash2,
-  Download,
+  FileSpreadsheet,
   Filter,
   RefreshCw,
   Terminal,
@@ -21,12 +21,12 @@ import {
   Calendar,
   Database,
   HardDrive,
-  Clock,
-  Code,
+  Loader2,
 } from 'lucide-react';
 import {
   getLogs,
   clearLogs,
+  deleteLogEntry,
   getLogStats,
   type LogEntry,
   type LogCategory,
@@ -38,6 +38,8 @@ import { toast } from 'sonner';
 export default function AdminLogs() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [isClearingAll, setIsClearingAll] = useState(false);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<LogCategory | 'ALL'>('ALL');
   const [selectedLevel, setSelectedLevel] = useState<LogLevel | 'ALL'>('ALL');
@@ -45,9 +47,7 @@ export default function AdminLogs() {
   const [dataSource, setDataSource] = useState<'database' | 'local'>('database');
   const [activeLog, setActiveLog] = useState<LogEntry | null>(null);
   const [showConfirmClear, setShowConfirmClear] = useState(false);
-  const [showSqlModal, setShowSqlModal] = useState(false);
   const [copiedId, setCopiedId] = useState(false);
-  const [copiedSql, setCopiedSql] = useState(false);
 
   const fetchLogs = async () => {
     setLoading(true);
@@ -74,26 +74,71 @@ export default function AdminLogs() {
 
   const stats = getLogStats(logs);
 
+  // Delete a single log entry from both Supabase DB and LocalStorage
+  const handleDeleteSingleLog = async (id: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setDeletingId(id);
+    try {
+      await deleteLogEntry(id);
+      setLogs((prev) => prev.filter((l) => l.id !== id));
+      if (activeLog?.id === id) setActiveLog(null);
+      toast.success('Catatan log berhasil dihapus dari database & storage!');
+    } catch (err) {
+      console.error('Error deleting single log:', err);
+      toast.error('Gagal menghapus catatan log');
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  // Delete ALL logs from both Supabase DB and LocalStorage
   const handleClearAll = async () => {
+    setIsClearingAll(true);
     try {
       await clearLogs();
       setLogs([]);
       setShowConfirmClear(false);
-      toast.success('Semua log website berhasil dibersihkan!');
+      if (activeLog) setActiveLog(null);
+      toast.success('Semua catatan log website berhasil dihapus permanen dari Supabase & local storage!');
     } catch (e) {
+      console.error('Error clearing logs:', e);
       toast.error('Gagal menghapus log website');
+    } finally {
+      setIsClearingAll(false);
     }
   };
 
-  const handleExportJSON = () => {
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(logs, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute('href', dataStr);
-    downloadAnchor.setAttribute('download', `website_logs_${timeRange}_${new Date().toISOString().slice(0, 10)}.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-    toast.success('File JSON log website berhasil diunduh!');
+  // Export logs directly to Spreadsheet CSV format
+  const handleExportSpreadsheet = () => {
+    if (logs.length === 0) {
+      toast.warning('Tidak ada data log untuk diunduh');
+      return;
+    }
+
+    const headers = ['Log ID', 'Waktu', 'IP Address', 'Kategori', 'Status Level', 'Tindakan / Action', 'Halaman Target', 'Detail Catatan', 'User Agent'];
+    const rows = logs.map((log) => [
+      `"${(log.id || '').replace(/"/g, '""')}"`,
+      `"${new Date(log.created_at).toLocaleString('id-ID').replace(/"/g, '""')}"`,
+      `"${(log.ip_address || '127.0.0.1').replace(/"/g, '""')}"`,
+      `"${(log.category || '').replace(/"/g, '""')}"`,
+      `"${(log.level || '').replace(/"/g, '""')}"`,
+      `"${(log.action || '').replace(/"/g, '""')}"`,
+      `"${(log.page_url || '/').replace(/"/g, '""')}"`,
+      `"${(log.details || '').replace(/"/g, '""')}"`,
+      `"${(log.user_agent || '').replace(/"/g, '""')}"`,
+    ]);
+
+    const csvString = '\uFEFF' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `website_logs_spreadsheet_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast.success('Spreadsheet (.csv) log website berhasil diunduh!');
   };
 
   const copyToClipboard = (text: string, setStatus: (val: boolean) => void) => {
@@ -130,33 +175,6 @@ export default function AdminLogs() {
     }
   };
 
-  const sqlSnippet = `-- Skrip Pembuatan Tabel website_logs di Supabase SQL Editor
-CREATE TABLE IF NOT EXISTS public.website_logs (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    category TEXT NOT NULL,
-    level TEXT NOT NULL DEFAULT 'INFO',
-    action TEXT NOT NULL,
-    details TEXT,
-    page_url TEXT,
-    user_agent TEXT,
-    ip_address TEXT,
-    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
-);
-
-CREATE INDEX IF NOT EXISTS idx_website_logs_created_at ON public.website_logs (created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_website_logs_category ON public.website_logs (category);
-
-ALTER TABLE public.website_logs ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Allow public insert to website_logs"
-    ON public.website_logs FOR INSERT TO public, anon, authenticated WITH CHECK (true);
-
-CREATE POLICY "Allow read access to website_logs"
-    ON public.website_logs FOR SELECT TO public, anon, authenticated USING (true);
-
-CREATE POLICY "Allow delete access to website_logs"
-    ON public.website_logs FOR DELETE TO public, anon, authenticated USING (true);`;
-
   return (
     <div className="analytics-container">
       {/* Top Header Banner */}
@@ -191,14 +209,6 @@ CREATE POLICY "Allow delete access to website_logs"
           </div>
           <div className="header-banner-actions flex items-center gap-2">
             <button
-              onClick={() => setShowSqlModal(true)}
-              className="btn-secondary !p-2.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all flex items-center justify-center"
-              title="Lihat Skrip SQL Setup Database"
-              aria-label="SQL DB Setup"
-            >
-              <Code size={18} />
-            </button>
-            <button
               onClick={fetchLogs}
               className="btn-secondary !p-2.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all flex items-center justify-center"
               title="Refresh / Muat Ulang Data Log"
@@ -207,12 +217,13 @@ CREATE POLICY "Allow delete access to website_logs"
               <RefreshCw size={18} className={loading ? 'spin' : ''} />
             </button>
             <button
-              onClick={handleExportJSON}
-              className="btn-secondary !p-2.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all flex items-center justify-center"
-              title="Export Log ke JSON"
-              aria-label="Export Log"
+              onClick={handleExportSpreadsheet}
+              className="btn-secondary !p-2.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 transition-all flex items-center justify-center gap-1.5 text-xs font-semibold"
+              title="Download Log sebagai File Spreadsheet (.csv)"
+              aria-label="Export Spreadsheet"
             >
-              <Download size={18} />
+              <FileSpreadsheet size={18} className="text-emerald-600" />
+              <span className="hidden sm:inline">Export Spreadsheet</span>
             </button>
             <button
               onClick={() => setShowConfirmClear(true)}
@@ -337,8 +348,6 @@ CREATE POLICY "Allow delete access to website_logs"
         </div>
       </div>
 
-
-
       {/* Logs Table */}
       <div className="logs-table-container">
         <table className="data-table">
@@ -407,16 +416,23 @@ CREATE POLICY "Allow delete access to website_logs"
                     </code>
                   </td>
                   <td className="text-right">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setActiveLog(log);
-                      }}
-                      className="btn-action-view"
-                      title="Lihat Detail Log"
-                    >
-                      <Eye size={16} />
-                    </button>
+                    <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        onClick={() => setActiveLog(log)}
+                        className="btn-action-view"
+                        title="Lihat Detail Log"
+                      >
+                        <Eye size={15} />
+                      </button>
+                      <button
+                        onClick={(e) => log.id && handleDeleteSingleLog(log.id, e)}
+                        disabled={deletingId === log.id}
+                        className="btn-action-delete text-rose-500 hover:bg-rose-50 p-1.5 rounded transition-all"
+                        title="Hapus Catatan Log Ini"
+                      >
+                        {deletingId === log.id ? <Loader2 size={15} className="spin" /> : <Trash2 size={15} />}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -513,47 +529,15 @@ CREATE POLICY "Allow delete access to website_logs"
               </div>
             </div>
 
-            <div className="modal-footer">
-              <button className="btn-admin btn-admin-secondary" onClick={() => setActiveLog(null)}>
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* SQL Setup Modal */}
-      {showSqlModal && (
-        <div className="modal-overlay" onClick={() => setShowSqlModal(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '680px' }}>
-            <div className="modal-header">
-              <h3 className="modal-title flex items-center gap-2 text-slate-800">
-                <Database size={20} className="text-blue-600" />
-                <span>Skrip SQL Setup Tabel Supabase DB</span>
-              </h3>
-              <button className="modal-close" onClick={() => setShowSqlModal(false)}>
-                <X size={18} />
-              </button>
-            </div>
-
-            <div className="modal-body p-5 bg-slate-900 text-slate-100 font-mono text-xs leading-relaxed overflow-x-auto rounded-b-none">
-              <p className="text-slate-400 mb-3 font-sans text-xs">
-                Jalankan skrip berikut di <strong>Supabase Dashboard &gt; SQL Editor</strong> untuk membuat tabel <code className="text-blue-400">website_logs</code> dan mengaktifkan izin simpan log:
-              </p>
-              <pre className="bg-slate-950 p-3.5 rounded border border-slate-800 select-all whitespace-pre-wrap">
-                {sqlSnippet}
-              </pre>
-            </div>
-
-            <div className="modal-footer justify-between bg-slate-950 border-t border-slate-800">
+            <div className="modal-footer justify-between">
               <button
-                onClick={() => copyToClipboard(sqlSnippet, setCopiedSql)}
-                className="btn-admin btn-admin-primary flex items-center gap-2"
+                onClick={() => activeLog.id && handleDeleteSingleLog(activeLog.id)}
+                className="btn-admin-danger text-xs !py-2 !px-3"
               >
-                {copiedSql ? <Check size={16} /> : <Copy size={16} />}
-                <span>{copiedSql ? 'Disalin!' : 'Salin Skrip SQL'}</span>
+                <Trash2 size={15} />
+                <span>Hapus Log Ini</span>
               </button>
-              <button className="btn-admin btn-admin-secondary" onClick={() => setShowSqlModal(false)}>
+              <button className="btn-admin-secondary text-xs !py-2 !px-3" onClick={() => setActiveLog(null)}>
                 Tutup
               </button>
             </div>
@@ -563,18 +547,30 @@ CREATE POLICY "Allow delete access to website_logs"
 
       {/* Confirm Clear Modal */}
       {showConfirmClear && (
-        <div className="modal-overlay" onClick={() => setShowConfirmClear(false)}>
+        <div className="modal-overlay" onClick={() => !isClearingAll && setShowConfirmClear(false)}>
           <div className="confirm-modal" onClick={(e) => e.stopPropagation()}>
-            <h3 className="confirm-title">Bersihkan Log Website?</h3>
+            <div className="confirm-icon-wrap">
+              <AlertOctagon size={28} />
+            </div>
+            <h3 className="confirm-title">Bersihkan Semua Log Website?</h3>
             <p className="confirm-desc">
-              Tindakan ini akan menghapus semua riwayat catatan aktivitas yang tersimpan. Data yang dihapus tidak dapat dikembalikan.
+              Tindakan ini akan menghapus <strong>seluruh catatan log aktivitas</strong> secara permanen dari database Supabase dan local storage. Data yang dihapus tidak dapat dikembalikan.
             </p>
             <div className="confirm-actions">
-              <button className="btn-admin btn-admin-secondary" onClick={() => setShowConfirmClear(false)}>
+              <button
+                className="btn-admin-secondary"
+                onClick={() => setShowConfirmClear(false)}
+                disabled={isClearingAll}
+              >
                 Batal
               </button>
-              <button className="btn-admin btn-admin-danger" onClick={handleClearAll}>
-                Ya, Hapus Semua Log
+              <button
+                className="btn-admin-danger"
+                onClick={handleClearAll}
+                disabled={isClearingAll}
+              >
+                {isClearingAll ? <Loader2 size={16} className="spin" /> : <Trash2 size={16} />}
+                <span>{isClearingAll ? 'Menghapus DB...' : 'Ya, Hapus Semua Log'}</span>
               </button>
             </div>
           </div>
@@ -583,5 +579,6 @@ CREATE POLICY "Allow delete access to website_logs"
     </div>
   );
 }
+
 
 

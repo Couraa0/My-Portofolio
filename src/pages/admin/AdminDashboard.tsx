@@ -31,13 +31,15 @@ export default function AdminDashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      const [projects, achievements, experiences, competitions, realLogs] = await Promise.all([
+      const [projects, achievements, experiences, competitions, logsResult] = await Promise.all([
         getProjects(),
         getAchievements(),
         getExperiences(),
         getCompetitions(),
         getLogs(),
       ]);
+
+      const realLogs = logsResult.logs || [];
 
       setStats({
         projects: projects.length,
@@ -58,10 +60,10 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchDashboardData();
 
-    // Auto-refresh real-time logs every 4 seconds
+    // Auto-refresh dashboard data every 60 seconds
     const interval = setInterval(() => {
       fetchDashboardData();
-    }, 4000);
+    }, 60000);
 
     return () => clearInterval(interval);
   }, []);
@@ -279,7 +281,7 @@ export default function AdminDashboard() {
             <div className="info-dot info-dot-purple" />
             <div>
               <p className="info-label">Sync Status</p>
-              <p className="info-value">Real-time Auto Refresh — Data diperbarui setiap 4 detik</p>
+              <p className="info-value">Auto-Sync — Data diperbarui setiap 60 detik atau manual via tombol Refresh</p>
             </div>
           </div>
         </div>

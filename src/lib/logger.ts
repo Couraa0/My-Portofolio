@@ -233,12 +233,39 @@ export const getLogs = async (options?: {
 };
 
 /**
- * Clear all stored logs
+ * Delete a single log entry by ID from both Supabase DB and LocalStorage
+ */
+export const deleteLogEntry = async (id: string): Promise<void> => {
+  // 1. Remove from LocalStorage
+  const current = getLocalLogs();
+  const updated = current.filter((l) => l.id !== id);
+  saveLocalLogs(updated);
+
+  // 2. Delete from Supabase website_logs table
+  try {
+    const { error } = await supabase.from('website_logs').delete().eq('id', id);
+    if (error) {
+      console.error('Error deleting log from Supabase DB:', error);
+    }
+  } catch (e) {
+    console.error('Failed to delete log from Supabase DB:', e);
+  }
+};
+
+/**
+ * Clear all stored logs from both Supabase database and LocalStorage
  */
 export const clearLogs = async (): Promise<void> => {
+  // 1. Clear LocalStorage
   localStorage.removeItem(LOCAL_STORAGE_KEY);
+
+  // 2. Delete all rows from Supabase website_logs
   try {
-    await supabase.from('website_logs').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    const { error } = await supabase.from('website_logs').delete().gte('created_at', '1970-01-01T00:00:00Z');
+    if (error) {
+      console.warn('First delete attempt failed, trying fallback neq condition:', error);
+      await supabase.from('website_logs').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    }
   } catch (e) {
     console.warn('Could not clear Supabase website_logs table:', e);
   }

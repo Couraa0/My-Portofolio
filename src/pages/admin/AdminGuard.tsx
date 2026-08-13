@@ -2,6 +2,7 @@ import { Navigate } from 'react-router-dom';
 import { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { supabase, ADMIN_PATH } from '@/lib/supabase';
+import { logActivity } from '@/lib/logger';
 
 interface AdminGuardProps {
   children: ReactNode;
@@ -52,6 +53,13 @@ export default function AdminGuard({ children }: AdminGuardProps) {
   }
 
   if (!isAuthenticated) {
+    logActivity({
+      category: 'SECURITY',
+      level: 'WARNING',
+      action: 'Akses Terlarang: Admin Ditolak (Unauthorized)',
+      details: 'Pengunjung tanpa sesi aktif mencoba mengakses halaman admin terproteksi',
+      page_url: window.location.pathname,
+    });
     return <Navigate to={`/${ADMIN_PATH}`} replace />;
   }
 

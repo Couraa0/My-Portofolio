@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 import emailjs from "@emailjs/browser";
 import { EMAILJS_CONFIG } from "@/lib/emailjs";
 import { GenzAvatar, KingRakha, parseNameAndAvatar, AVATAR_LIST } from "./GenzAvatars";
+import { logActivity } from "@/lib/logger";
 
 type Message = { id: string; name: string; text: string; created_at: string; reactions: number; reply?: string };
 
@@ -73,6 +74,14 @@ export default function GuestbookPopup() {
         .insert([newMsg]);
 
       if (error) throw error;
+
+      logActivity({
+        category: 'FORM',
+        level: 'SUCCESS',
+        action: 'Pengiriman Pesan Guestbook',
+        details: `Pengirim: ${name.trim()} | Pesan: ${text.trim().slice(0, 60)}...`,
+        page_url: window.location.pathname,
+      });
 
       // Send email notification to user via EmailJS
       try {

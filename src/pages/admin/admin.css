@@ -1359,24 +1359,95 @@
 
 /* Confirm modal */
 .confirm-modal {
-  background: var(--a-surface);
-  border: 1px solid hsl(0 84% 60% / 0.15);
-  border-radius: var(--a-radius);
-  padding: 2rem;
-  max-width: 380px;
+  background: #ffffff;
+  border: 1px solid #fecaca;
+  border-radius: 16px;
+  padding: 2.25rem 2rem 2rem;
+  max-width: 440px;
   width: 100%;
   text-align: center;
-  box-shadow: 0 20px 50px hsl(222 47% 10% / 0.15);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+.confirm-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #fef2f2;
+  color: #ef4444;
+  border: 1px solid #fecaca;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.12);
 }
 .confirm-title {
   font-family: var(--a-font-head);
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: var(--a-text);
-  margin: 0 0 0.75rem;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 0.5rem;
 }
-.confirm-desc { font-size: 0.875rem; color: var(--a-text-sub); margin: 0 0 1.5rem; }
-.confirm-actions { display: flex; gap: 0.75rem; justify-content: center; }
+.confirm-desc {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0 0 1.75rem;
+  line-height: 1.5;
+}
+.confirm-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-admin-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  color: #334155;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-admin-secondary:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.btn-admin-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: #ef4444;
+  border: 1px solid #dc2626;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+}
+.btn-admin-danger:hover:not(:disabled) {
+  background: #dc2626;
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
+}
+.btn-admin-danger:disabled, .btn-admin-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
 /* =========================================
    UTILITIES

@@ -49,7 +49,7 @@ export default function AdminAnalytics() {
   // Fetch real logs and recompute metrics
   const refreshAnalyticsData = async () => {
     try {
-      const realLogs = await getLogs();
+      const { logs: realLogs } = await getLogs();
       setLogs(realLogs);
       setMetrics(computeRealAnalyticsMetrics(realLogs, timeRange));
       setLastSync(new Date());
@@ -60,13 +60,13 @@ export default function AdminAnalytics() {
     }
   };
 
-  // Auto-refresh real-time analytics every 3 seconds
+  // Auto-refresh analytics every 60 seconds to optimize server performance
   useEffect(() => {
     refreshAnalyticsData();
 
     const interval = setInterval(() => {
       refreshAnalyticsData();
-    }, 3000);
+    }, 60000);
 
     return () => clearInterval(interval);
   }, [timeRange]);
@@ -94,7 +94,7 @@ export default function AdminAnalytics() {
                 <span className="live-status-pill">
                   <span className="live-status-dot animate-ping"></span>
                   <span className="live-status-dot"></span>
-                  Live Realtime Sync
+                  Auto-Sync (60s)
                 </span>
               </div>
               <p className="header-banner-subtitle">

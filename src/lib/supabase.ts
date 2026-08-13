@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { logActivity } from './logger';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
@@ -110,6 +111,12 @@ export const createProject = async (project: Omit<Project, 'id' | 'created_at'>)
     .select()
     .single();
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'SUCCESS',
+    action: `Database: Menambah Project Baru "${data.title}"`,
+    details: `Kategori: ${data.category?.join(', ')} | Tech: ${data.tech?.join(', ')}`,
+  });
   return data;
 };
 
@@ -121,12 +128,23 @@ export const updateProject = async (id: string, project: Partial<Project>): Prom
     .select()
     .single();
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'INFO',
+    action: `Database: Memperbarui Project "${data.title}"`,
+    details: `ID: ${id}`,
+  });
   return data;
 };
 
 export const deleteProject = async (id: string): Promise<void> => {
   const { error } = await supabase.from('projects').delete().eq('id', id);
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'WARNING',
+    action: `Database: Menghapus Project ID "${id}"`,
+  });
 };
 
 // ===================== PROJECT CATEGORIES =====================
@@ -147,6 +165,11 @@ export const createProjectCategory = async (category: Omit<ProjectCategory, 'id'
     .select()
     .single();
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'SUCCESS',
+    action: `Database: Menambah Kategori Baru "${data.name}"`,
+  });
   return data;
 };
 
@@ -158,12 +181,22 @@ export const updateProjectCategory = async (id: string, category: Partial<Projec
     .select()
     .single();
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'INFO',
+    action: `Database: Memperbarui Kategori "${data.name}"`,
+  });
   return data;
 };
 
 export const deleteProjectCategory = async (id: string): Promise<void> => {
   const { error } = await supabase.from('project_categories').delete().eq('id', id);
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'WARNING',
+    action: `Database: Menghapus Kategori ID "${id}"`,
+  });
 };
 
 // ===================== ACHIEVEMENTS =====================
@@ -184,6 +217,12 @@ export const createAchievement = async (achievement: Omit<Achievement, 'id' | 'c
     .select()
     .single();
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'SUCCESS',
+    action: `Database: Menambah Sertifikasi/Prestasi "${data.title}"`,
+    details: `Penerbit: ${data.issuer}`,
+  });
   return data;
 };
 
@@ -195,12 +234,22 @@ export const updateAchievement = async (id: string, achievement: Partial<Achieve
     .select()
     .single();
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'INFO',
+    action: `Database: Memperbarui Prestasi "${data.title}"`,
+  });
   return data;
 };
 
 export const deleteAchievement = async (id: string): Promise<void> => {
   const { error } = await supabase.from('achievements').delete().eq('id', id);
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'WARNING',
+    action: `Database: Menghapus Prestasi ID "${id}"`,
+  });
 };
 
 // ===================== EXPERIENCES =====================
@@ -221,6 +270,11 @@ export const createExperience = async (exp: Omit<Experience, 'id' | 'created_at'
     .select()
     .single();
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'SUCCESS',
+    action: `Database: Menambah Pengalaman "${data.company} - ${data.role}"`,
+  });
   return data;
 };
 
@@ -232,12 +286,22 @@ export const updateExperience = async (id: string, exp: Partial<Experience>): Pr
     .select()
     .single();
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'INFO',
+    action: `Database: Memperbarui Pengalaman "${data.company}"`,
+  });
   return data;
 };
 
 export const deleteExperience = async (id: string): Promise<void> => {
   const { error } = await supabase.from('experiences').delete().eq('id', id);
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'WARNING',
+    action: `Database: Menghapus Pengalaman ID "${id}"`,
+  });
 };
 
 // ===================== COMPETITIONS =====================
@@ -258,6 +322,12 @@ export const createCompetition = async (comp: Omit<Competition, 'id' | 'created_
     .select()
     .single();
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'SUCCESS',
+    action: `Database: Menambah Kompetisi "${data.title}"`,
+    details: `Award: ${data.award}`,
+  });
   return data;
 };
 
@@ -269,12 +339,22 @@ export const updateCompetition = async (id: string, comp: Partial<Competition>):
     .select()
     .single();
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'INFO',
+    action: `Database: Memperbarui Kompetisi "${data.title}"`,
+  });
   return data;
 };
 
 export const deleteCompetition = async (id: string): Promise<void> => {
   const { error } = await supabase.from('competitions').delete().eq('id', id);
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'WARNING',
+    action: `Database: Menghapus Kompetisi ID "${id}"`,
+  });
 };
 
 // ===================== EDUCATION =====================
@@ -295,6 +375,11 @@ export const createEducation = async (edu: Omit<Education, 'id' | 'created_at'>)
     .select()
     .single();
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'SUCCESS',
+    action: `Database: Menambah Pendidikan "${data.school}"`,
+  });
   return data;
 };
 
@@ -306,12 +391,22 @@ export const updateEducation = async (id: string, edu: Partial<Education>): Prom
     .select()
     .single();
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'INFO',
+    action: `Database: Memperbarui Pendidikan "${data.school}"`,
+  });
   return data;
 };
 
 export const deleteEducation = async (id: string): Promise<void> => {
   const { error } = await supabase.from('education').delete().eq('id', id);
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'WARNING',
+    action: `Database: Menghapus Pendidikan ID "${id}"`,
+  });
 };
 
 // ===================== STORAGE =====================
@@ -331,6 +426,12 @@ export const uploadImage = async (
   if (error) throw error;
 
   const { data } = supabase.storage.from(bucket).getPublicUrl(filePath);
+  logActivity({
+    category: 'SYSTEM',
+    level: 'SUCCESS',
+    action: `Storage: Upload Gambar "${file.name}"`,
+    details: `Bucket: ${bucket} | Path: ${filePath}`,
+  });
   return data.publicUrl;
 };
 
@@ -341,6 +442,12 @@ export const deleteImage = async (
   const filePath = url.split('/').pop();
   if (!filePath) return;
   await supabase.storage.from(bucket).remove([filePath]);
+  logActivity({
+    category: 'SYSTEM',
+    level: 'WARNING',
+    action: `Storage: Hapus Gambar "${filePath}"`,
+    details: `Bucket: ${bucket}`,
+  });
 };
 
 // ===================== CV SETTINGS =====================
@@ -368,6 +475,11 @@ export const updateCVSettings = async (id: string, url: string): Promise<CVSetti
     .select()
     .single();
   if (error) throw error;
+  logActivity({
+    category: 'SYSTEM',
+    level: 'SUCCESS',
+    action: `Database: Memperbarui Link Dokumen CV/Resume`,
+  });
   return data;
 };
 

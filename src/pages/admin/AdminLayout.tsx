@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase, ADMIN_PATH } from '@/lib/supabase';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { logActivity } from '@/lib/logger';
 import {
   LayoutDashboard,
   Trophy,
@@ -46,6 +47,14 @@ export default function AdminLayout() {
   }, []);
 
   const handleLogout = async () => {
+    logActivity({
+      category: 'SECURITY',
+      level: 'INFO',
+      action: 'Admin Logout',
+      details: `User ${adminEmail} keluar dari dashboard admin`,
+      page_url: location.pathname,
+    });
+
     try {
       await supabase.auth.signOut();
     } catch (e) {

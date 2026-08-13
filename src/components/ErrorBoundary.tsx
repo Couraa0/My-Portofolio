@@ -1,5 +1,6 @@
 import { Component, ErrorInfo, ReactNode } from "react";
 import ServerError from "@/pages/ServerError";
+import { logActivity } from "@/lib/logger";
 
 interface Props {
     children: ReactNode;
@@ -22,6 +23,12 @@ class ErrorBoundary extends Component<Props, State> {
 
     componentDidCatch(error: Error, errorInfo: ErrorInfo) {
         console.error("ErrorBoundary caught an error:", error, errorInfo);
+        logActivity({
+            category: 'SYSTEM',
+            level: 'ERROR',
+            action: `Runtime Error Aplikasi: ${error.message || 'Terjadi kesalahan internal UI'}`,
+            details: errorInfo?.componentStack || error?.stack || 'Komponen mengalami error saat dimuat',
+        });
     }
 
     resetErrorBoundary = () => {

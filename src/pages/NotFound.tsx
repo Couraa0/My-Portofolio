@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import { Home, Search, Sparkles } from "lucide-react";
+import { logActivity } from "@/lib/logger";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -18,7 +19,13 @@ const NotFound = () => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
+    logActivity({
+      category: 'VISITOR',
+      level: 'WARNING',
+      action: `Membuka Halaman Tidak Ditemukan (404): ${location.pathname}`,
+      details: 'Pengunjung mencoba mengakses URL yang tidak terdaftar pada situs',
+      page_url: location.pathname,
+    });
   }, [location.pathname]);
 
   useEffect(() => {

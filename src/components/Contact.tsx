@@ -9,6 +9,7 @@ import { EMAILJS_CONFIG, getRateLimitSecondsLeft, markSent } from "@/lib/emailjs
 import { toast } from "sonner";
 import GuestbookFeed from "./GuestbookFeed";
 import { motion } from "framer-motion";
+import { logActivity } from "@/lib/logger";
 
 const Contact = () => {
   const { t } = useTranslation();
@@ -126,14 +127,30 @@ const Contact = () => {
 
       markSent();
       setStatus("success");
+
+      logActivity({
+        category: 'FORM',
+        level: 'SUCCESS',
+        action: 'Pengiriman Formulir Kontak',
+        details: `Pengirim: ${form.name} (${form.email}) | Subjek: ${form.subject || 'Tanpa Subjek'}`,
+        page_url: window.location.pathname,
+      });
+
       setForm({ name: "", email: "", subject: "", message: "" });
       toast.dismiss(loadingToast);
       toast.success(t("Success!") || "Terkirim!", {
         description: t("Success Desc") || "Pesan Anda telah berhasil dikirim ke email saya.",
       });
       setTimeout(() => setStatus("idle"), 3000);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to send email:", error);
+      logActivity({
+        category: 'FORM',
+        level: 'ERROR',
+        action: 'Gagal Mengirim Formulir Kontak',
+        details: `Pengirim: ${form.name} (${form.email}) | Error: ${error?.text || error?.message || 'EmailJS error'}`,
+        page_url: window.location.pathname,
+      });
       toast.dismiss(loadingToast);
       toast.error(t("Form fail") || "Gagal mengirim", {
         description: t("Database connection error") || "Terjadi kesalahan pada server. Silakan coba lagi nanti.",

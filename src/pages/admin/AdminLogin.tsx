@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase, ADMIN_PATH } from '@/lib/supabase';
 import { Eye, EyeOff, Lock, Mail, Shield } from 'lucide-react';
+import { logActivity } from '@/lib/logger';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -23,18 +24,41 @@ export default function AdminLogin() {
       });
 
       if (authError) {
-        if (authError.message === "Invalid login credentials" || authError.status === 400) {
-          setError('Email atau password salah. Silakan coba lagi.');
-        } else {
-          setError(authError.message || 'Gagal masuk. Silakan coba lagi.');
-        }
+        const errorMsg = authError.message === "Invalid login credentials" || authError.status === 400
+          ? 'Email atau password salah. Silakan coba lagi.'
+          : (authError.message || 'Gagal masuk. Silakan coba lagi.');
+        
+        setError(errorMsg);
+
+        logActivity({
+          category: 'SECURITY',
+          level: 'WARNING',
+          action: 'Percobaan Admin Login Gagal',
+          details: `Email: ${email} | Alasan: ${authError.message}`,
+          page_url: window.location.pathname,
+        });
       } else if (data.session) {
         localStorage.setItem('admin_authenticated', 'true');
         localStorage.setItem('admin_email', data.user?.email || email);
+
+        logActivity({
+          category: 'SECURITY',
+          level: 'SUCCESS',
+          action: 'Admin Login Berhasil',
+          details: `Admin ${data.user?.email || email} berhasil otentikasi masuk ke dashboard`,
+          page_url: window.location.pathname,
+        });
+
         navigate(`/${ADMIN_PATH}/dashboard`);
       }
-    } catch {
+    } catch (err: any) {
       setError('Terjadi kesalahan tidak terduga. Silakan coba lagi.');
+      logActivity({
+        category: 'SECURITY',
+        level: 'ERROR',
+        action: 'Error Sistem Pada Admin Login',
+        details: err?.message || 'Error tidak dikenal saat login',
+      });
     } finally {
       setLoading(false);
     }
