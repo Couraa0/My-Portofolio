@@ -30,33 +30,31 @@ export const setGAMeasurementId = (id: string): void => {
 };
 
 /**
- * Initialize Google Analytics (gtag.js) script dynamically
+ * Initialize Google Analytics (gtag.js) script dynamically if not already present in HTML
  */
 export const initGA = (): void => {
   const measurementId = getGAMeasurementId();
   if (!measurementId || typeof window === 'undefined') return;
 
-  const existingScript = document.getElementById('ga-gtag-script');
-  if (existingScript) {
-    existingScript.remove();
-  }
-
-  const script = document.createElement('script');
-  script.id = 'ga-gtag-script';
-  script.async = true;
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-  document.head.appendChild(script);
-
   window.dataLayer = window.dataLayer || [];
-  function gtag(...args: any[]) {
-    window.dataLayer.push(args);
+  if (typeof window.gtag !== 'function') {
+    window.gtag = function (...args: any[]) {
+      window.dataLayer.push(args);
+    };
   }
-  window.gtag = gtag;
 
-  gtag('js', new Date());
-  gtag('config', measurementId, {
-    send_page_view: false,
-  });
+  // Check if script already exists in document
+  const existingScript = document.querySelector('script[src*="googletagmanager.com/gtag/js"]');
+  if (!existingScript) {
+    const script = document.createElement('script');
+    script.id = 'ga-gtag-script';
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+    document.head.appendChild(script);
+
+    window.gtag('js', new Date());
+    window.gtag('config', measurementId);
+  }
 };
 
 /**
@@ -66,9 +64,10 @@ export const trackPageView = (path: string, title?: string): void => {
   const measurementId = getGAMeasurementId();
   if (!measurementId || typeof window.gtag !== 'function') return;
 
-  window.gtag('config', measurementId, {
+  window.gtag('event', 'page_view', {
     page_path: path,
     page_title: title || document.title,
+    send_to: measurementId,
   });
 };
 
