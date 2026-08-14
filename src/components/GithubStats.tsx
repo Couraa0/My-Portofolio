@@ -4,7 +4,38 @@ import { useTheme } from "@/components/theme-provider";
 import { useTranslation } from "react-i18next";
 import { GitBranch, GitCommit, Code2, ShieldCheck, AlertTriangle } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Component, ReactNode } from "react";
+
+interface LocalErrorBoundaryProps {
+  fallback: ReactNode;
+  children: ReactNode;
+}
+
+interface LocalErrorBoundaryState {
+  hasError: boolean;
+}
+
+class LocalErrorBoundary extends Component<LocalErrorBoundaryProps, LocalErrorBoundaryState> {
+  constructor(props: LocalErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: unknown, errorInfo: unknown) {
+    console.warn("GitHub Calendar error caught by boundary:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+    return this.props.children;
+  }
+}
 
 export default function GithubStats() {
   const { theme } = useTheme();
@@ -104,19 +135,8 @@ export default function GithubStats() {
             {/* Calendar Embed */}
             <div className="flex justify-center items-center overflow-x-auto w-full py-2 scrollbar-none">
               <div className="min-w-[750px] md:min-w-0 md:w-full flex justify-center">
-                <GitHubCalendar 
-                  username={username}
-                  labels={{
-                    totalCount: isIndonesian 
-                      ? '{{count}} kontribusi dalam setahun terakhir'
-                      : '{{count}} contributions in the last year',
-                  }}
-                  theme={{
-                    light: calendarTheme.light,
-                    dark: calendarTheme.dark
-                  }}
-                  colorScheme={resolvedTheme}
-                  errorMessage={
+                <LocalErrorBoundary
+                  fallback={
                     <div className="flex flex-col items-center justify-center p-6 text-center rounded-xl bg-slate-50/50 dark:bg-slate-900/10 border border-dashed border-border/60 w-full min-h-[120px]">
                       <AlertTriangle size={20} className="text-amber-500 mb-2 animate-bounce" />
                       <p className="text-[10px] font-bold text-foreground">GitHub contribution calendar could not be fetched.</p>
@@ -125,7 +145,22 @@ export default function GithubStats() {
                       </a>
                     </div>
                   }
-                />
+                >
+                  <GitHubCalendar 
+                    username={username}
+                    labels={{
+                      totalCount: isIndonesian 
+                        ? '{{count}} kontribusi dalam setahun terakhir'
+                        : '{{count}} contributions in the last year',
+                    }}
+                    theme={{
+                      light: calendarTheme.light,
+                      dark: calendarTheme.dark
+                    }}
+                    colorScheme={resolvedTheme}
+                    throwOnError={true}
+                  />
+                </LocalErrorBoundary>
               </div>
             </div>
 
