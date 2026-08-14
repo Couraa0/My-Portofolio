@@ -102,6 +102,7 @@ const MarqueeItem = ({ item }: { item: TechItem }) => (
       src={getIconUrl(item.slug, item.hex || "000000")}
       alt={item.name}
       className="w-10 h-10 object-contain grayscale-[0.4] group-hover:grayscale-0 transition-all duration-300 group-hover:scale-110"
+      loading="lazy"
       onError={(e) => {
         const img = e.currentTarget;
         img.style.display = "none";
@@ -200,6 +201,7 @@ const TechCard = ({ item, idx }: { item: TechItem; idx: number }) => {
             src={getIconUrl(item.slug, item.hex)}
             alt={item.name}
             className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+            loading="lazy"
             onError={(e) => {
               const img = e.currentTarget;
               img.style.display = "none";

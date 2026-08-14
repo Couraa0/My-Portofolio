@@ -138,6 +138,7 @@ const Projects = () => {
               src="/Coura - Peak.png"
               alt="Coura mascot peeking"
               className="absolute -right-2 sm:right-0 -bottom-3 w-16 sm:w-20 h-auto drop-shadow-md select-none hidden md:block pointer-events-none"
+              loading="lazy"
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -277,6 +278,7 @@ const Projects = () => {
                       src={selectedProject.image} 
                       alt={selectedProject.title} 
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/45">
@@ -432,6 +434,7 @@ export const ProjectCard = ({ project, index, onClick }: { project: Project; ind
               src={project.image} 
               alt={project.title} 
               className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
+              loading="lazy"
             />
           ) : (
             <FolderKanban size={44} className="text-slate-300 dark:text-slate-700" />

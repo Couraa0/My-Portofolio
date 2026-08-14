@@ -142,7 +142,7 @@ export const HeroBanner = () => {
 
   if (loading) {
     return (
-      <div className="w-full h-[340px] sm:h-[400px] rounded-3xl bg-card border border-border/60 animate-pulse flex items-center justify-center">
+      <div className="w-full h-[200px] sm:h-[260px] lg:h-[400px] rounded-3xl bg-card border border-border/60 animate-pulse flex items-center justify-center">
         <Loader2 className="animate-spin text-blue-500" size={24} />
       </div>
     );
@@ -161,16 +161,24 @@ export const HeroBanner = () => {
         <div ref={emblaRef} className="overflow-hidden rounded-[22px]">
           <div className="flex">
             {slides.map((slide, i) => {
-              const isProject = slide.type === "project";
+               const isProject = slide.type === "project";
+               // Lazy-render carousel images
+               const isLoaded = 
+                 activeIndex === i || 
+                 Math.abs(activeIndex - i) <= 1 || 
+                 (activeIndex === 0 && i === slides.length - 1) || 
+                 (activeIndex === slides.length - 1 && i === 0);
+
               return (
                 <div key={slide.id} className="flex-[0_0_100%] min-w-0">
-                  <div className="relative h-[340px] sm:h-[390px] w-full rounded-[22px] overflow-hidden bg-card border border-border/40">
+                  <div className="relative h-[190px] sm:h-[250px] lg:h-[390px] w-full rounded-[22px] overflow-hidden bg-card border border-border/40">
                     {/* Background Image */}
-                    {slide.image ? (
+                    {slide.image && isLoaded ? (
                       <img
                         src={slide.image}
                         alt={slide.title}
                         className="w-full h-full object-cover"
+                        loading="lazy"
                       />
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center bg-muted/40 text-muted-foreground">
@@ -186,8 +194,8 @@ export const HeroBanner = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent pointer-events-none" />
 
                     {/* Header Badges */}
-                    <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider text-white bg-blue-600/90 backdrop-blur-md border border-blue-400/30 shadow-lg">
+                    <div className="absolute top-3 left-3 right-3 lg:top-4 lg:left-4 lg:right-4 flex items-center justify-between z-10">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 lg:gap-1.5 lg:px-3 lg:py-1 rounded-full text-[8px] lg:text-[10px] font-extrabold uppercase tracking-wider text-white bg-blue-600/90 backdrop-blur-md border border-blue-400/30 shadow-lg">
                         {isProject ? (
                           <Star size={10} fill="currentColor" strokeWidth={0} />
                         ) : (
@@ -196,19 +204,19 @@ export const HeroBanner = () => {
                         {slide.badge}
                       </span>
 
-                      <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold text-white/80 bg-black/40 backdrop-blur-md border border-white/10">
+                      <span className="px-1.5 py-0.5 lg:px-2.5 lg:py-1 rounded-full text-[8px] lg:text-[10px] font-mono font-bold text-white/80 bg-black/40 backdrop-blur-md border border-white/10">
                         {String(i + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
                       </span>
                     </div>
 
                     {/* Content Overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 z-10 text-left space-y-2.5">
+                    <div className="absolute bottom-0 left-0 right-0 p-3.5 lg:p-6 z-10 text-left space-y-1.5 lg:space-y-2.5">
                       {/* Tags */}
                       <div className="flex flex-wrap gap-1.5">
                         {slide.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="px-2.5 py-0.5 text-[9px] font-bold font-mono uppercase tracking-wider text-blue-300 bg-blue-500/20 backdrop-blur-md rounded-md border border-blue-400/20"
+                            className="px-1.5 py-0.5 lg:px-2.5 lg:py-0.5 text-[8px] lg:text-[9px] font-bold font-mono uppercase tracking-wider text-blue-300 bg-blue-500/20 backdrop-blur-md rounded-md border border-blue-400/20"
                           >
                             {tag}
                           </span>
@@ -217,10 +225,10 @@ export const HeroBanner = () => {
 
                       {/* Title & Subtitle */}
                       <div>
-                        <h3 className="font-heading text-lg sm:text-xl font-extrabold text-white line-clamp-1 leading-snug">
+                        <h3 className="font-heading text-sm lg:text-xl font-extrabold text-white line-clamp-1 leading-snug">
                           {slide.title}
                         </h3>
-                        <p className="text-xs text-white/70 line-clamp-2 leading-relaxed mt-1">
+                        <p className="text-[10px] lg:text-xs text-white/70 line-clamp-1 lg:line-clamp-2 leading-relaxed mt-0.5">
                           {slide.subtitle}
                         </p>
                       </div>
@@ -232,7 +240,7 @@ export const HeroBanner = () => {
                             href={slide.link}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] font-bold font-mono text-white bg-blue-600 hover:bg-blue-500 transition-all duration-300 shadow-md shadow-blue-500/20"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 lg:gap-1.5 lg:px-4 lg:py-2 rounded-full text-[8px] lg:text-[10px] font-bold font-mono text-white bg-blue-600 hover:bg-blue-500 transition-all duration-300 shadow-md shadow-blue-500/20"
                           >
                             <span>Verify Credential</span>
                             <ExternalLink size={11} />
@@ -240,7 +248,7 @@ export const HeroBanner = () => {
                         ) : (
                           <Link
                             to={slide.link || "/projects"}
-                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] font-bold font-mono text-white bg-blue-600 hover:bg-blue-500 transition-all duration-300 shadow-md shadow-blue-500/20"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 lg:gap-1.5 lg:px-4 lg:py-2 rounded-full text-[8px] lg:text-[10px] font-bold font-mono text-white bg-blue-600 hover:bg-blue-500 transition-all duration-300 shadow-md shadow-blue-500/20"
                           >
                             <span>Explore {isProject ? "Project" : "Achievement"}</span>
                             <ArrowRight size={11} />

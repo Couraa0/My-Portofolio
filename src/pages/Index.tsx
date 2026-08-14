@@ -14,11 +14,14 @@ import {
   Activity,
   User,
   ExternalLink,
+  Loader2,
 } from "lucide-react";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { useCVLink } from "@/hooks/useCVLink";
 import { HeroBanner } from "@/components/HeroBanner";
+import LazyViewportSection from "@/components/LazyViewportSection";
+
 const FeaturedProjects = lazy(() => import("@/components/FeaturedProjects"));
 const Skills = lazy(() => import("@/components/Skills"));
 const HomeAchievements = lazy(() => import("@/components/HomeAchievements"));
@@ -120,6 +123,49 @@ const Index = () => {
         </div>
 
         <div className="container mx-auto px-4 sm:px-6 relative z-10 w-full">
+          
+          {/* Mobile-only Headline (visible on mobile, hidden on desktop) */}
+          <div className="lg:hidden text-center space-y-4 mb-6">
+            <div>
+              <span
+                className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold border"
+                style={{
+                  background: "hsl(var(--primary) / 0.08)",
+                  borderColor: "hsl(var(--primary) / 0.25)",
+                  color: "hsl(var(--primary))",
+                  boxShadow: "0 0 15px hsl(var(--primary) / 0.08)",
+                }}
+              >
+                <Sparkles size={12} className="animate-pulse text-sky-400" />
+                {t("Available for Work")}
+              </span>
+            </div>
+            
+            <h1 className="font-heading text-3xl sm:text-[2.2rem] font-extrabold leading-[1.15] tracking-tight text-foreground">
+              {t("Hii👋🏻,")}{" "}
+              <span className="block mt-1 bg-gradient-to-r from-primary via-blue-800 to-indigo-900 bg-clip-text text-transparent pb-1 break-words text-2xl sm:text-4xl">
+                I'm Muhammad Rakha Syamputra
+              </span>
+            </h1>
+
+            {/* Typing Roles Container (mobile version) */}
+            <div className="flex justify-center mt-3">
+              <div
+                className="rounded-full px-4 py-2 text-xs font-semibold inline-flex items-center gap-2.5 backdrop-blur-sm border"
+                style={{
+                  background: "hsl(var(--primary) / 0.1)",
+                  borderColor: "hsl(var(--primary) / 0.22)",
+                  color: "hsl(var(--primary))",
+                }}
+              >
+                <span className="w-2 h-2 rounded-full bg-sky-400 animate-ping" />
+                <span className="min-w-[150px] text-left">
+                  <TypingRoles roles={typingRoles} />
+                </span>
+              </div>
+            </div>
+          </div>
+
           <div className={`grid ${layoutMode === "navbar" ? "lg:grid-cols-12" : "grid-cols-1 md:-mt-10"} gap-8 lg:gap-8 items-center`}>
 
             {/* ═════ LEFT: TYPOGRAPHY & HERO CONTENT ═════ */}
@@ -127,10 +173,10 @@ const Index = () => {
               variants={container}
               initial="hidden"
               animate="show"
-              className={`space-y-5 sm:space-y-6 text-center ${layoutMode === "navbar" ? "lg:text-left lg:col-span-6 xl:col-span-5" : "mx-auto w-full max-w-4xl"}`}
+              className={`space-y-5 sm:space-y-6 text-center order-2 lg:order-1 ${layoutMode === "navbar" ? "lg:text-left lg:col-span-6 xl:col-span-5" : "mx-auto w-full max-w-4xl"}`}
             >
-              {/* Hiring Badge */}
-              <motion.div variants={fadeUp}>
+              {/* Hiring Badge (hidden on mobile, visible on desktop) */}
+              <motion.div variants={fadeUp} className="hidden lg:block">
                 <span
                   className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold border transition-all duration-300 hover:scale-105"
                   style={{
@@ -145,8 +191,8 @@ const Index = () => {
                 </span>
               </motion.div>
 
-              {/* Main Headline */}
-              <motion.div variants={fadeUp}>
+              {/* Main Headline (hidden on mobile, visible on desktop) */}
+              <motion.div variants={fadeUp} className="hidden lg:block">
                 <h1 className="font-heading text-3xl sm:text-[3.2rem] lg:text-[4rem] font-extrabold leading-[1.15] tracking-tight text-foreground transition-all">
                   {t("Hii👋🏻,")}{" "}
                   <span className="block mt-1 sm:mt-2 bg-gradient-to-r from-primary via-blue-800 to-indigo-900 bg-clip-text text-transparent pb-1 break-words">
@@ -155,8 +201,8 @@ const Index = () => {
                 </h1>
               </motion.div>
 
-              {/* Typing Roles Container */}
-              <motion.div variants={fadeUp} className={`flex justify-center ${layoutMode === "navbar" ? "lg:justify-start" : ""}`}>
+              {/* Typing Roles Container (hidden on mobile, visible on desktop) */}
+              <motion.div variants={fadeUp} className={`hidden lg:flex justify-center ${layoutMode === "navbar" ? "lg:justify-start" : ""}`}>
                 <div
                   className="rounded-full px-4 py-2 text-xs font-semibold inline-flex items-center gap-2.5 backdrop-blur-sm border"
                   style={{
@@ -271,7 +317,7 @@ const Index = () => {
               initial={{ opacity: 0, scale: 0.95, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.25, ease: [0.25, 0.4, 0.25, 1] }}
-              className={`flex relative flex-col items-center justify-center mt-6 lg:mt-0 lg:-translate-y-8 ${
+              className={`flex relative flex-col items-center justify-center mt-6 lg:mt-0 lg:-translate-y-8 order-1 lg:order-2 ${
                 layoutMode === "navbar"
                   ? "lg:col-span-6 xl:col-span-7"
                   : "w-full max-w-2xl mx-auto mt-12"
@@ -310,6 +356,7 @@ const Index = () => {
             src="/Coura - Halo.png"
             alt="Coura mascot waving hello"
             className="w-20 lg:w-24 h-auto drop-shadow-lg select-none"
+            loading="lazy"
             animate={{ y: [0, -8, 0], rotate: [0, 3, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             draggable={false}
@@ -318,29 +365,84 @@ const Index = () => {
       </section>
 
       {/* ═══════════════ SKILLS (inline) ═══════════════ */}
-      <Suspense fallback={<div className="h-40" />}>
-        <Skills />
-      </Suspense>
+      <LazyViewportSection
+        fallback={
+          <div className="py-24 border-t border-border/30 min-h-[300px] flex items-center justify-center">
+            <div className="flex flex-col items-center gap-3">
+              <Loader2 className="w-6 h-6 animate-spin text-blue-500/50" />
+              <span className="text-xs text-muted-foreground/60 font-mono">Loading Skills System...</span>
+            </div>
+          </div>
+        }
+      >
+        <Suspense fallback={null}>
+          <Skills />
+        </Suspense>
+      </LazyViewportSection>
 
       {/* ═══════════════ FEATURED PROJECTS ═══════════════ */}
-      <Suspense fallback={<div className="h-40" />}>
-        <FeaturedProjects />
-      </Suspense>
+      <LazyViewportSection
+        fallback={
+          <div className="py-24 border-t border-border/30 min-h-[650px] flex items-center justify-center">
+            <div className="flex flex-col items-center gap-3">
+              <Loader2 className="w-6 h-6 animate-spin text-blue-500/50" />
+              <span className="text-xs text-muted-foreground/60 font-mono">Loading Projects Core...</span>
+            </div>
+          </div>
+        }
+      >
+        <Suspense fallback={null}>
+          <FeaturedProjects />
+        </Suspense>
+      </LazyViewportSection>
 
       {/* ═══════════════ ACHIEVEMENTS (Professional & Award) ═══════════════ */}
-      <Suspense fallback={<div className="h-40" />}>
-        <HomeAchievements />
-      </Suspense>
+      <LazyViewportSection
+        fallback={
+          <div className="py-24 border-t border-border/30 min-h-[550px] flex items-center justify-center">
+            <div className="flex flex-col items-center gap-3">
+              <Loader2 className="w-6 h-6 animate-spin text-blue-500/50" />
+              <span className="text-xs text-muted-foreground/60 font-mono">Loading Achievements Dossier...</span>
+            </div>
+          </div>
+        }
+      >
+        <Suspense fallback={null}>
+          <HomeAchievements />
+        </Suspense>
+      </LazyViewportSection>
 
       {/* ═══════════════ SOCIAL FEED ═══════════════ */}
-      <Suspense fallback={<div className="h-40" />}>
-        <SocialFeed />
-      </Suspense>
+      <LazyViewportSection
+        fallback={
+          <div className="py-24 border-t border-border/30 min-h-[600px] flex items-center justify-center">
+            <div className="flex flex-col items-center gap-3">
+              <Loader2 className="w-6 h-6 animate-spin text-blue-500/50" />
+              <span className="text-xs text-muted-foreground/60 font-mono">Loading Social Feeds...</span>
+            </div>
+          </div>
+        }
+      >
+        <Suspense fallback={null}>
+          <SocialFeed />
+        </Suspense>
+      </LazyViewportSection>
 
       {/* ═══════════════ CYBER DECRYPTOR GAME ═══════════════ */}
-      <Suspense fallback={<div className="h-40" />}>
-        <DecryptionGame />
-      </Suspense>
+      <LazyViewportSection
+        fallback={
+          <div className="py-24 border-t border-border/30 min-h-[700px] flex items-center justify-center">
+            <div className="flex flex-col items-center gap-3">
+              <Loader2 className="w-6 h-6 animate-spin text-emerald-500/30" />
+              <span className="text-xs text-emerald-500/40 font-mono">INITIALIZING TERMINAL UPLINK...</span>
+            </div>
+          </div>
+        }
+      >
+        <Suspense fallback={null}>
+          <DecryptionGame />
+        </Suspense>
+      </LazyViewportSection>
     </>
   );
 };

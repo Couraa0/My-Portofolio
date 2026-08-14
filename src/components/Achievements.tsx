@@ -152,6 +152,7 @@ export default function Achievements() {
               src="/Coura.png"
               alt="Coura mascot"
               className="absolute -right-2 sm:right-0 -top-6 w-16 sm:w-20 h-auto drop-shadow-md select-none hidden md:block pointer-events-none"
+              loading="lazy"
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -312,6 +313,7 @@ export default function Achievements() {
                             src={item.images[0]}
                             alt={item.title}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            loading="lazy"
                           />
                         ) : (
                           <Award size={40} className="text-slate-300 dark:text-slate-700" />
@@ -529,6 +531,7 @@ const DiagnosticPanel = ({
                 src={item.images[currentIdx]} 
                 alt={`${item.title}`} 
                 className="max-w-full max-h-[300px] object-contain rounded shadow border border-border bg-white cursor-zoom-in hover:scale-[1.01] transition-transform" 
+                loading="lazy"
                 onClick={(e) => {
                   e.stopPropagation();
                   setFullScreenImage(item.images[currentIdx]);

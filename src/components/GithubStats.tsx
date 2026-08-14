@@ -51,6 +51,7 @@ export default function GithubStats() {
             src="/Coura - Hmm.png"
             alt="Coura mascot thinking"
             className="absolute -right-2 sm:right-4 lg:right-16 -top-4 w-16 sm:w-20 h-auto drop-shadow-md select-none hidden md:block pointer-events-none"
+            loading="lazy"
             animate={{ y: [0, -5, 0], rotate: [0, -4, 0] }}
             transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
             draggable={false}

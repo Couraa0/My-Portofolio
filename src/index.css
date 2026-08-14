@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
-
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
@@ -103,7 +101,7 @@
 @layer base {
   * {
     border-color: hsl(var(--border) / 1);
-    overflow-anchor: none;
+    overflow-anchor: auto;
   }
 
   body {
@@ -578,24 +576,39 @@
 
   /* ── Carousel Progress Bar ── */
   .carousel-progress-bar {
-    height: 3px;
-    background: hsl(var(--border));
+    height: 5px;
+    background: hsl(var(--border) / 0.4);
     border-radius: 99px;
     overflow: hidden;
     position: relative;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(4px);
   }
   .carousel-progress-fill {
     height: 100%;
     border-radius: 99px;
-    background: linear-gradient(90deg, hsl(215 100% 55%), hsl(196 100% 47%));
-    transition: width 0.3s ease;
+    background: linear-gradient(90deg, hsl(215 100% 55%), hsl(196 100% 47%), hsl(250 84% 60%), hsl(215 100% 55%));
+    background-size: 300% 100%;
+    box-shadow: 0 0 12px hsl(215 100% 55% / 0.7), 0 0 20px hsl(196 100% 47% / 0.5);
+    transition: filter 0.3s ease, box-shadow 0.3s ease;
+  }
+  .carousel-progress-fill.paused {
+    filter: saturate(0.5) brightness(0.7);
+    box-shadow: 0 0 4px hsl(215 100% 55% / 0.3);
   }
   @keyframes carousel-autoplay-progress {
     from { width: 0%; }
     to { width: 100%; }
   }
+  @keyframes carousel-progress-shimmer {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
   .carousel-autoplay-animate {
-    animation: carousel-autoplay-progress var(--autoplay-duration, 5s) linear forwards;
+    animation: 
+      carousel-autoplay-progress var(--autoplay-duration, 5s) linear forwards,
+      carousel-progress-shimmer 4s ease infinite;
   }
 
   /* ── Carousel Dot Indicator ── */

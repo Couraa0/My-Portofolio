@@ -61,6 +61,7 @@ export default function MusicPopup({ isPlaying, toggleAudio }: MusicPopupProps) 
                     src="/Amazing.jpg"
                     alt="Amazing"
                     className="w-full h-full object-cover"
+                    loading="lazy"
                     style={{ filter: "brightness(0.9) saturate(1.1)" }}
                   />
                 </div>

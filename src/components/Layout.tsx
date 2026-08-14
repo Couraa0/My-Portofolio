@@ -14,7 +14,9 @@ const Layout = () => {
 
   useEffect(() => {
     if (!audioRef.current) {
-      audioRef.current = new Audio('/Music.mp3');
+      audioRef.current = new Audio();
+      audioRef.current.src = '/Music.mp3';
+      audioRef.current.preload = 'none';
       audioRef.current.loop = true;
       audioRef.current.volume = 0.5;
     }

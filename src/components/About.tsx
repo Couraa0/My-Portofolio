@@ -106,6 +106,7 @@ const About = () => {
               src="/Coura - Hmm.png"
               alt="Coura mascot thinking"
               className="absolute -right-2 sm:right-4 lg:right-16 -top-4 w-16 sm:w-20 h-auto drop-shadow-md select-none hidden md:block pointer-events-none"
+              loading="lazy"
               animate={{ y: [0, -6, 0], rotate: [0, -5, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
               draggable={false}
@@ -144,6 +145,7 @@ const About = () => {
                     src="/Rakha-Formal-NoBg.png"
                     alt="Muhammad Rakha Syamputra"
                     className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 hover:scale-105"
+                    loading="lazy"
                     draggable={false}
                   />
 
@@ -344,6 +346,7 @@ const About = () => {
                   src="/Coura - Peace.png"
                   alt="Coura mascot celebrating"
                   className="absolute -right-2 sm:right-4 lg:right-16 -top-4 w-16 sm:w-20 h-auto drop-shadow-md select-none hidden md:block pointer-events-none"
+                  loading="lazy"
                   animate={{ y: [0, -6, 0], rotate: [0, 5, 0] }}
                   transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
                   draggable={false}
@@ -365,6 +368,7 @@ const About = () => {
                           src={edu.logo}
                           alt={edu.school}
                           className="object-contain w-full h-full"
+                          loading="lazy"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
                             const parent = e.currentTarget.parentElement;

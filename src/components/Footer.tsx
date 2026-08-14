@@ -69,6 +69,7 @@ const Footer = () => {
                 src="/Coura - Yawn.png"
                 alt="Coura mascot yawning"
                 className="w-12 h-auto drop-shadow-sm select-none pointer-events-none opacity-60 group-hover/footer-logo:opacity-100 transition-opacity duration-300"
+                loading="lazy"
                 draggable={false}
               />
             </Link>

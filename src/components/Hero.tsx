@@ -209,6 +209,7 @@ const Hero = () => {
                     src="/Rakha-Formal-NoBg.png"
                     alt="Muhammad Rakha Syamputra"
                     className="w-full h-full object-contain object-bottom select-none"
+                    loading="lazy"
                     style={{
                       filter: "drop-shadow(0 12px 28px hsl(250 84% 60% / 0.18)) contrast(1.02)",
                     }}
@@ -285,6 +286,7 @@ const Hero = () => {
                   src="/Rakha-Formal-NoBg.png"
                   alt="Muhammad Rakha Syamputra"
                   className="w-full h-full object-contain object-bottom select-none"
+                  loading="lazy"
                   style={{
                     filter: "drop-shadow(0 20px 40px hsl(250 84% 60% / 0.18)) drop-shadow(0 4px 12px hsl(220 20% 50% / 0.1)) contrast(1.02)",
                     imageRendering: "auto",

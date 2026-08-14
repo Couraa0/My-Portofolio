@@ -261,6 +261,11 @@ export const HomeAchievements = () => {
                     {achievements.map((item, i) => {
                       const isAward = item.type?.toLowerCase() === "award";
                       const isActive = activeIndex === i;
+                      // Lazy-render carousel images (wider range since up to 3 are visible at once)
+                      const isLoaded = 
+                        Math.abs(activeIndex - i) <= 2 || 
+                        (activeIndex <= 1 && i >= achievements.length - 2) || 
+                        (activeIndex >= achievements.length - 2 && i <= 1);
 
                       return (
                         <div
@@ -285,11 +290,12 @@ export const HomeAchievements = () => {
                             {/* Image */}
                             <div className="relative h-44 overflow-hidden bg-muted flex items-center justify-center">
                               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none z-10" />
-                              {item.images && item.images.length > 0 ? (
+                              {item.images && item.images.length > 0 && isLoaded ? (
                                 <img
                                   src={item.images[0]}
                                   alt={item.title}
                                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                  loading="lazy"
                                 />
                               ) : (
                                 <Award

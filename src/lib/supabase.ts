@@ -411,17 +411,89 @@ export const deleteEducation = async (id: string): Promise<void> => {
 
 // ===================== STORAGE =====================
 
+const compressImage = (file: File, maxW = 1000, maxH = 1000, quality = 0.8): Promise<File> => {
+  return new Promise((resolve) => {
+    // Only compress image files
+    if (!file.type.startsWith('image/')) {
+      resolve(file);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        // Resize if it exceeds max bounds
+        if (width > maxW || height > maxH) {
+          if (width > height) {
+            height = Math.round((height * maxW) / width);
+            width = maxW;
+          } else {
+            width = Math.round((width * maxH) / height);
+            height = maxH;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve(file);
+          return;
+        }
+
+        // Clear and draw image
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Export as JPEG with quality
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + '.jpg', {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+              });
+              resolve(compressedFile);
+            } else {
+              resolve(file);
+            }
+          },
+          'image/jpeg',
+          quality
+        );
+      };
+      img.onerror = () => resolve(file);
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => resolve(file);
+    reader.readAsDataURL(file);
+  });
+};
+
 export const uploadImage = async (
   bucket: 'projects' | 'achievements' | 'experiences',
   file: File,
   fileName: string
 ): Promise<string> => {
-  const fileExt = file.name.split('.').pop();
+  // Compress image before uploading
+  let finalFile = file;
+  try {
+    finalFile = await compressImage(file);
+  } catch (err) {
+    console.warn("Client-side image compression failed, uploading original:", err);
+  }
+
+  const fileExt = finalFile.name.split('.').pop();
   const filePath = `${fileName}-${Date.now()}.${fileExt}`;
 
   const { error } = await supabase.storage
     .from(bucket)
-    .upload(filePath, file, { upsert: true });
+    .upload(filePath, finalFile, { upsert: true });
 
   if (error) throw error;
 
@@ -429,7 +501,7 @@ export const uploadImage = async (
   logActivity({
     category: 'SYSTEM',
     level: 'SUCCESS',
-    action: `Storage: Upload Gambar "${file.name}"`,
+    action: `Storage: Upload Gambar "${finalFile.name}"`,
     details: `Bucket: ${bucket} | Path: ${filePath}`,
   });
   return data.publicUrl;

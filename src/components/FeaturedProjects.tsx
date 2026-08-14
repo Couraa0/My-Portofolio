@@ -21,7 +21,6 @@ import AnimatedSection from "./AnimatedSection";
 import { getProjects, type Project as DBProject } from "@/lib/supabase";
 import { adaptProject, type Project, colorMap } from "./Projects";
 
-const AUTOPLAY_DELAY = 5000;
 
 interface FeaturedProjectsProps {
   hideHeader?: boolean;
@@ -36,12 +35,10 @@ export const FeaturedProjects = ({ hideHeader = false, className = "" }: Feature
   const [error, setError] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  const autoplayTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const progressKey = useRef(0);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
-    align: "start",
+    align: "center",
     skipSnaps: false,
   });
 
@@ -60,7 +57,6 @@ export const FeaturedProjects = ({ hideHeader = false, className = "" }: Feature
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
     setActiveIndex(emblaApi.selectedScrollSnap());
-    progressKey.current += 1;
   }, [emblaApi]);
 
   useEffect(() => {
@@ -70,35 +66,6 @@ export const FeaturedProjects = ({ hideHeader = false, className = "" }: Feature
     return () => { emblaApi.off("select", onSelect); };
   }, [emblaApi, onSelect]);
 
-  // Auto-play logic
-  const startAutoplay = useCallback(() => {
-    if (autoplayTimer.current) clearTimeout(autoplayTimer.current);
-    autoplayTimer.current = setTimeout(() => {
-      if (emblaApi) emblaApi.scrollNext();
-    }, AUTOPLAY_DELAY);
-  }, [emblaApi]);
-
-  const stopAutoplay = useCallback(() => {
-    if (autoplayTimer.current) {
-      clearTimeout(autoplayTimer.current);
-      autoplayTimer.current = null;
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!emblaApi || isHovered) return;
-    startAutoplay();
-    emblaApi.on("select", startAutoplay);
-    return () => {
-      stopAutoplay();
-      emblaApi.off("select", startAutoplay);
-    };
-  }, [emblaApi, isHovered, startAutoplay, stopAutoplay]);
-
-  useEffect(() => {
-    if (isHovered) stopAutoplay();
-    else if (emblaApi) startAutoplay();
-  }, [isHovered, emblaApi, startAutoplay, stopAutoplay]);
 
   // Modal body scroll lock
   useEffect(() => {
@@ -197,29 +164,50 @@ export const FeaturedProjects = ({ hideHeader = false, className = "" }: Feature
                 onMouseLeave={() => setIsHovered(false)}
               >
                 {/* Embla container */}
-                <div ref={emblaRef} className="overflow-hidden rounded-2xl">
-                  <div className="flex">
+                <div ref={emblaRef} className="overflow-hidden">
+                  <div className="flex gap-5 md:gap-0">
                     {projects.map((project, i) => {
                       const theme =
                         colorMap[project.color || "default"] ||
                         colorMap["default"];
+                      const isActive = activeIndex === i;
+                      // Lazy-render carousel images to save massive bandwidth
+                      const isLoaded = 
+                        activeIndex === i || 
+                        Math.abs(activeIndex - i) <= 1 || 
+                        (activeIndex === 0 && i === projects.length - 1) || 
+                        (activeIndex === projects.length - 1 && i === 0);
+
                       return (
                         <div
                           key={project.id}
-                          className="flex-[0_0_100%] min-w-0"
+                          className="flex-[0_0_85%] sm:flex-[0_0_45%] md:flex-[0_0_100%] min-w-0 cursor-pointer"
                         >
                           {/* Slide Card */}
-                          <div
-                            className="relative rounded-2xl overflow-hidden bg-card border border-border/60 cursor-pointer perspective-container entry-shimmer flex flex-col md:block"
-                            onClick={() => setSelectedProject(project)}
+                          <motion.div
+                            animate={{
+                              scale: isActive ? 1 : 0.97,
+                              opacity: isActive ? 1 : 0.75,
+                            }}
+                            transition={{ duration: 0.35, ease: "easeOut" }}
+                            className="relative rounded-2xl overflow-hidden bg-card border border-border/60 cursor-pointer perspective-container entry-shimmer flex flex-col md:block h-full"
+                            onClick={(e) => {
+                              if (!isActive) {
+                                e.stopPropagation();
+                                emblaApi?.scrollTo(i);
+                              } else {
+                                setSelectedProject(project);
+                              }
+                            }}
                           >
                             {/* Image Side */}
                             <div className="relative h-[200px] sm:h-[260px] md:h-[420px] overflow-hidden shrink-0">
-                              {project.image ? (
+                              {project.image && isLoaded ? (
                                 <motion.img
                                   src={project.image}
                                   alt={project.title}
                                   className="w-full h-full object-cover"
+                                  loading="lazy"
                                   initial={false}
                                   whileHover={{ scale: 1.03 }}
                                   transition={{ duration: 0.6 }}
@@ -342,7 +330,7 @@ export const FeaturedProjects = ({ hideHeader = false, className = "" }: Feature
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          </motion.div>
                         </div>
                       );
                     })}
@@ -366,31 +354,16 @@ export const FeaturedProjects = ({ hideHeader = false, className = "" }: Feature
                 </button>
               </div>
 
-              {/* Dots + Progress Bar */}
-              <div className="flex flex-col items-center gap-4">
-                {/* Dot Indicators */}
-                <div className="flex items-center gap-2">
-                  {projects.map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => scrollTo(i)}
-                      className={`carousel-dot ${activeIndex === i ? "active" : ""}`}
-                      aria-label={`Go to slide ${i + 1}`}
-                    />
-                  ))}
-                </div>
-
-                {/* Auto-play Progress */}
-                <div className="w-full max-w-xs carousel-progress-bar">
-                  <div
-                    key={progressKey.current}
-                    className="carousel-progress-fill carousel-autoplay-animate"
-                    style={{
-                      "--autoplay-duration": `${AUTOPLAY_DELAY}ms`,
-                      animationPlayState: isHovered ? "paused" : "running",
-                    } as React.CSSProperties}
+              {/* Dot Indicators */}
+              <div className="flex items-center justify-center gap-2">
+                {projects.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => scrollTo(i)}
+                    className={`carousel-dot ${activeIndex === i ? "active" : ""}`}
+                    aria-label={`Go to slide ${i + 1}`}
                   />
-                </div>
+                ))}
               </div>
 
               {/* View All Projects CTA */}

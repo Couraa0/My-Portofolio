@@ -154,6 +154,7 @@ const ExperienceComponent = () => {
               src="/Coura - Peace.png"
               alt="Coura mascot celebrating"
               className="absolute -right-2 sm:right-0 -top-6 w-16 sm:w-20 h-auto drop-shadow-md select-none hidden md:block pointer-events-none"
+              loading="lazy"
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
@@ -220,7 +221,7 @@ const ExperienceComponent = () => {
 
                               <div className="flex items-center gap-3">
                                 <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-white dark:bg-slate-950 flex items-center justify-center p-1.5 border border-border shadow-sm overflow-hidden group-hover:scale-105 transition-transform">
-                                  {exp.logo ? <img src={exp.logo} alt={exp.company} className="object-contain w-full h-full" /> : <Briefcase className="text-slate-400 dark:text-slate-600 w-5 h-5" />}
+                                  {exp.logo ? <img src={exp.logo} alt={exp.company} className="object-contain w-full h-full" loading="lazy" /> : <Briefcase className="text-slate-400 dark:text-slate-600 w-5 h-5" />}
                                 </div>
                                 <div className="min-w-0 flex-1 text-left space-y-1">
                                   <div className="flex items-center gap-1.5 font-mono text-[10px] font-bold text-blue-500">
@@ -354,7 +355,7 @@ const ExperienceComponent = () => {
                               <div className="flex items-center gap-3">
                                 <div className={`flex-shrink-0 w-11 h-11 rounded-xl bg-white dark:bg-slate-950 flex items-center justify-center border border-border shadow-sm overflow-hidden group-hover:scale-105 transition-transform ${comp.logo ? 'p-0' : `p-1.5 ${theme.bg} ${theme.border}`}`}>
                                   {comp.logo ? (
-                                    <img src={comp.logo} alt={comp.title} className="object-cover w-full h-full" />
+                                    <img src={comp.logo} alt={comp.title} className="object-cover w-full h-full" loading="lazy" />
                                   ) : (
                                     <Trophy className={`${theme.primary} w-5 h-5`} />
                                   )}
