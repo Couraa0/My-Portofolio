@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
 import AnimatedSection from "./AnimatedSection";
-import { GraduationCap, Briefcase, Rocket, Download, Terminal, Settings, ShieldCheck, Loader2, MapPin, Calendar } from "lucide-react";
+import { GraduationCap, Briefcase, Rocket, Download, Terminal, Settings, ShieldCheck, Loader2, MapPin, Calendar, Users, Code2, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useCVLink } from "@/hooks/useCVLink";
 import { useEffect, useState } from "react";
-import { getEducation, type Education as DBEdu } from "@/lib/supabase";
+import { getEducation, getExperiences, type Education as DBEdu, type Experience as DBExp } from "@/lib/supabase";
 
 interface Education {
   id: string;
@@ -30,25 +30,36 @@ function adaptEdu(e: DBEdu): Education {
 
 const cards = [
   {
-    icon: <GraduationCap size={18} />,
-    title: "S1 Sistem Informasi Title",
-    sub: "S1 Sistem Informasi Sub",
-    nodeId: "EDU_01",
-    iconBg: "hsl(215 100% 55% / 0.08)", iconColor: "hsl(215 100% 50%)", border: "border-blue-500/20 hover:border-blue-500/50 shadow-blue-500/5",
+    icon: <Briefcase size={18} />,
+    title: "IT PM Intern Title",
+    sub: "IT PM Intern Sub",
+    nodeId: "PM_01",
+    companyKey: "citiasia",
+    iconBg: "hsl(220 90% 56% / 0.08)", iconColor: "hsl(220 90% 50%)", border: "border-indigo-500/20 hover:border-indigo-500/50 shadow-indigo-500/5",
+  },
+  {
+    icon: <Code2 size={18} />,
+    title: "AI Builder Title",
+    sub: "AI Builder Sub",
+    nodeId: "AI_02",
+    companyKey: "blockdev",
+    iconBg: "hsl(196 100% 47% / 0.08)", iconColor: "hsl(196 100% 40%)", border: "border-sky-500/20 hover:border-sky-500/50 shadow-sky-500/5",
   },
   {
     icon: <Rocket size={18} />,
     title: "Co-Founder Tixchain Title",
     sub: "Co-Founder Tixchain Sub",
-    nodeId: "FOUNDER_02",
+    nodeId: "FOUNDER_03",
+    companyKey: "tixchain",
     iconBg: "hsl(158 80% 42% / 0.08)", iconColor: "hsl(158 80% 40%)", border: "border-emerald-500/20 hover:border-emerald-500/50 shadow-emerald-500/5",
   },
   {
-    icon: <Briefcase size={18} />,
-    title: "IT PM Intern Title",
-    sub: "IT PM Intern Sub",
-    nodeId: "PM_03",
-    iconBg: "hsl(220 90% 56% / 0.08)", iconColor: "hsl(220 90% 50%)", border: "border-indigo-500/20 hover:border-indigo-500/50 shadow-indigo-500/5",
+    icon: <Users size={18} />,
+    title: "Himsika Title",
+    sub: "Himsika Sub",
+    nodeId: "EDU_04",
+    companyKey: "himsika",
+    iconBg: "hsl(280 85% 60% / 0.08)", iconColor: "hsl(280 85% 55%)", border: "border-purple-500/20 hover:border-purple-500/50 shadow-purple-500/5",
   },
 ];
 
@@ -62,6 +73,7 @@ const About = () => {
   const { t } = useTranslation();
   const { cvLink } = useCVLink();
   const [education, setEducation] = useState<Education[]>([]);
+  const [dbExperiences, setDbExperiences] = useState<DBExp[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -72,7 +84,28 @@ const About = () => {
       })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
+
+    getExperiences()
+      .then((data) => {
+        setDbExperiences(data);
+      })
+      .catch((e) => console.error("Failed to load experiences:", e));
   }, []);
+
+  const getCompanyLogo = (key: string) => {
+    const match = dbExperiences.find(exp => 
+      exp.company.toLowerCase().includes(key.toLowerCase())
+    );
+    if (match && match.logo_url) {
+      return match.logo_url;
+    }
+    // Fallback static paths if database doesn't match
+    if (key === "citiasia") return "/Citiasia.png";
+    if (key === "tixchain") return "/Tix-Logo.png";
+    if (key === "himsika") return "/Himsika-Logo.png";
+    if (key === "blockdev") return "/IT-Logo.png";
+    return null;
+  };
 
   const stats = [
     { value: "3.97", label: t("GPA"), from: "hsl(215 100% 55%)", to: "hsl(196 100% 47%)" },
@@ -90,6 +123,8 @@ const About = () => {
       <div className="absolute bottom-10 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
+        
+        {/* Header */}
         <AnimatedSection>
           <div className="text-center mb-16 relative">
             <span className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold mb-4 border"
@@ -114,201 +149,247 @@ const About = () => {
           </div>
         </AnimatedSection>
 
-        {/* Main grid — 3 columns on lg: photo | text | cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-[290px_1fr_290px] gap-8 lg:gap-10 items-start max-w-6xl mx-auto">
+        {/* Unified 2-Column layout for clean horizontal & vertical alignment */}
+        <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8 lg:gap-12 items-start max-w-6xl mx-auto">
 
-          {/* ── Photo column (Simulated Diagnostic Card) ── */}
-          <AnimatedSection delay={0.05} className="w-full">
-            <div className="flex flex-col items-center lg:sticky lg:top-32 gap-6 w-full">
+          {/* ── LEFT COLUMN: Photo, Stats, CV button, and Core Proficiencies (Sticky on desktop) ── */}
+          <div className="space-y-6 lg:sticky lg:top-28 w-full">
+            <AnimatedSection delay={0.05} className="w-full">
+              <div className="space-y-6 w-full">
+                
+                {/* Photo frame */}
+                <div className="relative p-3.5 rounded-3xl border border-border bg-card shadow-sm w-full transition-all duration-500 hover:shadow-[0_0_20px_rgba(59,130,246,0.12)]">
+                  
+                  {/* Tech brackets for HUD look */}
+                  <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-blue-500 rounded-tl" />
+                  <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-blue-500 rounded-tr" />
+                  <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-blue-500 rounded-bl" />
+                  <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-blue-500 rounded-br" />
 
-              {/* Photo frame */}
-              <div className="relative p-3.5 rounded-3xl border border-border bg-card shadow-sm w-full transition-all duration-500 hover:shadow-[0_0_20px_rgba(59,130,246,0.12)]">
+                  <div className="relative rounded-2xl overflow-hidden bg-muted aspect-[4/5] w-full"
+                    style={{ boxShadow: "0 10px 30px hsl(215 100% 55% / 0.08)" }}>
 
-                {/* Tech brackets for HUD look */}
-                <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-blue-500 rounded-tl" />
-                <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-blue-500 rounded-tr" />
-                <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-blue-500 rounded-bl" />
-                <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-blue-500 rounded-br" />
+                    {/* Horizontal scanner glow animation */}
+                    <motion.div 
+                      className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-95 pointer-events-none z-20 shadow-[0_0_8px_rgba(59,130,246,0.9)]"
+                      animate={{ top: ["0%", "100%", "0%"] }}
+                      transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+                    />
 
-                <div className="relative rounded-2xl overflow-hidden bg-muted aspect-[4/5] w-full"
-                  style={{ boxShadow: "0 10px 30px hsl(215 100% 55% / 0.08)" }}>
+                    {/* Photo */}
+                    <img
+                      src="/Rakha-Formal-NoBg.png"
+                      alt="Muhammad Rakha Syamputra"
+                      className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 hover:scale-105"
+                      loading="lazy"
+                      draggable={false}
+                    />
 
-                  {/* Horizontal scanner glow animation */}
-                  <motion.div 
-                    className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-95 pointer-events-none z-20 shadow-[0_0_8px_rgba(59,130,246,0.9)]"
-                    animate={{ top: ["0%", "100%", "0%"] }}
-                    transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-                  />
-
-                  {/* Photo */}
-                  <img
-                    src="/Rakha-Formal-NoBg.png"
-                    alt="Muhammad Rakha Syamputra"
-                    className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 hover:scale-105"
-                    loading="lazy"
-                    draggable={false}
-                  />
-
-                  {/* Bottom gradient fade */}
-                  <div className="absolute bottom-0 left-0 right-0 h-16 z-10"
-                    style={{ background: "linear-gradient(to top, hsl(var(--background)) 15%, transparent)" }} />
-                </div>
-
-                {/* Cyber Diagnostic Data Overlay */}
-                <div className="mt-4 pt-3.5 border-t border-border/60 text-left font-mono text-[9px] space-y-1.5 text-slate-500 dark:text-slate-400">
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center gap-1"><ShieldCheck size={10} className="text-emerald-500" /> SYSTEM_STATUS:</span>
-                    <span className="text-emerald-500 font-bold">ONLINE [NOMINAL]</span>
+                    {/* Bottom gradient fade */}
+                    <div className="absolute bottom-0 left-0 right-0 h-16 z-10"
+                      style={{ background: "linear-gradient(to top, hsl(var(--background)) 15%, transparent)" }} />
                   </div>
-                  <div className="flex justify-between">
-                    <span>BIO_SECTOR:</span>
-                    <span>WEST_JAVA_IDN</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>AUTHORIZED:</span>
-                    <span>LVL_4_DEV_PM</span>
-                  </div>
-                </div>
 
-              </div>
-
-              {/* Mini stats */}
-              <div className="flex gap-3.5 w-full justify-center">
-                {stats.map((s) => (
-                  <div key={s.label} className="flex-1 rounded-2xl p-3 text-center bg-card border border-border shadow-sm hover:border-blue-500/30 hover:shadow-md transition-all duration-300">
-                    <p className="font-heading font-extrabold text-sm bg-clip-text text-transparent"
-                      style={{ backgroundImage: `linear-gradient(135deg, ${s.from}, ${s.to})` }}>
-                      {s.value}
-                    </p>
-                    <p className="text-[9px] font-mono text-muted-foreground mt-0.5 uppercase tracking-wide">{s.label}</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Download CV */}
-              <motion.a
-                href={cvLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex items-center gap-2 rounded-full px-5 py-3 text-xs font-bold text-white w-full justify-center shadow-md shadow-blue-500/10 hover:shadow-lg hover:shadow-blue-500/20 transition-all"
-                style={{ background: "linear-gradient(135deg, hsl(215 100% 55%), hsl(196 100% 47%))" }}>
-                <Download size={13} /> {t("Download CV")}
-              </motion.a>
-            </div>
-          </AnimatedSection>
-
-          {/* ── Text + bars column (Simulated Terminal Console) ── */}
-          <AnimatedSection delay={0.15} className="w-full">
-            <div className="space-y-6">
-
-              {/* Directory Bar with macOS buttons */}
-              <div className="flex items-center justify-between font-mono text-[10px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/60 px-4 py-2.5 rounded-xl border border-border/50 shadow-sm">
-                <div className="flex items-center gap-1.5">
-                  <div className="flex items-center gap-1 mr-2">
-                    <span className="w-2 h-2 rounded-full bg-[#ff5f56]" />
-                    <span className="w-2 h-2 rounded-full bg-[#ffbd2e]" />
-                    <span className="w-2 h-2 rounded-full bg-[#27c93f]" />
-                  </div>
-                  <span className="flex items-center gap-2"><Terminal size={12} className="text-blue-500" /> ~/profile/biography</span>
-                </div>
-                <span className="bg-blue-500/10 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded text-[8px] font-bold">utf-8</span>
-              </div>
-
-              {/* Console Output with syntax coloring */}
-              <div className="font-mono text-xs bg-slate-50/50 dark:bg-slate-950/30 backdrop-blur-sm p-5 rounded-2xl border border-border/50 space-y-4 leading-relaxed text-slate-600 dark:text-slate-300 shadow-sm">
-                <p>
-                  <span className="text-blue-500 font-bold mr-1">&gt;</span>
-                  <span className="text-emerald-500 dark:text-emerald-400 mr-1">[LOG]</span>
-                  <span className="text-yellow-600 dark:text-yellow-400 mr-2">bio_init.sh:</span>
-                  {t("About Paragraph 1")}
-                </p>
-                <p>
-                  <span className="text-blue-500 font-bold mr-1">&gt;</span>
-                  <span className="text-sky-500 mr-1">[LOG]</span>
-                  <span className="text-yellow-600 dark:text-yellow-400 mr-2">load_competence.sh:</span>
-                  {t("About Paragraph 2")}
-                </p>
-                <p>
-                  <span className="text-blue-500 font-bold mr-1">&gt;</span>
-                  <span className="text-indigo-500 mr-1">[LOG]</span>
-                  <span className="text-yellow-600 dark:text-yellow-400 mr-2">exec_vision.sh:</span>
-                  {t("About Paragraph 3")}
-                </p>
-              </div>
-
-              {/* Skill bars */}
-              <div className="space-y-4 pt-4">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 flex items-center gap-1.5">
-                  <Settings size={12} className="text-slate-400 animate-spin" style={{ animationDuration: '4s' }} />
-                  {t("Core Proficiencies")}
-                </p>
-
-                {bars.map((s) => (
-                  <div key={s.label} className="space-y-1.5">
-                    <div className="flex justify-between text-xs">
-                      <span className="font-medium text-foreground">{s.label}</span>
-                      <span className="font-bold text-blue-600">{s.pct}%</span>
+                  {/* Cyber Diagnostic Data Overlay */}
+                  <div className="mt-4 pt-3.5 border-t border-border/60 text-left font-mono text-[9px] space-y-1.5 text-slate-500 dark:text-slate-400">
+                    <div className="flex justify-between items-center">
+                      <span className="flex items-center gap-1"><ShieldCheck size={10} className="text-emerald-500" /> SYSTEM_STATUS:</span>
+                      <span className="text-emerald-500 font-bold">ONLINE [NOMINAL]</span>
                     </div>
-                    <div className="h-2.5 rounded-full p-0.5 bg-slate-100 dark:bg-slate-900 shadow-inner">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${s.pct}%` }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1.1, ease: "easeOut" }}
-                        className="h-full rounded-full"
-                        style={{ background: s.color }}
-                      />
+                    <div className="flex justify-between">
+                      <span>BIO_SECTOR:</span>
+                      <span>WEST_JAVA_IDN</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>AUTHORIZED:</span>
+                      <span>LVL_4_DEV_PM</span>
                     </div>
                   </div>
-                ))}
+
+                </div>
+
+                {/* Mini stats cards grid */}
+                <div className="flex gap-3.5 w-full justify-center">
+                  {stats.map((s) => (
+                    <div key={s.label} className="flex-1 rounded-2xl p-3 text-center bg-card border border-border shadow-sm hover:border-blue-500/30 hover:shadow-md transition-all duration-300">
+                      <p className="font-heading font-extrabold text-sm bg-clip-text text-transparent"
+                        style={{ backgroundImage: `linear-gradient(135deg, ${s.from}, ${s.to})` }}>
+                        {s.value}
+                      </p>
+                      <p className="text-[9px] font-mono text-muted-foreground mt-0.5 uppercase tracking-wide">{s.label}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Download CV button */}
+                <motion.a
+                  href={cvLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex items-center gap-2 rounded-full px-5 py-3 text-xs font-bold text-white w-full justify-center shadow-md shadow-blue-500/10 hover:shadow-lg hover:shadow-blue-500/20 transition-all"
+                  style={{ background: "linear-gradient(135deg, hsl(215 100% 55%), hsl(196 100% 47%))" }}>
+                  <Download size={13} /> {t("Download CV")}
+                </motion.a>
+
+                {/* Skill bars (Core Proficiencies) */}
+                <div className="space-y-4 pt-4 border-t border-border/40 w-full">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 flex items-center gap-1.5">
+                    <Settings size={12} className="text-slate-400 animate-spin" style={{ animationDuration: '4s' }} />
+                    {t("Core Proficiencies")}
+                  </p>
+
+                  {bars.map((s) => (
+                    <div key={s.label} className="space-y-1.5 text-left">
+                      <div className="flex justify-between text-xs">
+                        <span className="font-medium text-foreground">{s.label}</span>
+                        <span className="font-bold text-blue-600">{s.pct}%</span>
+                      </div>
+                      <div className="h-2.5 rounded-full p-0.5 bg-slate-100 dark:bg-slate-900 shadow-inner">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${s.pct}%` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1.1, ease: "easeOut" }}
+                          className="h-full rounded-full"
+                          style={{ background: s.color }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
               </div>
-            </div>
-          </AnimatedSection>
+            </AnimatedSection>
+          </div>
 
-          {/* ── Card column (Node Indicators with vertical connector) ── */}
-          <AnimatedSection delay={0.25} className="w-full">
-            <div className="space-y-4 w-full relative">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-5 pl-1">
-                SYSTEM_NODES
-              </p>
-
-              {/* Vertical connector line between nodes */}
-              <div className="absolute left-[34px] top-[48px] bottom-[28px] w-0.5 border-l border-dashed border-border/40 pointer-events-none hidden lg:block" />
-
-              {cards.map((item, i) => (
-                <motion.div key={i}
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
-                  whileHover={{ x: -3 }}
-                  className={`relative flex gap-4 items-start rounded-2xl p-4 bg-card border border-border transition-all duration-300 shadow-sm group overflow-hidden ${item.border}`}
-                >
-                  {/* Top-Right Node ID watermark */}
-                  <span className="absolute top-2 right-2.5 font-mono text-[8px] text-slate-400 dark:text-slate-600 font-bold group-hover:text-blue-500/50 transition-colors">
-                    {item.nodeId}
-                  </span>
-
-                  {/* Icon */}
-                  <div className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 z-10"
-                    style={{ background: item.iconBg, color: item.iconColor }}>
-                    {item.icon}
+          {/* ── RIGHT COLUMN: Biography Terminal (Description) and System Nodes ── */}
+          <div className="space-y-10 w-full">
+            
+            {/* Simulated Terminal Console (Biography) */}
+            <AnimatedSection delay={0.15} className="w-full">
+              <div className="space-y-6 w-full">
+                
+                {/* Directory Bar with macOS buttons */}
+                <div className="flex items-center justify-between font-mono text-[10px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/60 px-4 py-2.5 rounded-xl border border-border/50 shadow-sm">
+                  <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1 mr-2">
+                      <span className="w-2 h-2 rounded-full bg-[#ff5f56]" />
+                      <span className="w-2 h-2 rounded-full bg-[#ffbd2e]" />
+                      <span className="w-2 h-2 rounded-full bg-[#27c93f]" />
+                    </div>
+                    <span className="flex items-center gap-2"><Terminal size={12} className="text-blue-500" /> ~/profile/biography</span>
                   </div>
+                  <span className="bg-blue-500/10 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded text-[8px] font-bold">utf-8</span>
+                </div>
 
-                  <div className="text-left min-w-0 pr-6 z-10">
-                    <p className="font-heading font-bold text-foreground text-xs leading-snug truncate">
-                      {t(item.title)}
-                    </p>
-                    <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed line-clamp-2">
-                      {t(item.sub)}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </AnimatedSection>
+                {/* Console Output with syntax coloring */}
+                <div className="font-mono text-xs bg-slate-50/50 dark:bg-slate-950/30 backdrop-blur-sm p-5 rounded-2xl border border-border/50 space-y-4 leading-relaxed text-slate-600 dark:text-slate-300 shadow-sm">
+                  <p>
+                    <span className="text-blue-500 font-bold mr-1">&gt;</span>
+                    <span className="text-emerald-500 dark:text-emerald-400 mr-1">[LOG]</span>
+                    <span className="text-yellow-600 dark:text-yellow-400 mr-2">bio_init.sh:</span>
+                    {t("About Paragraph 1")}
+                  </p>
+                  <p>
+                    <span className="text-blue-500 font-bold mr-1">&gt;</span>
+                    <span className="text-indigo-500 mr-1">[LOG]</span>
+                    <span className="text-yellow-600 dark:text-yellow-400 mr-2">sys_architect.sh:</span>
+                    {t("About Paragraph 2")}
+                  </p>
+                  <p>
+                    <span className="text-blue-500 font-bold mr-1">&gt;</span>
+                    <span className="text-sky-500 mr-1">[LOG]</span>
+                    <span className="text-yellow-600 dark:text-yellow-400 mr-2">code_execution.sh:</span>
+                    {t("About Paragraph 3")}
+                  </p>
+                  <p>
+                    <span className="text-blue-500 font-bold mr-1">&gt;</span>
+                    <span className="text-violet mr-1">[LOG]</span>
+                    <span className="text-yellow-600 dark:text-yellow-400 mr-2">exec_delivery.sh:</span>
+                    {t("About Paragraph 4")}
+                  </p>
+                </div>
+
+              </div>
+            </AnimatedSection>
+
+            {/* System Nodes Section */}
+            <AnimatedSection delay={0.2} className="w-full">
+              <div className="space-y-4 w-full relative pt-4 border-t border-border/40">
+                
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-5 pl-1">
+                  SYSTEM_NODES
+                </p>
+
+                {/* Vertical connector line between nodes */}
+                <div className="absolute left-[34px] top-[96px] bottom-[28px] w-0.5 border-l border-dashed border-border/40 pointer-events-none hidden sm:block" />
+
+                <div className="flex flex-col gap-4">
+                  {cards.map((item, i) => (
+                    <motion.div key={i}
+                      initial={{ opacity: 0, y: 15 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.08 }}
+                      whileHover={{ x: 3 }}
+                      className={`relative flex gap-4 items-start rounded-2xl p-4 bg-card border border-border transition-all duration-300 shadow-sm group overflow-hidden ${item.border}`}
+                    >
+                      {/* Top-Right Node ID watermark */}
+                      <span className="absolute top-2 right-2.5 font-mono text-[8px] text-slate-400 dark:text-slate-600 font-bold group-hover:text-blue-500/50 transition-colors">
+                        {item.nodeId}
+                      </span>
+
+                      {/* Icon or Company Logo Container */}
+                      <div className="flex-shrink-0 w-9 h-9 rounded-xl bg-white dark:bg-slate-950 flex items-center justify-center p-1 border border-border shadow-sm overflow-hidden transition-transform group-hover:scale-105 z-10">
+                        {getCompanyLogo(item.companyKey) ? (
+                          <>
+                            <img 
+                              src={getCompanyLogo(item.companyKey)!} 
+                              alt={item.title} 
+                              className="object-contain w-full h-full logo-img"
+                              loading="lazy"
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                                const parent = e.currentTarget.parentElement;
+                                const fallback = parent?.querySelector('.fallback-icon');
+                                if (fallback) {
+                                  (fallback as HTMLElement).classList.remove('hidden');
+                                  (fallback as HTMLElement).classList.add('flex');
+                                }
+                              }}
+                            />
+                            <div className="fallback-icon w-full h-full hidden items-center justify-center rounded-lg"
+                                 style={{ color: item.iconColor }}>
+                              {item.icon}
+                            </div>
+                          </>
+                        ) : (
+                          <div className="fallback-icon w-full h-full flex items-center justify-center rounded-lg"
+                               style={{ color: item.iconColor }}>
+                            {item.icon}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="text-left min-w-0 pr-6 z-10">
+                        <p className="font-heading font-bold text-foreground text-xs leading-snug">
+                          {t(item.title)}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">
+                          {t(item.sub)}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+              </div>
+            </AnimatedSection>
+
+          </div>
+
         </div>
 
         {/* === PENDIDIKAN (EDUCATION) === */}

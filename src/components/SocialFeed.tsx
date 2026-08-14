@@ -79,6 +79,17 @@ export default function SocialFeed() {
     li2: true,
     li3: true,
   });
+  const [igScriptBlocked, setIgScriptBlocked] = useState(false);
+
+  // Monitor if Instagram script fails to load (e.g. blocked by adblocker)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!window.instgrm) {
+        setIgScriptBlocked(true);
+      }
+    }, 3500);
+    return () => clearTimeout(timer);
+  }, []);
 
   // LinkedIn carousel
   const [liActiveIndex, setLiActiveIndex] = useState(1);
@@ -214,8 +225,26 @@ export default function SocialFeed() {
 
   // Process Instagram embeds whenever the Instagram tab is selected
   useEffect(() => {
-    if (activeTab === "instagram" && window.instgrm) {
-      window.instgrm.Embeds.process();
+    if (activeTab === "instagram") {
+      const processIG = () => {
+        if (window.instgrm) {
+          window.instgrm.Embeds.process();
+        }
+      };
+
+      // Run multiple times with delay to account for React lifecycle rendering
+      processIG();
+      const timer1 = setTimeout(processIG, 50);
+      const timer2 = setTimeout(processIG, 250);
+      const timer3 = setTimeout(processIG, 750);
+      const timer4 = setTimeout(processIG, 1500);
+
+      return () => {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+        clearTimeout(timer3);
+        clearTimeout(timer4);
+      };
     }
   }, [activeTab]);
 
@@ -533,14 +562,56 @@ export default function SocialFeed() {
                                 <span>{post.label}</span>
                               </div>
 
-                              {/* Instagram Embed */}
-                              <div className="flex-1 w-full p-4 flex justify-center items-start bg-slate-50/50 dark:bg-slate-900/10">
-                                <div
-                                  className="w-full flex justify-center"
-                                  dangerouslySetInnerHTML={{
-                                    __html: post.embedHtml,
-                                  }}
-                                />
+                              {/* Instagram Embed or Fallback */}
+                              <div className="flex-1 w-full p-4 flex justify-center items-start bg-slate-50/50 dark:bg-slate-900/10 min-h-[350px] relative">
+                                {igScriptBlocked ? (
+                                  /* Beautiful Mock Instagram Post */
+                                  <div className="w-full flex flex-col bg-white dark:bg-slate-950 rounded-2xl border border-slate-100 dark:border-white/5 overflow-hidden p-3 shadow-inner">
+                                    {/* Header */}
+                                    <div className="flex items-center gap-2 mb-3">
+                                      <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 p-[1.5px]">
+                                        <div className="w-full h-full rounded-full bg-white dark:bg-slate-950 p-[1px]">
+                                          <img 
+                                            src="/Coura - Peace.png" 
+                                            alt="Coura"
+                                            className="w-full h-full rounded-full object-cover" 
+                                            onError={(e) => { e.currentTarget.src = "/Coura - Peace.png" }}
+                                          />
+                                        </div>
+                                      </div>
+                                      <div className="flex flex-col text-left">
+                                        <span className="text-[10px] font-bold text-foreground">couraa0</span>
+                                        <span className="text-[8px] text-muted-foreground">Instagram Post</span>
+                                      </div>
+                                    </div>
+
+                                    {/* Post Body (Gradient & Mascot Icon) */}
+                                    <div className="w-full aspect-[4/3] rounded-xl bg-gradient-to-br from-pink-500/10 via-purple-600/10 to-indigo-500/10 flex items-center justify-center border border-slate-100 dark:border-white/5 relative group/ig-mock">
+                                      <Instagram size={36} className="text-pink-500/30 group-hover/ig-mock:scale-110 transition-transform duration-300" />
+                                      <span className="absolute bottom-2 right-2 text-[9px] font-mono text-muted-foreground/80 bg-background/60 backdrop-blur-md px-1.5 py-0.5 rounded">
+                                        Click to view
+                                      </span>
+                                    </div>
+
+                                    {/* Actions mockup */}
+                                    <div className="flex items-center gap-3 my-2.5 text-muted-foreground">
+                                      <span className="text-[10px] flex items-center gap-0.5">❤️ Like</span>
+                                      <span className="text-[10px] flex items-center gap-0.5">💬 Comment</span>
+                                    </div>
+
+                                    {/* Text */}
+                                    <p className="text-[10px] text-muted-foreground text-left line-clamp-2 leading-relaxed">
+                                      Check out my latest post and updates on Instagram! Click this card to open in a new tab.
+                                    </p>
+                                  </div>
+                                ) : (
+                                  <div
+                                    className="w-full flex justify-center"
+                                    dangerouslySetInnerHTML={{
+                                      __html: post.embedHtml,
+                                    }}
+                                  />
+                                )}
                               </div>
                             </motion.div>
                           </div>

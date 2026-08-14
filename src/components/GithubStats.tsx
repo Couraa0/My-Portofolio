@@ -2,8 +2,9 @@ import { GitHubCalendar } from "react-github-calendar";
 import { motion } from "framer-motion";
 import { useTheme } from "@/components/theme-provider";
 import { useTranslation } from "react-i18next";
-import { GitBranch, GitCommit, Star, Code2, ShieldCheck } from "lucide-react";
+import { GitBranch, GitCommit, Code2, ShieldCheck, AlertTriangle } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
+import { useState, useEffect } from "react";
 
 export default function GithubStats() {
   const { theme } = useTheme();
@@ -11,24 +12,41 @@ export default function GithubStats() {
   const isIndonesian = i18n.language?.startsWith("id");
   const username = "Couraa0";
 
+  // State to track actual theme class on document element (resolving 'system' theme)
+  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
+  const [streakError, setStreakError] = useState(false);
+  const [langsError, setLangsError] = useState(false);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    const isDark = root.classList.contains("dark");
+    setResolvedTheme(isDark ? "dark" : "light");
+
+    const observer = new MutationObserver(() => {
+      const isDarkNow = root.classList.contains("dark");
+      setResolvedTheme(isDarkNow ? "dark" : "light");
+    });
+
+    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, [theme]);
+
   // Blue theme configuration for the calendar cells to match the website's primary color
   const calendarTheme = {
     light: ["#ebedf0", "#dbeafe", "#60a5fa", "#2563eb", "#1d4ed8"],
     dark: ["#161b22", "#1e3a8a", "#3b82f6", "#60a5fa", "#93c5fd"],
   };
 
-  const activeThemeColors = theme === "dark" ? calendarTheme.dark : calendarTheme.light;
-
   // Custom colors for GitHub Readme Stats cards to blend natively with the app theme
-  const cardParams = theme === "dark"
+  const cardParams = resolvedTheme === "dark"
     ? `bg_color=090d16&title_color=3b82f6&text_color=94a3b8&icon_color=3b82f6&hide_border=true`
     : `bg_color=ffffff&title_color=2563eb&text_color=475569&icon_color=2563eb&hide_border=true`;
 
-  const streakParams = theme === "dark"
+  const streakParams = resolvedTheme === "dark"
     ? `theme=dark&background=090d16&title=3b82f6&ring=3b82f6&fire=3b82f6&currStreakNum=94a3b8&sideNums=94a3b8&sideLabels=94a3b8&hide_border=true`
     : `theme=default&background=ffffff&title=2563eb&ring=2563eb&fire=2563eb&currStreakNum=475569&sideNums=475569&sideLabels=475569&hide_border=true`;
 
-  const langParams = theme === "dark"
+  const langParams = resolvedTheme === "dark"
     ? `bg_color=090d16&title_color=3b82f6&text_color=94a3b8&hide_border=true`
     : `bg_color=ffffff&title_color=2563eb&text_color=475569&hide_border=true`;
 
@@ -97,7 +115,16 @@ export default function GithubStats() {
                     light: calendarTheme.light,
                     dark: calendarTheme.dark
                   }}
-                  colorScheme={theme === "dark" ? "dark" : "light"}
+                  colorScheme={resolvedTheme}
+                  errorMessage={
+                    <div className="flex flex-col items-center justify-center p-6 text-center rounded-xl bg-slate-50/50 dark:bg-slate-900/10 border border-dashed border-border/60 w-full min-h-[120px]">
+                      <AlertTriangle size={20} className="text-amber-500 mb-2 animate-bounce" />
+                      <p className="text-[10px] font-bold text-foreground">GitHub contribution calendar could not be fetched.</p>
+                      <a href={`https://github.com/${username}`} target="_blank" rel="noopener noreferrer" className="text-[9px] text-blue-500 hover:underline mt-1 font-mono">
+                        View profile directly at github.com/{username} ↗
+                      </a>
+                    </div>
+                  }
                 />
               </div>
             </div>
@@ -110,27 +137,55 @@ export default function GithubStats() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             {/* Card 1: Streak */}
-            <div className="p-4 rounded-2xl bg-card border border-border shadow-sm flex flex-col justify-center items-center relative overflow-hidden group">
+            <div className="p-4 rounded-2xl bg-card border border-border shadow-sm flex flex-col justify-center items-center relative overflow-hidden group min-h-[195px]">
               <div className="absolute top-2 left-2 w-2.5 h-2.5 border-t border-l border-blue-500/20" />
               <div className="absolute top-2 right-2 w-2.5 h-2.5 border-t border-r border-blue-500/20" />
-              <img 
-                src={`https://github-readme-streak-stats.herokuapp.com/?user=${username}&${streakParams}`} 
-                alt="GitHub Contribution Streak" 
-                className="w-full h-auto object-contain max-h-[195px] select-none"
-                loading="lazy"
-              />
+              {streakError ? (
+                <div className="w-full h-full flex flex-col justify-center items-center p-4 text-center font-mono bg-slate-50/50 dark:bg-slate-950/20 rounded-xl min-h-[160px]">
+                  <GitCommit size={20} className="text-blue-500 mb-2 animate-pulse" />
+                  <span className="text-[9px] font-bold text-foreground uppercase tracking-widest">CONTRIBUTION_STREAK</span>
+                  <span className="text-[8px] text-muted-foreground mt-1 max-w-[200px] leading-relaxed">
+                    Streak statistics currently unreachable due to rate limits or connection restrictions.
+                  </span>
+                  <a href={`https://github.com/${username}`} target="_blank" rel="noopener noreferrer" className="mt-3.5 text-[9px] font-bold text-blue-500 hover:underline">
+                    View on GitHub ↗
+                  </a>
+                </div>
+              ) : (
+                <img 
+                  src={`https://github-readme-streak-stats.herokuapp.com/?user=${username}&${streakParams}`} 
+                  alt="GitHub Contribution Streak" 
+                  className="w-full h-auto object-contain max-h-[195px] select-none"
+                  loading="lazy"
+                  onError={() => setStreakError(true)}
+                />
+              )}
             </div>
 
             {/* Card 2: Top Languages */}
-            <div className="p-4 rounded-2xl bg-card border border-border shadow-sm flex flex-col justify-center items-center relative overflow-hidden group">
+            <div className="p-4 rounded-2xl bg-card border border-border shadow-sm flex flex-col justify-center items-center relative overflow-hidden group min-h-[195px]">
               <div className="absolute top-2 left-2 w-2.5 h-2.5 border-t border-l border-blue-500/20" />
               <div className="absolute top-2 right-2 w-2.5 h-2.5 border-t border-r border-blue-500/20" />
-              <img 
-                src={`https://github-stats-extended.vercel.app/api/top-langs/?username=${username}&layout=compact&${langParams}`} 
-                alt="GitHub Top Languages" 
-                className="w-full h-auto object-contain max-h-[195px] select-none"
-                loading="lazy"
-              />
+              {langsError ? (
+                <div className="w-full h-full flex flex-col justify-center items-center p-4 text-center font-mono bg-slate-50/50 dark:bg-slate-950/20 rounded-xl min-h-[160px]">
+                  <Code2 size={20} className="text-indigo-500 mb-2 animate-pulse" />
+                  <span className="text-[9px] font-bold text-foreground uppercase tracking-widest">LANGUAGE_METRICS</span>
+                  <span className="text-[8px] text-muted-foreground mt-1 max-w-[200px] leading-relaxed">
+                    Language metrics currently unreachable due to rate limits or connection restrictions.
+                  </span>
+                  <a href={`https://github.com/${username}`} target="_blank" rel="noopener noreferrer" className="mt-3.5 text-[9px] font-bold text-blue-500 hover:underline">
+                    View on GitHub ↗
+                  </a>
+                </div>
+              ) : (
+                <img 
+                  src={`https://github-stats-extended.vercel.app/api/top-langs/?username=${username}&layout=compact&${langParams}`} 
+                  alt="GitHub Top Languages" 
+                  className="w-full h-auto object-contain max-h-[195px] select-none"
+                  loading="lazy"
+                  onError={() => setLangsError(true)}
+                />
+              )}
             </div>
 
           </div>

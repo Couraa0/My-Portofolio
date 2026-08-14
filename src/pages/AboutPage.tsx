@@ -1,6 +1,7 @@
 import About from "@/components/About";
 import Stats from "@/components/Stats";
 import GithubStats from "@/components/GithubStats";
+import SocialFeed from "@/components/SocialFeed";
 import { Helmet } from "react-helmet-async";
 
 const AboutPage = () => {
@@ -39,6 +40,7 @@ const AboutPage = () => {
       </Helmet>
       <div className="page-enter bg-background pb-16">
         <About />
+        <SocialFeed />
         <GithubStats />
         <Stats />
       </div>
