@@ -114,7 +114,9 @@ Tagline:
 * Best Mentee Award, Citiasia Internasional, Dec 2025
 * IT Project Manager, Magang Berdampak, Kemdiktisaintek and Citiasia Internasional, 2025
 * Hak Atas Kekayaan Intelektual (HAKI), Direktorat Jenderal Kekayaan Intelektual / DJKI, Nov 2024
-* Speaker at HIMSIKA, Feb 2026
+* Speaker at HIMSIKA SKILL UP, Feb 2026
+* Speaker at AAS HIMSIKA, June 2026
+* Speaker at PKKMB Fasilkom UNSIKA, July 2026
 * Professional Certifications in 2026:
 
   * Scrum Master in Product Development
