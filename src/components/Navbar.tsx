@@ -81,11 +81,11 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
           : "bg-background/70 backdrop-blur-sm"
       }`}
     >
-      <div className="container mx-auto flex items-center justify-between px-4 sm:px-6 py-3 md:py-4">
+      <div className="container mx-auto flex items-center justify-between px-4 sm:px-6 py-3 lg:py-4">
         {/* Brand Logo */}
         <Link
           to="/"
-          className="font-heading text-xl font-bold tracking-tight flex items-center gap-1.5 group/logo"
+          className="font-heading text-xl font-bold tracking-tight flex items-center gap-1.5 group/logo shrink-0"
         >
           <span className="text-gradient">Rakha</span>
           <span className="text-muted-foreground/50">.</span>
@@ -100,7 +100,7 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
         </Link>
 
         {/* Desktop Nav Links */}
-        <ul className="hidden md:flex items-center gap-1">
+        <ul className="hidden lg:flex items-center gap-0.5 xl:gap-1">
           {navLinks.map((link) => {
             const active = isActive(link.to);
             return (
@@ -108,7 +108,7 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
                 <Link
                   to={link.to}
                   onClick={() => handleNavClick(link.to)}
-                  className={`group px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg flex items-center justify-center ${
+                  className={`group px-3 xl:px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg flex items-center justify-center ${
                     active
                       ? "text-primary"
                       : "text-muted-foreground hover:text-foreground"
@@ -136,12 +136,12 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
         </ul>
 
         {/* Desktop Controls */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden lg:flex items-center gap-4 shrink-0">
           <Toolbar isPlaying={isPlaying} toggleAudio={toggleAudio} />
         </div>
 
         {/* Mobile Header Right Controls: Menu Toggle */}
-        <div className="flex md:hidden items-center gap-2">
+        <div className="flex lg:hidden items-center gap-2">
           <button
             aria-label="Toggle Menu"
             className="p-2 rounded-xl bg-card border border-border text-foreground hover:bg-muted transition-colors flex items-center justify-center"
@@ -160,7 +160,7 @@ const Navbar = ({ isPlaying, toggleAudio }: NavbarProps) => {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl overflow-hidden shadow-2xl"
+            className="lg:hidden border-t border-border bg-background/95 backdrop-blur-xl overflow-hidden shadow-2xl"
           >
             <div className="px-4 py-5 space-y-4">
               {/* Navigation Links Grid (2 columns) */}

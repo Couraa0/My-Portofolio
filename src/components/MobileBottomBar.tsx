@@ -76,7 +76,7 @@ const MobileBottomBar = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/20 dark:bg-black/45 backdrop-blur-[2px] md:hidden"
+            className="fixed inset-0 z-40 bg-black/20 dark:bg-black/45 backdrop-blur-[2px] lg:hidden"
             onClick={() => setMenuOpen(false)}
           />
         )}
@@ -90,7 +90,7 @@ const MobileBottomBar = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 15, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 420, damping: 28 }}
-            className="md:hidden fixed bottom-[76px] right-3 z-50 w-[270px] rounded-[24px] bg-white/95 dark:bg-slate-950/95 backdrop-blur-2xl border border-slate-200/90 dark:border-white/15 p-3.5 shadow-[0_12px_35px_rgba(0,0,0,0.15)] dark:shadow-[0_12px_35px_rgba(0,0,0,0.55)]"
+            className="lg:hidden fixed bottom-[76px] right-3 z-50 w-[270px] rounded-[24px] bg-white/95 dark:bg-slate-950/95 backdrop-blur-2xl border border-slate-200/90 dark:border-white/15 p-3.5 shadow-[0_12px_35px_rgba(0,0,0,0.15)] dark:shadow-[0_12px_35px_rgba(0,0,0,0.55)]"
           >
             {/* Ambient top line highlight */}
             <div className="absolute -top-[1px] left-8 right-8 h-[1px] bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-60 dark:opacity-70 pointer-events-none" />
@@ -145,7 +145,7 @@ const MobileBottomBar = () => {
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 80, opacity: 0, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 380, damping: 28 }}
-            className="md:hidden fixed bottom-3 left-3 right-3 z-50 mx-auto max-w-[420px]"
+            className="lg:hidden fixed bottom-3 left-3 right-3 z-50 mx-auto max-w-[420px]"
             style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
           >
             {/* Floating Glass Island Dock */}
