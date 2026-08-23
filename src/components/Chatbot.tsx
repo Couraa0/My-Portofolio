@@ -9,7 +9,7 @@ import { SYSTEM_PROMPT } from "@/lib/chatbot-knowledge";
 type ChatMessage = { role: "system" | "user" | "assistant"; content: string };
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
-const GROQ_MODEL = "llama-3.3-70b-versatile";
+const GROQ_MODEL = "openai/gpt-oss-20b";
 
 const QUICK_QUESTIONS = [
   { icon: Code2, label: "Projects", question: "Apa saja project yang pernah dibuat Rakha?" },
@@ -144,7 +144,7 @@ export default function Chatbot() {
         model: GROQ_MODEL,
         messages: apiMessages,
         temperature: 0.7,
-        max_tokens: 600,
+        max_tokens: 1200,
         top_p: 0.9,
       })
     });
@@ -156,7 +156,10 @@ export default function Chatbot() {
     }
 
     const data = await res.json();
-    return data.choices?.[0]?.message?.content ?? "Maaf, saya tidak bisa menjawab saat ini.";
+    const msg = data.choices?.[0]?.message;
+    // Reasoning models (gpt-oss) may return content alongside internal reasoning;
+    // fall back to the reasoning field if content is somehow empty.
+    return msg?.content || msg?.reasoning || "Maaf, saya tidak bisa menjawab saat ini.";
   };
 
   const sendMessage = async (text: string) => {
